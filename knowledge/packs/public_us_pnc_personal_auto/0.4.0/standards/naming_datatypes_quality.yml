@@ -1,0 +1,11 @@
+schema_version: "1.0"
+standard_id: naming_datatypes_quality_candidate
+version: "0.3.0"
+approval_state: CANDIDATE
+rule_families:
+  naming: [business_name_and_physical_name_separated, stable_identifiers, no_unexplained_abbreviations]
+  datatypes: [source_type_preserved, target_type_justified, precision_scale_timezone_currency_explicit]
+  history: [type1_requires_no_history_rationale, type2_requires_effective_interval_and_change_rule, consider_bitemporal_when_timelines_differ]
+  quality: [identity_uniqueness, temporal_validity, referential_integrity, coverage_term_structure, financial_reconciliation, code_mapping, privacy_minimization]
+source_references: [databricks_cdc_scd]
+

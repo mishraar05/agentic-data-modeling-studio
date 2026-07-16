@@ -1,0 +1,20 @@
+schema_version: "1.0"
+module_id: insurance_core_billing
+module_version: "0.3.0"
+layer: insurance_core
+approval_state: CANDIDATE
+runtime_eligible: false
+owner: TBD_BILLING_STEWARD
+scope: {domains: [billing], lobs: [cross_lob, personal_auto]}
+non_scope: [carrier_collection_workflow, general_ledger_design]
+content:
+  entities: [billing_account, invoice, installment, charge, receivable, payment_receipt, allocation, refund, commission]
+  rules:
+    - Billing premium Policy premium and financial-reporting premium may differ in timing grain and basis.
+    - Preserve allocation reversal refund and delinquency events when evidenced.
+    - Require reconciliation rules before joining Policy and Billing measures.
+source_references: [naic_glossary]
+legacy_source_assets: [knowledge/archive/pre_canonical_v0.1.0_v0.2.0/domain/pnc_policy_claims_party_product_candidate_v0.2.0.yml]
+dependencies: [insurance_core_party, insurance_core_policy]
+review_requirements: [billing_sme, finance_sme]
+

@@ -1,0 +1,50 @@
+schema_version: "1.0"
+module_id: personal_auto_policy_lifecycle
+module_version: "0.5.0"
+layer: personal_auto
+approval_state: CANDIDATE
+runtime_eligible: false
+owner: TBD_PERSONAL_AUTO_POLICY_STEWARD
+scope: {lob: personal_auto, domains: [policy]}
+non_scope: [state_specific_notice_periods, carrier_workflow, automated_status_crosswalk]
+content:
+  lifecycle_events:
+    - {event: quote_created, meaning: priced proposal created, required_times: [occurrence_or_creation_time]}
+    - {event: application_submitted, meaning: application entered underwriting consideration, required_times: [submission_time]}
+    - {event: coverage_bound, meaning: authorized evidence indicates coverage became temporarily or contractually effective, required_times: [effective_time, processing_time]}
+    - {event: policy_issued, meaning: policy contract or evidence was issued, required_times: [issue_time, effective_time]}
+    - {event: endorsement_effective, meaning: a policy change became effective, required_times: [request_time_when_available, processing_time, effective_time]}
+    - {event: renewal_offered, meaning: insurer offered continuation for a succeeding term, required_times: [offer_time, proposed_term_start]}
+    - {event: renewal_accepted, meaning: evidence indicates the renewal terms were accepted or coverage continued, required_times: [acceptance_or_payment_time, term_start]}
+    - {event: cancellation_noticed, meaning: cancellation notice was issued, required_times: [notice_time, proposed_effective_time], warning: not_the_same_as_effective_cancellation}
+    - {event: cancellation_effective, meaning: coverage terminated before scheduled expiration, required_times: [effective_time], required_attributes: [initiating_party, reason_when_evidenced]}
+    - {event: reinstatement_effective, meaning: coverage was restored according to source or approved business rules, required_times: [effective_time, processing_time], warning: lapse_effect_is_source_and_jurisdiction_dependent}
+    - {event: nonrenewal_noticed, meaning: insurer notice of unwillingness to renew was issued, required_times: [notice_time, term_expiration]}
+    - {event: expiration, meaning: policy term reached scheduled end without evidenced continuation, required_times: [expiration_time]}
+    - {event: rewrite_effective, meaning: replacement policy identity or term became effective under source-defined rewrite semantics, required_times: [effective_time], warning: lapse_and_affiliation_must_be_evidenced}
+  counting_contexts:
+    new_business_policy_written:
+      grain: policy
+      basis: coverage_put_into_effect_during_reporting_period
+      excludes: [renewal, rewrite_without_lapse]
+    company_initiated_nonrenewal:
+      grain: policy
+      basis: nonrenewal_effective_during_reporting_period
+      excludes: [renewal_offer_not_accepted, policyholder_requested_nonrenewal]
+    cancellation:
+      grain: cancellation_event_on_policy
+      basis: cancellation_effective_during_reporting_period
+      rule: repeated_nonpayment_cancellations_and_reinstatements_are_distinct_events_when_the_reporting_definition_requires_it
+  reconciliation_checks:
+    - Notice date effective date processing date and source capture date must not be collapsed.
+    - Policy status at a point in time must reconcile to effective events and intervals or be flagged.
+    - Renewal rewrite reinstatement and replacement without lapse require explicit identity links.
+    - MCAS reporting buckets are analytical contexts and do not replace jurisdiction notice rules.
+  modeling_implications:
+    silver: Persist append-only lifecycle events and derived effective intervals with derivation evidence.
+    gold: Separate policy transaction facts lifecycle event facts and in-force snapshots.
+    sttm: Status mappings require event semantics dates initiating party reason and counting context.
+source_references: [naic_auto_consumer, ca_doi_auto_guide, ca_doi_auto_terms, naic_mcas_ppa_2026]
+legacy_source_assets: [knowledge/archive/pre_canonical_v0.1.0_v0.2.0/domain/pnc_policy_claims_party_product_candidate_v0.2.0.yml]
+dependencies: [insurance_core_policy, personal_auto_coverages]
+review_requirements: [personal_auto_policy_sme, jurisdiction_reviewer]

@@ -1,0 +1,45 @@
+schema_version: "1.0"
+standard_id: sttm_modeling_candidate
+version: "0.6.0"
+approval_state: CANDIDATE
+purpose: Attribute-level Source-to-Silver and Silver-to-Gold mapping contract with evidence and reconciliation.
+required_mapping_fields:
+  identity: [engagement_id, work_package_id, mapping_package_id, mapping_id, mapping_version, lifecycle_state]
+  scope: [lob, domain, source_system, source_object, target_layer, target_object]
+  source: [source_attribute_or_expression, source_grain, source_datatype, source_nullability, source_evidence_ids]
+  target: [target_attribute, target_grain, target_datatype, target_nullability, target_business_definition]
+  logic: [mapping_type, transformation_logic, join_logic, lookup_logic, default_logic, filter_logic, exception_logic]
+  governance: [confidence_components, assumptions, contradictions, open_questions, owner, reviewer, approval_state]
+  quality: [data_quality_rules, reconciliation_rules, expected_reject_behavior]
+  lineage: [upstream_artifact_ids, downstream_artifact_ids, requirement_ids, context_snapshot_id, run_id]
+mapping_types: [direct, renamed, datatype_conversion, derived, aggregated, split, merged, lookup, constant_when_approved, unresolved_gap, not_applicable]
+join_contract:
+  required: [left_grain, right_grain, join_keys, join_type, expected_cardinality, temporal_condition, duplicate_behavior, unmatched_behavior]
+lookup_contract:
+  required: [source_code_set, target_code_set, mapping_version, effective_interval, unknown_behavior, many_to_one_review]
+transformation_contract:
+  rules:
+    - Logic must be executable or unambiguously specified without inventing missing source semantics.
+    - Business-effective and processing-time logic are stated separately.
+    - Currency precision scale timezone sign and rounding behavior are explicit when applicable.
+    - LLM-authored semantic logic retains evidence confidence and review state.
+reconciliation_contract:
+  levels:
+    - {level: inventory, examples: [source_objects_attributes_in_scope, mapped_target_attributes, explicit_gaps]}
+    - {level: row_or_grain, examples: [source_to_silver_key_counts, duplicate_and_orphan_counts]}
+    - {level: financial, examples: [premium_components, billing_balances, claim_payments_reserves_recoveries]}
+    - {level: analytical, examples: [requirement_population, kpi_components, duration_buckets]}
+  required: [population, cutoff, dimensions, tolerance, exclusions, expected_result, evidence_query_or_rule]
+validation_gates:
+  - every_required_target_has_source_derivation_default_or_gap
+  - every_source_and_target_reference_resolves
+  - datatype_and_nullability_compatibility
+  - join_cardinality_and_duplicate_handling
+  - code_mapping_unknown_handling
+  - evidence_and_requirement_traceability
+  - reconciliation_rule_present_for_material_financial_or_count_mapping
+  - no_invented_source_field_code_relationship_or_business_rule
+change_control:
+  - Material grain key join formula history privacy or code-mapping changes require impact analysis and reviewer decision.
+  - Approved reviewer modifications are durable context for later mappings; they are not silently folded into prompts.
+source_references: [databricks_medallion, databricks_cdc_scd]

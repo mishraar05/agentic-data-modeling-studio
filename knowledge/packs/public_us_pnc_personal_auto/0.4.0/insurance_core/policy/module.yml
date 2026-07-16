@@ -1,0 +1,21 @@
+schema_version: "1.0"
+module_id: insurance_core_policy
+module_version: "0.3.0"
+layer: insurance_core
+approval_state: CANDIDATE
+runtime_eligible: false
+owner: TBD_POLICY_STEWARD
+scope: {domains: [policy], lobs: [cross_lob, personal_auto]}
+non_scope: [jurisdiction_specific_cancellation_rules, carrier_workflows]
+content:
+  entities: [quote, application, policy, policy_term, policy_version, policy_transaction, insured_risk, premium_component]
+  events: [quoted, applied, bound, issued, endorsed, renewed, cancelled, reinstated, nonrenewed, rewritten, expired]
+  rules:
+    - Distinguish business identity system identity version identity and transaction identity.
+    - Preserve business-effective processing and accounting timelines separately when evidenced.
+    - Do not impose a universal state transition sequence.
+source_references: [edmc_fibo, naic_glossary, naic_auto_consumer]
+legacy_source_assets: [knowledge/archive/pre_canonical_v0.1.0_v0.2.0/domain/pnc_policy_claims_party_product_candidate_v0.2.0.yml]
+dependencies: [insurance_core_party, insurance_core_product_and_coverage]
+review_requirements: [policy_sme, data_architect]
+

@@ -1,0 +1,13 @@
+schema_version: "1.0"
+reference_id: fibo_external_reference
+version: "0.3.0"
+approval_state: CANDIDATE
+source_reference: edmc_fibo
+license: MIT
+ontology_creation_deliverable: false
+candidate_modules: [FND, BE]
+rules:
+  - Exact release IRIs and concepts require ontology-owner approval.
+  - Broad financial concepts are not insurance-specific definitions.
+  - Missing concepts remain gaps and are not silently authored.
+

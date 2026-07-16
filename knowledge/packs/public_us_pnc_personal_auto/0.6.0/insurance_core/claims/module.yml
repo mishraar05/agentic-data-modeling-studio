@@ -1,0 +1,51 @@
+schema_version: "1.0"
+module_id: insurance_core_claims
+module_version: "0.5.0"
+layer: insurance_core
+approval_state: CANDIDATE
+runtime_eligible: false
+owner: TBD_CLAIMS_STEWARD
+scope: {domains: [claims], lobs: [cross_lob, personal_auto]}
+non_scope: [carrier_claim_workflow, jurisdiction_settlement_deadlines, legal_liability_determination]
+content:
+  identity_and_grain:
+    - {record: loss_event, grain: one real-world occurrence or related occurrence grouping supported by evidence}
+    - {record: claim_file, grain: one insurer source claim identity, warning: not_a_universal_analytics_claim_count}
+    - {record: incident, grain: one damage injury theft or liability incident within a loss event}
+    - {record: claimant, grain: one party making or having a claim made on their behalf}
+    - {record: claim_exposure, grain: one claim claimant or insured coverage part and risk or incident, warning: carrier_terms_include_feature_reserve_line}
+    - {record: coverage_evaluation, grain: one exposure coverage decision version with evidence and decision time}
+    - {record: claim_financial_transaction, grain: one posted reserve payment recovery expense adjustment void or reissue transaction}
+    - {record: claim_financial_snapshot, grain: one exposure financial class valuation date and accounting basis}
+    - {record: claim_status_event, grain: one claim or exposure status occurrence with occurrence and processing timestamps}
+  regulator_aligned_counting_context:
+    context_id: naic_mcas_private_passenger_auto
+    claim_count_grain: claimant_or_insured_by_coverage_part
+    includes: [first_party_claims, third_party_claims]
+    excludes: [information_only_event, coverage_inquiry_without_presented_claim, potential_claimant_without_claim]
+    warning: This counting context is appropriate only when the analytical requirement adopts the cited MCAS definition; it does not redefine operational claim identity.
+  financial_semantics:
+    classes: [case_reserve, payment, recovery, loss_adjustment_expense, adjustment, void, reissue]
+    required_context: [coverage_or_exposure, claimant_or_payee, currency, transaction_date, accounting_date, valuation_date, gross_or_net_basis, sign_convention, source_status]
+    rules:
+      - Preserve original transaction reversals and reissues rather than netting away audit history.
+      - Keep paid loss recovery and loss adjustment expense separately reconcilable.
+      - Never derive incurred loss without an approved reserve payment recovery and expense basis.
+  closure_and_reopen_semantics:
+    states: [open, closed_with_payment, closed_without_payment, reopened]
+    rules:
+      - Closure status is a source-system state and is separate from final payment date.
+      - Supplemental payment handling requires an explicit reporting basis and reopen episode.
+      - A zero net payment after recovery does not prove no payment was made.
+  modeling_implications:
+    silver: Preserve claim file claimant exposure financial transaction snapshot status event and coverage-decision grains.
+    gold: Declare whether each fact is occurrence claim file claimant exposure transaction snapshot or closure episode grain.
+    sttm: Require explicit financial sign gross_or_net and valuation derivations; unresolved meanings remain gaps.
+  rules:
+    - Determine whether claim incident claimant exposure and coverage evaluation are distinct source grains.
+    - Preserve transaction balance snapshot valuation and posting semantics.
+    - Never infer financial sign coverage decision or liability from a code label alone.
+source_references: [naic_glossary, naic_mcas_ppa_2026, ca_doi_auto_claims]
+legacy_source_assets: [knowledge/archive/pre_canonical_v0.1.0_v0.2.0/domain/pnc_policy_claims_party_product_candidate_v0.2.0.yml]
+dependencies: [insurance_core_party, insurance_core_policy, insurance_core_product_and_coverage]
+review_requirements: [claims_sme, claims_finance_sme]

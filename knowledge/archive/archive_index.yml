@@ -1,0 +1,21 @@
+schema_version: "1.0"
+archive_id: pre_canonical_v0.1.0_v0.2.0
+created_at: "2026-07-15"
+status: IMMUTABLE_DEVELOPMENT_HISTORY
+runtime_eligible: false
+root: knowledge/archive/pre_canonical_v0.1.0_v0.2.0
+preserved_manifests:
+  - pack_id: public_pnc_policy_claims_personal_auto
+    pack_version: "0.1.0"
+    path: knowledge/archive/pre_canonical_v0.1.0_v0.2.0/manifests/public_pnc_policy_claims_personal_auto_candidate_v0.1.0.yml
+    sha256: a1db55b199de9769adf1cff902a2498b12b2f72226a475505277f0870cf1b10b
+  - pack_id: public_us_pnc_personal_auto
+    pack_version: "0.2.0"
+    path: knowledge/archive/pre_canonical_v0.1.0_v0.2.0/manifests/public_us_pnc_personal_auto_candidate_v0.2.0.yml
+    sha256: 3e46a31d295dd4f4da998f0b1b728ce984c81f35bcfdc7ee013789a4f83aae19
+rules:
+  - no_new_content
+  - no_runtime_selection
+  - preserve_original_files_and_fingerprints
+  - use_only_as_traceable_migration_evidence
+

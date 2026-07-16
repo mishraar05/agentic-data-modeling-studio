@@ -1,0 +1,54 @@
+schema_version: "1.0"
+module_id: insurance_core_party
+module_version: "0.6.0"
+layer: insurance_core
+approval_state: CANDIDATE
+runtime_eligible: false
+owner: TBD_PARTY_STEWARD
+scope: {domains: [party], lobs: [cross_lob, personal_auto]}
+non_scope: [client_mastering_rules, jurisdiction_identity_rules, automated_identity_resolution, protected_attribute_inference]
+content:
+  identity_and_grain:
+    - {record: party, grain: one source-asserted person or organization identity within a declared system boundary}
+    - {record: person, grain: one party subtype assertion for a natural person}
+    - {record: organization, grain: one party subtype assertion for a legal or business organization}
+    - {record: party_identifier, grain: one party identifier type issuing_scope value_or_token and effective interval}
+    - {record: party_role, grain: one party role business context and effective interval}
+    - {record: party_relationship, grain: one subject party relationship type object party business context and effective interval}
+    - {record: contact_point, grain: one party contact method value_or_token usage type and effective interval}
+    - {record: address, grain: one source address assertion with purpose effective interval and validation state}
+  roles:
+    policy: [applicant, policyholder, named_insured, additional_insured, driver, lienholder, loss_payee, producer]
+    claims: [claimant, insured_claimant, third_party_claimant, payee, adjuster, attorney, repair_facility, recovery_party]
+    billing: [account_holder, payer, refund_payee, producer, commission_payee]
+  relationship_types: [household_member, employer_employee, parent_child, spouse_or_partner_when_evidenced, organization_contact, represents, pays_for, owns_or_leases, has_financial_interest]
+  identity_resolution_evidence:
+    strong_candidate_signals: [authorized_stable_identifier, verified_crosswalk, approved_master_identifier]
+    supporting_signals: [name, address, contact_point, date_or_registration_context]
+    rules:
+      - No individual signal is a universal match rule.
+      - Store match candidates evidence conflicts confidence and reviewer decision separately.
+      - A resolved enterprise identity must retain every contributing source identity and decision version.
+  privacy_and_minimization:
+    candidate_pii: [name, address, email, telephone, date_of_birth, driver_license_identifier, government_identifier, financial_account_reference]
+    required_metadata: [sensitivity_class, purpose, authorized_use, masking_or_tokenization, retention_rule_when_supplied, source_evidence, reviewer]
+    rules:
+      - Collect and expose only values needed for the authorized modeling or review purpose.
+      - Treat context as relevant to sensitivity and protection level.
+      - Never infer sensitive characteristics from names addresses relationships vehicles or behavior.
+  source_dictionary_cues:
+    - Separate identifiers roles relationships and contact methods from descriptive party attributes.
+    - Identify whether source party records are mastered duplicated role-specific or transaction-specific.
+    - Preserve raw and normalized names and addresses with transformation provenance.
+  modeling_implications:
+    silver: Preserve source party identity then add reviewed cross-source identity links roles relationships contacts and privacy transformations.
+    gold: Conform party or driver dimensions only where matching scope and semantics are approved; otherwise retain source-role dimensions.
+    sttm: Every identity merge role conversion and privacy treatment requires evidence method confidence and reviewer state.
+  rules:
+    - Separate party identity from time-dependent roles and relationships.
+    - Do not assume one source identifier masters a party across Policy Claims and Billing.
+    - Treat identity resolution and privacy classification as reviewed decisions.
+source_references: [edmc_fibo, naic_glossary, nist_sp_800_122, ca_doi_auto_terms]
+legacy_source_assets: [knowledge/archive/pre_canonical_v0.1.0_v0.2.0/business_glossary/pnc_personal_auto_candidate_v0.2.0.yml, knowledge/archive/pre_canonical_v0.1.0_v0.2.0/domain/pnc_policy_claims_party_product_candidate_v0.2.0.yml]
+dependencies: []
+review_requirements: [party_steward, privacy_steward, data_architect]

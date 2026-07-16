@@ -1,0 +1,151 @@
+schema_version: "1.0"
+module_id: extension_jurisdiction
+module_version: "0.4.0"
+layer: extension
+approval_state: CANDIDATE
+runtime_eligible: false
+owner: TBD_JURISDICTION_STEWARD
+scope:
+  extension_type: jurisdiction
+  production_target: US_CA
+  illustrative_examples_only: [US_NY]
+non_scope:
+  - national_generalization
+  - legal_advice
+  - jurisdictions_beyond_production_target_and_illustration
+  - policy_form_wording
+  - rating_and_territory_rules
+content:
+  production_target: US_CA
+  production_target_decision_ref: docs/decisions/ADR-002-first-production-jurisdiction.md
+  california:
+    fault_regime:
+      type: tort_at_fault
+      basis: California Personal Auto liability is modeled as a fault-based tort regime. Allocation of negligence and legal conclusions remain review-time matters, not deterministic data corrections.
+      source_ids: [ca_doi_auto_guide]
+    financial_responsibility:
+      required: true
+      requirement_scope: vehicles_operated_or_parked_on_california_roads
+      acceptable_mechanisms:
+        - motor_vehicle_liability_insurance_policy
+        - cash_deposit_with_dmv
+        - dmv_issued_self_insurance_certificate
+        - surety_bond_from_licensed_company
+      mechanism_amount_usd:
+        cash_deposit: 75000
+        surety_bond: 75000
+      modeling_rule: Financial responsibility is the obligation. A liability insurance policy is one permitted mechanism, so source data must not be corrected or classified as uninsured merely because another authorized mechanism is used.
+      source_ids: [ca_dmv_insurance_requirements]
+    coverage_obligations:
+      - coverage: bodily_injury_liability
+        obligation: minimum_policy_limit_when_liability_insurance_is_the_financial_responsibility_mechanism
+        source_ids: [ca_dmv_insurance_requirements, ca_veh_code_16056]
+      - coverage: property_damage_liability
+        obligation: minimum_policy_limit_when_liability_insurance_is_the_financial_responsibility_mechanism
+        source_ids: [ca_dmv_insurance_requirements, ca_veh_code_16056]
+      - coverage: uninsured_and_underinsured_motorist
+        statutory_policy_provision_required: true
+        compulsory_purchase: false
+        named_insured_may_delete_or_reduce_by_signed_agreement: true
+        modeling_rule: Do not infer acceptance, deletion, or reduced limits without the policy terms and the applicable signed agreement evidence.
+        source_ids: [ca_ins_code_11580_2]
+    minimum_liability_policy_limits:
+      current:
+        effective_date: "2025-01-01"
+        bodily_injury_per_person_usd: 30000
+        bodily_injury_per_accident_usd: 60000
+        property_damage_usd: 15000
+        statute_basis: "Cal. Veh. Code Section 16056, as amended by SB 1107"
+        source_ids: [ca_sb1107, ca_veh_code_16056]
+      prior:
+        effective_through: "2024-12-31"
+        bodily_injury_per_person_usd: 15000
+        bodily_injury_per_accident_usd: 30000
+        property_damage_usd: 5000
+        source_ids: [ca_sb1107]
+      scheduled_next_change:
+        effective_date: "2035-01-01"
+        bodily_injury_per_person_usd: 50000
+        bodily_injury_per_accident_usd: 100000
+        property_damage_usd: 25000
+        source_ids: [ca_sb1107, ca_veh_code_16056]
+      rule: Apply the limits effective for the policy as written or renewed. A lower observed limit is a data-quality flag for review, never a value to silently overwrite.
+    cancellation_and_nonrenewal:
+      applicability: Personal automobile insurance policies within California Insurance Code Chapter 10 and the Section 660 definition; statutory exclusions must be evaluated before applying a rule.
+      allowed_cancellation_grounds:
+        statute_basis: "Cal. Ins. Code Section 661"
+        source_ids: [ca_ins_code_auto_660_669_5]
+      notice_rules:
+        - action: cancellation_other_than_nonpayment
+          minimum_notice_days: 20
+          statute_basis: "Cal. Ins. Code Section 662(a)(1)"
+          source_ids: [ca_ins_code_auto_660_669_5]
+        - action: cancellation_for_nonpayment
+          minimum_notice_days: 10
+          cure_required_by_end_of_notice_period_for_stated_effective_date: true
+          statute_basis: "Cal. Ins. Code Section 662(a)"
+          source_ids: [ca_ins_code_auto_660_669_5]
+        - action: nonrenewal
+          minimum_notice_days: 30
+          statute_basis: "Cal. Ins. Code Section 663(a)(2)"
+          source_ids: [ca_ins_code_auto_660_669_5]
+        - action: renewal_offer
+          minimum_notice_days: 20
+          statute_basis: "Cal. Ins. Code Section 663(a)(1)"
+          source_ids: [ca_ins_code_auto_660_669_5]
+      exclusion_guard: Sections 677.2 and 678.1 are not admitted as Personal Auto notice rules because they belong to Chapter 11 and Section 677.2 is limited to commercial insurance policies defined by Section 675.5.
+    claim_obligations:
+      - obligation: acknowledge_claim
+        max_calendar_days: 15
+        regulatory_basis: "Cal. Code Regs. tit. 10, Section 2695.5(e)(1)"
+        source_ids: [ca_ccr_2695_5]
+      - obligation: accept_or_deny_claim
+        max_calendar_days: 40
+        proof_of_claim_triggered: true
+        exception: automobile_repair_bills_from_collision_or_comprehensive_policies_subject_to_insurance_code_section_560
+        regulatory_basis: "Cal. Code Regs. tit. 10, Section 2695.7(b), including (b)(4)"
+        source_ids: [ca_ccr_2695_7]
+      - obligation: continuing_delay_notice
+        interval_calendar_days: 30
+        condition: more_time_required_after_initial_decision_period
+        regulatory_basis: "Cal. Code Regs. tit. 10, Section 2695.7(c)"
+        source_ids: [ca_ccr_2695_7]
+      - obligation: pay_accepted_claim
+        max_calendar_days: 30
+        exceptions:
+          - automobile_repair_bills_subject_to_insurance_code_section_560
+          - policy_provides_waiting_period_after_acceptance_and_before_payment
+        regulatory_basis: "Cal. Code Regs. tit. 10, Section 2695.7(h), including (h)(1)"
+        source_ids: [ca_ccr_2695_7]
+      - obligation: suspected_fraud_decision_period
+        alternatives:
+          - increased_to_80_calendar_days
+          - suspended_until_otherwise_ordered_by_insurance_commissioner
+        conditions:
+          - reasonable_basis_supported_by_specific_information_available_for_department_review
+          - suspension_path_requires_insurance_code_section_1872_4_compliance
+          - suspension_path_requires_diligent_attempt_within_80_days
+        regulatory_basis: "Cal. Code Regs. tit. 10, Section 2695.7(k)"
+        source_ids: [ca_ccr_2695_7]
+    forms:
+      status: unresolved
+      note: No carrier-specific, ISO, or ACORD policy form wording is admitted. Only statutory obligations are captured until an authorized licensed form source and reviewer approval are supplied.
+  rules:
+    - Every record requires exact jurisdiction, source, effective date, reviewer, and supersession state before it can leave CANDIDATE status.
+    - Dollar amounts, day counts, and section citations require jurisdiction_sme and legal_reviewer sign-off before runtime or production use.
+    - California is the approved production target per ADR-002; New York references remain illustrative only and carry no approved rule set.
+    - No policy form wording, rate, or territory-specific rating rule is admitted; those remain explicitly out of scope pending an authorized source.
+source_references:
+  - ca_doi_auto_guide
+  - ca_doi_auto_claims
+  - ny_dfs_auto_resource
+  - ca_dmv_insurance_requirements
+  - ca_sb1107
+  - ca_veh_code_16056
+  - ca_ins_code_11580_2
+  - ca_ins_code_auto_660_669_5
+  - ca_ccr_2695_5
+  - ca_ccr_2695_7
+legacy_source_assets: [knowledge/archive/pre_canonical_v0.1.0_v0.2.0/manifests/source_register_v0.2.0.yml]
+dependencies: []
+review_requirements: [legal_reviewer, jurisdiction_sme]

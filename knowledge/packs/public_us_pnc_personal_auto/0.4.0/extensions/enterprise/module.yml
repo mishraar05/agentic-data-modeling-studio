@@ -1,0 +1,17 @@
+schema_version: "1.0"
+module_id: extension_enterprise
+module_version: "0.3.0"
+layer: extension
+approval_state: CANDIDATE
+runtime_eligible: false
+owner: TBD_ENTERPRISE_KNOWLEDGE_OWNER
+scope: {extension_type: enterprise, content_status: placeholder_contract_only}
+non_scope: [public_pack_content, cross_engagement_reuse_without_authorization]
+content:
+  accepted_inputs: [enterprise_glossary, canonical_model, privacy_policy, modeling_standards, kpi_catalog, approved_decisions]
+  rules: [engagement_isolation_required, enterprise_approved_knowledge_has_precedence]
+source_references: []
+legacy_source_assets: []
+dependencies: []
+review_requirements: [enterprise_knowledge_owner]
+

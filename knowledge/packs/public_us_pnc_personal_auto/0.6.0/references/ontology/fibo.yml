@@ -1,0 +1,23 @@
+schema_version: "1.0"
+reference_id: fibo_external_reference
+version: "0.6.0"
+approval_state: CANDIDATE
+source_reference: edmc_fibo
+license: MIT
+ontology_creation_deliverable: false
+pinned_release:
+  release_name: Q1_2026
+  git_tag: master_2026Q1
+  release_date: "2026-04-20"
+  commit_short: 574a831
+  release_url: https://github.com/edmcouncil/fibo/releases/tag/master_2026Q1
+candidate_modules:
+  - {module: FND, use: parties_roles_relations_dates_and_general_contract_context}
+  - {module: BE, use: organization_and_legal_entity_alignment}
+  - {module: FBC, use: selected_financial_business_and_accounting_context}
+concept_selection_status: NOT_APPROVED
+rules:
+  - Pinning a release supports reproducibility but does not approve individual ontology concepts.
+  - Exact IRIs mappings and applicable concepts require ontology-owner and domain review.
+  - Broad financial concepts are not insurance-specific Policy Claims Billing or Personal Auto definitions.
+  - Missing concepts remain gaps and are not silently authored.

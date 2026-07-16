@@ -1,0 +1,53 @@
+schema_version: "1.0"
+module_id: insurance_core_policy
+module_version: "0.5.0"
+layer: insurance_core
+approval_state: CANDIDATE
+runtime_eligible: false
+owner: TBD_POLICY_STEWARD
+scope: {domains: [policy], lobs: [cross_lob, personal_auto]}
+non_scope: [jurisdiction_specific_cancellation_rules, carrier_workflows, rating_algorithm, policy_form_wording]
+content:
+  semantic_terms:
+    - {term: quote, definition: A priced proposal or estimate that does not by itself prove coverage is in force., distinguish_from: [application, binder, policy]}
+    - {term: application, definition: A request for insurance containing applicant and risk information used in underwriting., distinguish_from: [quote, policy]}
+    - {term: binder, definition: Evidence of temporary coverage pending issuance of the policy when supported by authorized evidence., distinguish_from: [quote, issued_policy]}
+    - {term: policy, definition: The insurance contract between insurer and insured., distinguish_from: [policy_term, policy_version, policy_transaction]}
+    - {term: policy_term, definition: A bounded contract period with effective and expiration dates., distinguish_from: [policy_business_identity, renewal_transaction]}
+    - {term: policy_version, definition: A representation of policy state valid for an effective interval., distinguish_from: [policy_transaction]}
+    - {term: endorsement, definition: A written change that adds removes or modifies policy terms., distinguish_from: [renewal, rewrite]}
+    - {term: cancellation, definition: Insurer or insured initiated termination before scheduled expiration., distinguish_from: [nonrenewal, expiration, lapse]}
+    - {term: nonrenewal, definition: Insurer decision not to continue coverage at normal expiration., distinguish_from: [cancellation, policyholder_declined_renewal]}
+  identity_and_grain:
+    - {record: policy, grain: one durable contract identity within the source-defined identity boundary, candidate_keys: [policy_business_identifier], warning: policy_number_may_be_reused_or_reformatted}
+    - {record: policy_term, grain: one policy identity and contract term interval, candidate_keys: [policy_identity, term_effective_date], warning: renewal_may_create_term_or_new_policy_identity_by_source_design}
+    - {record: policy_version, grain: one effective-dated state of one policy term, candidate_keys: [policy_term_identity, version_identity_or_effective_start], warning: transaction_sequence_is_not_always_effective_order}
+    - {record: policy_transaction, grain: one source-recorded business transaction, candidate_keys: [policy_identity, transaction_identity], warning: reversal_and_rewrite_require_explicit_links}
+    - {record: policy_risk_coverage, grain: one policy version risk unit coverage selection and coverage term combination, candidate_keys: [policy_version, risk_unit, coverage, attachment], warning: never_flatten_split_limits_or_deductibles_into_one_untyped_value}
+  relationships:
+    - {parent: policy, child: policy_term, expected_cardinality: one_to_many, validation: term_intervals_and_source_identity_required}
+    - {parent: policy_term, child: policy_version, expected_cardinality: one_to_many, validation: effective_intervals_must_be_reconciled}
+    - {parent: policy_version, child: policy_transaction, expected_cardinality: source_dependent, validation: derive_only_when_transaction_to_version_evidence_exists}
+    - {parent: policy_version, child: insured_risk, expected_cardinality: one_to_many, validation: attachment_and_effective_interval_required}
+  timeline_axes:
+    - {axis: contract_effective_time, meaning: when coverage or a policy state is intended to apply}
+    - {axis: transaction_time, meaning: when the business action was recorded or processed}
+    - {axis: accounting_time, meaning: when premium or financial effect was posted}
+    - {axis: source_capture_time, meaning: when evidence was extracted or observed}
+  source_dictionary_cues:
+    - Seek separate identifiers for policy term version transaction risk and coverage; unresolved collapsing is a modeling finding.
+    - Treat status codes as source facts until code meanings and effective behavior are evidenced.
+    - Record whether dates are occurrence notice effective expiration processing accounting or extraction dates.
+  modeling_implications:
+    silver: Preserve policy term version transaction risk and coverage grains with source-effective and system-observed history.
+    gold: Derive snapshots transactions and lifecycle facts separately; do not aggregate policy versions as policies.
+    sttm: Every target status and lifecycle date requires a source field derivation or documented unresolved gap.
+  rules:
+    - Distinguish business identity system identity version identity and transaction identity.
+    - Preserve business-effective processing accounting and source-capture timelines separately.
+    - Do not impose a universal state transition sequence.
+    - Policy wording and approved enterprise decisions outrank this reusable semantic baseline.
+source_references: [edmc_fibo, naic_glossary, naic_mcas_ppa_2026]
+legacy_source_assets: [knowledge/archive/pre_canonical_v0.1.0_v0.2.0/domain/pnc_policy_claims_party_product_candidate_v0.2.0.yml]
+dependencies: [insurance_core_party, insurance_core_product_and_coverage]
+review_requirements: [policy_sme, data_architect]

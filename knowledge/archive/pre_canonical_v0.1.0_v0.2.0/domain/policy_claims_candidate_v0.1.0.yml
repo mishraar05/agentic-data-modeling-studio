@@ -1,0 +1,44 @@
+schema_version: "1.0"
+asset_id: policy_claims_domain_candidate
+version: "0.1.0"
+approval_state: CANDIDATE
+authoritative: false
+scope:
+  lobs: [cross_lob, personal_auto]
+  domains: [policy, claims]
+modeling_concepts:
+  - concept: policy_term
+    candidate_grain: one contractual policy version for one effective period
+    cautions:
+      - Do not equate policy number with a stable unique key without source evidence.
+      - Preserve quote, bound, issued, cancelled, reinstated, and rewritten states only when evidenced.
+  - concept: policy_coverage
+    candidate_grain: one coverage selection on one covered object or policy-level risk for an effective interval
+    cautions:
+      - Limits and deductibles may have multiple components and must not be flattened without evidence.
+  - concept: claim
+    candidate_grain: one insurer claim record associated with a reported loss
+    cautions:
+      - Claim, exposure, feature, incident, claimant, reserve, and payment are distinct candidate concepts.
+      - A claim-to-policy relationship may be version-sensitive and must be established from source evidence.
+  - concept: claim_financial_transaction
+    candidate_grain: one posted reserve, payment, recovery, or adjustment transaction
+    cautions:
+      - Never derive financial sign conventions or transaction categories from names alone.
+candidate_relationships:
+  - subject: policy_term
+    predicate: contains
+    object: policy_coverage
+  - subject: claim
+    predicate: may_reference
+    object: policy_term
+  - subject: claim
+    predicate: may_contain
+    object: claim_financial_transaction
+validation_questions:
+  - What is the stable business identity across policy renewals and rewrites?
+  - At what level are coverage, limit, and deductible attached?
+  - Does the claim system distinguish claim, exposure or feature, incident, and claimant?
+  - Which transaction states and dates determine posted claim financials?
+source_references: [naic_glossary, naic_insurance_basics, edmc_fibo_repository]
+

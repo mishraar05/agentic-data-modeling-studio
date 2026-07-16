@@ -1,0 +1,21 @@
+schema_version: "1.0"
+module_id: insurance_core_product_and_coverage
+module_version: "0.3.0"
+layer: insurance_core
+approval_state: CANDIDATE
+runtime_eligible: false
+owner: TBD_PRODUCT_STEWARD
+scope: {domains: [product, coverage], lobs: [cross_lob, personal_auto]}
+non_scope: [licensed_forms_content, carrier_product_configuration]
+content:
+  entities: [insurance_product, product_version, coverage_definition, coverage_term_definition, form, endorsement_definition, coverage_selection]
+  term_types: [limit, deductible, exclusion, condition]
+  rules:
+    - Preserve attachment level effective dates and product version.
+    - Keep split combined per-person per-occurrence and aggregate terms structurally distinct.
+    - Policy wording and authorized product configuration outrank public background knowledge.
+source_references: [edmc_fibo, naic_glossary]
+legacy_source_assets: [knowledge/archive/pre_canonical_v0.1.0_v0.2.0/domain/pnc_policy_claims_party_product_candidate_v0.2.0.yml, knowledge/archive/pre_canonical_v0.1.0_v0.2.0/lob/personal_auto_candidate_v0.2.0.yml]
+dependencies: []
+review_requirements: [product_sme, legal_licensing_reviewer]
+

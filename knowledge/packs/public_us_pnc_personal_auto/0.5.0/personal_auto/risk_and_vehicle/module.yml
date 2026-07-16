@@ -1,0 +1,50 @@
+schema_version: "1.0"
+module_id: personal_auto_risk_and_vehicle
+module_version: "0.5.0"
+layer: personal_auto
+approval_state: CANDIDATE
+runtime_eligible: false
+owner: TBD_PERSONAL_AUTO_STEWARD
+scope: {lob: personal_auto, domains: [risk, vehicle]}
+non_scope: [rating_algorithm, proprietary_vehicle_enrichment, vehicle_valuation, crash_event_schema]
+content:
+  identity_and_grain:
+    - {record: vehicle, grain: one source-asserted vehicle identity, candidate_keys: [vin_when_valid, source_vehicle_identifier], warning: never_discard_source_identity_when_vin_is_missing_partial_or_invalid}
+    - {record: policy_vehicle, grain: one policy version vehicle role and effective interval}
+    - {record: driver_vehicle_assignment, grain: one policy version driver vehicle assignment type and effective interval}
+    - {record: garaging_assignment, grain: one policy vehicle garaging location and effective interval}
+    - {record: vehicle_characteristic, grain: one vehicle characteristic source effective interval and observation time}
+  vehicle_roles: [insured_vehicle, rated_vehicle, involved_vehicle, claimant_vehicle, third_party_vehicle, replacement_vehicle, temporary_substitute_vehicle]
+  attributes_to_seek:
+    identity: [source_vehicle_identifier, vin_raw, vin_normalized, registration_identifier, registration_jurisdiction]
+    classification: [make, model, model_year, body_class_or_type, manufacturer, series, trim]
+    ownership_and_interest: [owned_leased_financed_status, registered_owner, lienholder_or_loss_payee_role]
+    use_and_exposure: [primary_use, annual_mileage, odometer_observation, commute_or_business_use, policy_vehicle_role]
+    location: [garaging_address, garaging_jurisdiction, garaging_effective_interval]
+    equipment: [safety_features, anti_theft_features, fuel_type, propulsion, gross_vehicle_weight_when_relevant]
+  vin_governance:
+    regulatory_context: 49_CFR_Part_565
+    standard_vin_length: 17
+    validation_outcomes: [valid_complete, invalid_check_or_format, partial, missing, pre_standard_or_not_applicable]
+    enrichment_source: nhtsa_vpic
+    enrichment_rules:
+      - Preserve the raw source VIN separately from normalization and validation results.
+      - Record vPIC request version timestamp model-year parameter response variables and error codes.
+      - Treat decoded attributes as external observations reported from manufacturer submissions; do not overwrite conflicting source facts silently.
+      - Partial VIN decoding is not proof of a unique vehicle identity.
+  temporal_rules:
+    - Ownership garaging usage assignment and characteristics may change independently and require effective intervals.
+    - Policy attachment dates and vehicle-model attributes require separate provenance.
+    - An involved vehicle on a claim does not prove that it was an insured or rated vehicle.
+  modeling_implications:
+    silver: Separate vehicle identity policy attachment garaging assignment driver assignment and externally decoded characteristics.
+    gold: Use role-aware vehicle dimensions or bridges and retain as-of logic for policy and loss dates.
+    sttm: Every normalized or decoded attribute cites its transformation or external enrichment evidence and preserves the original value.
+  rules:
+    - Represent characteristic source and effective interval.
+    - Separate insured rated involved claimant and third-party vehicle roles.
+    - MMUCC alignment is external-event context and not an insurance claim schema.
+source_references: [naic_auto_consumer, ca_doi_auto_guide, nhtsa_mmucc6, ecfr_49_cfr_565, nhtsa_vpic_api]
+legacy_source_assets: [knowledge/archive/pre_canonical_v0.1.0_v0.2.0/lob/personal_auto_candidate_v0.2.0.yml]
+dependencies: [insurance_core_product_and_coverage]
+review_requirements: [personal_auto_sme, data_architect]

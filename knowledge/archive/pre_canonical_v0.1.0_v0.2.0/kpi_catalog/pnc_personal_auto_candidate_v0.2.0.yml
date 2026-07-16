@@ -1,0 +1,33 @@
+schema_version: "1.0"
+asset_id: pnc_personal_auto_kpi_catalog_candidate
+version: "0.2.0"
+approval_state: CANDIDATE
+authoritative: false
+formula_guardrail: >-
+  Candidate analytical contracts only. Accounting basis, inclusion rules, valuation
+  date, denominator, status treatment, and direct/net/ceded basis require approval.
+kpis:
+  - {kpi: in_force_policy_count, grain: reporting_snapshot, formula: "distinct approved policy-term identity meeting the governed in-force rule", additivity: non_additive_over_time}
+  - {kpi: insured_vehicle_exposure, grain: reporting_period, formula: "sum governed vehicle exposure units during the period", additivity: additive_with_compatible_units}
+  - {kpi: written_premium, grain: policy_transaction_period, formula: "sum governed written-premium amount", additivity: additive_subject_to_basis}
+  - {kpi: earned_premium, grain: coverage_exposure_period, formula: "sum governed earned-premium amount", additivity: additive_subject_to_basis}
+  - {kpi: new_business_policy_count, grain: reporting_period, formula: "distinct policy terms classified as approved new business", additivity: additive_across_nonoverlapping_periods}
+  - {kpi: renewal_retention_rate, grain: renewal_cohort, formula: "renewed eligible policies / policies eligible for renewal", additivity: ratio}
+  - {kpi: cancellation_rate, grain: reporting_period_or_cohort, formula: "qualifying cancelled policies / governed eligible policy population", additivity: ratio}
+  - {kpi: claim_count, grain: reporting_period, formula: "distinct claim identity meeting approved occurrence/report/status rules", additivity: conditionally_additive}
+  - {kpi: claim_frequency, grain: reporting_period_and_segment, formula: "qualifying claim count / compatible exposure units", additivity: ratio}
+  - {kpi: paid_loss, grain: claim_financial_posting_period, formula: "sum approved paid-loss transactions net of governed reversals", additivity: additive_subject_to_basis}
+  - {kpi: case_reserve, grain: valuation_snapshot, formula: "sum approved outstanding case-reserve balance at valuation time", additivity: snapshot_non_additive_over_time}
+  - {kpi: incurred_loss, grain: valuation_period, formula: "paid loss plus approved unpaid-loss components under governed accounting definition", additivity: additive_subject_to_basis}
+  - {kpi: loss_adjustment_expense, grain: valuation_period, formula: "sum allocated and/or unallocated adjustment expense as explicitly selected", additivity: additive_subject_to_basis}
+  - {kpi: claim_severity, grain: reporting_period_and_segment, formula: "governed loss amount / compatible qualifying claim count", additivity: ratio}
+  - {kpi: loss_ratio, grain: reporting_period_and_segment, formula: "governed incurred loss / compatible earned premium", additivity: ratio}
+  - {kpi: combined_ratio, grain: reporting_period_and_segment, formula: "approved loss-and-expense components / compatible earned premium", additivity: ratio}
+  - {kpi: closure_rate, grain: reporting_period, formula: "claims closed during period / governed claims available for closure", additivity: ratio}
+  - {kpi: average_days_to_close, grain: closed_claim_cohort, formula: "average elapsed days between approved open and close events", additivity: non_additive}
+  - {kpi: recovery_rate, grain: claim_cohort_or_period, formula: "approved recoveries / compatible recoverable or paid-loss basis", additivity: ratio}
+  - {kpi: reopen_rate, grain: closed_claim_cohort, formula: "claims reopened after closure / qualifying closed claims", additivity: ratio}
+mandatory_dimensions: [time_basis, jurisdiction, product, coverage, channel, vehicle, driver_or_risk_segment, claim_status, loss_cause]
+mandatory_metadata: [owner, formula_version, grain, basis, inclusions, exclusions, zero_denominator_rule, effective_dates, lineage, approval]
+source_references: [naic_glossary, naic_auto_consumer]
+

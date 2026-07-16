@@ -1,0 +1,103 @@
+schema_version: "1.0"
+module_id: extension_jurisdiction
+module_version: "0.3.0"
+layer: extension
+approval_state: CANDIDATE
+runtime_eligible: false
+owner: TBD_JURISDICTION_STEWARD
+scope: {extension_type: jurisdiction, production_target: US_CA, illustrative_examples_only: [US_NY]}
+non_scope: [national_generalization, legal_advice, jurisdictions_beyond_production_target_and_illustration, policy_form_wording, rating_and_territory_rules]
+content:
+  production_target: US_CA
+  production_target_decision_ref: docs/decisions/ADR-002-first-production-jurisdiction.md
+  california:
+    fault_regime:
+      type: tort_at_fault
+      basis: California is a fault (tort liability) jurisdiction; the at-fault party's insurer is primarily responsible for third-party damages, subject to comparative negligence.
+      source_ids: [ca_doi_auto_guide]
+    mandatory_coverages:
+      - coverage: bodily_injury_liability
+        compulsory: true
+        source_ids: [ca_doi_auto_guide, ca_veh_code_16056]
+      - coverage: property_damage_liability
+        compulsory: true
+        source_ids: [ca_doi_auto_guide, ca_veh_code_16056]
+      - coverage: uninsured_motorist
+        compulsory: false
+        offer_required: true
+        rejection_requires_signed_written_waiver: true
+        source_ids: [ca_ins_code_11580_2]
+      - coverage: underinsured_motorist
+        compulsory: false
+        offer_required: true
+        rejection_requires_signed_written_waiver: true
+        source_ids: [ca_ins_code_11580_2]
+    minimum_limits:
+      current:
+        effective_date: "2025-01-01"
+        bodily_injury_per_person_usd: 30000
+        bodily_injury_per_accident_usd: 60000
+        property_damage_usd: 15000
+        statute_basis: "Cal. Veh. Code Section 16056, as amended by SB 1107 (Protect California Drivers Act)"
+        source_ids: [ca_sb1107, ca_veh_code_16056]
+      prior:
+        effective_through: "2024-12-31"
+        bodily_injury_per_person_usd: 15000
+        bodily_injury_per_accident_usd: 30000
+        property_damage_usd: 5000
+        unchanged_since: "1967"
+        source_ids: [ca_sb1107]
+      scheduled_next_change:
+        effective_date: "2035-01-01"
+        bodily_injury_per_person_usd: 50000
+        bodily_injury_per_accident_usd: 100000
+        property_damage_usd: 25000
+        source_ids: [ca_sb1107]
+      rule: Minimum limits attach to policies as written and to renewals on or after the stated effective date. An observed policy limit below the currently effective minimum is a data-quality flag for review, not a value to silently correct.
+    cancellation_and_nonrenewal:
+      - action: cancellation_general
+        minimum_notice_days: 30
+        statute_basis: "Cal. Ins. Code Section 677.2"
+        source_ids: [ca_ins_code_677_2]
+      - action: cancellation_nonpayment_or_fraud
+        minimum_notice_days: 10
+        statute_basis: "Cal. Ins. Code Section 677.2"
+        source_ids: [ca_ins_code_677_2]
+      - action: nonrenewal_or_adverse_renewal_change
+        minimum_notice_days: 60
+        maximum_notice_days: 120
+        trigger_examples: [nonrenewal, limit_reduction, coverage_elimination, deductible_increase, rate_increase_over_25_percent]
+        statute_basis: "Cal. Ins. Code Section 678.1"
+        source_ids: [ca_ins_code_678_1]
+    claim_obligations:
+      - obligation: acknowledge_claim
+        max_calendar_days: 15
+        regulatory_basis: "Cal. Code Regs. tit. 10, Section 2695.5(e)(1)"
+        source_ids: [ca_ccr_2695_5]
+      - obligation: accept_or_deny_claim
+        max_calendar_days: 40
+        extension_notice_required: true
+        extension_notice_interval_days: 30
+        regulatory_basis: "Cal. Code Regs. tit. 10, Section 2695.7(b)-(c)"
+        source_ids: [ca_ccr_2695_7]
+      - obligation: pay_accepted_claim
+        max_calendar_days: 30
+        regulatory_basis: "Cal. Code Regs. tit. 10, Section 2695.7(h)"
+        source_ids: [ca_ccr_2695_7]
+      - obligation: suspected_fraud_extension
+        max_calendar_days: 80
+        condition: reasonable_basis_of_suspected_false_or_fraudulent_claim
+        regulatory_basis: "Cal. Code Regs. tit. 10, Section 2695.7(k)"
+        source_ids: [ca_ccr_2695_7]
+    forms:
+      status: unresolved
+      note: No carrier-specific, ISO, or ACORD policy form wording is admitted. Only the regulatory obligations governing form content (for example the UM/UIM offer and written-rejection requirement) are captured until a licensed form source is supplied.
+  rules:
+    - Every record requires exact jurisdiction, source, effective date, reviewer, and supersession state before it can leave CANDIDATE status.
+    - Dollar amounts, day counts, and section citations are candidate facts drawn from public statute and regulation text; they require jurisdiction_sme and legal_reviewer sign-off before runtime or production use.
+    - California is the approved production target per ADR-002; New York references remain illustrative examples only and carry no approved rule set.
+    - No policy form wording, rate, or territory-specific rating rule is admitted; those remain explicitly out of scope pending a licensed source.
+source_references: [ca_doi_auto_guide, ca_doi_auto_claims, ny_dfs_auto_resource, ca_sb1107, ca_veh_code_16056, ca_ins_code_11580_2, ca_ins_code_677_2, ca_ins_code_678_1, ca_ccr_2695_5, ca_ccr_2695_7]
+legacy_source_assets: [knowledge/archive/pre_canonical_v0.1.0_v0.2.0/manifests/source_register_v0.2.0.yml]
+dependencies: []
+review_requirements: [legal_reviewer, jurisdiction_sme]

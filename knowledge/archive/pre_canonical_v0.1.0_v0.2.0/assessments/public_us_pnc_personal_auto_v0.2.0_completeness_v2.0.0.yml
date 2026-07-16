@@ -1,0 +1,51 @@
+schema_version: "1.0"
+assessment_id: public_us_pnc_personal_auto_v0.2.0_completeness
+assessment_version: "2.0.0"
+assessed_at: "2026-07-15"
+assessed_pack:
+  pack_id: public_us_pnc_personal_auto
+  pack_version: "0.2.0"
+  manifest: knowledge/manifests/public_us_pnc_personal_auto_candidate_v0.2.0.yml
+target_scope:
+  purpose: reusable_US_Personal_Auto_baseline_for_dictionary_silver_gold_and_sttm
+  domains: [party, product, policy, claims, billing, analytics]
+  excludes: [client_specific_rules, proprietary_vendor_models, state_specific_completion, ontology_creation]
+summary:
+  content_completeness_percent: 55
+  content_maturity: PARTIAL
+  assessment_confidence: MEDIUM_LOW
+  trusted_runtime_readiness_percent: 0
+  approval_state: CANDIDATE
+  previous_pack_score_percent: 26
+  change_percent_points: 29
+  warning: Completeness is scoped coverage, not correctness, licensing approval, or production fitness.
+scoring_method:
+  method: weighted_coverage
+  formula: sum(weight_percent * coverage_percent) / 100
+  rounding: nearest_whole_percent_half_up
+  maturity_bands: {SKELETON: "0-19", SEED: "20-39", PARTIAL: "40-59", PILOT_CANDIDATE: "60-79", BROAD: "80-94", SCOPE_COMPLETE: "95-100"}
+dimensions:
+  - {dimension: governance_and_provenance, weight_percent: 10, coverage_percent: 75, weighted_points: 7.5, remaining_gaps: [named_owner, legal_review, supersession_approval]}
+  - {dimension: core_business_glossary, weight_percent: 15, coverage_percent: 60, weighted_points: 9.0, remaining_gaps: [synonyms, disambiguation, stewardship, billing_depth]}
+  - {dimension: policy_domain, weight_percent: 15, coverage_percent: 55, weighted_points: 8.25, remaining_gaps: [premium_rating_detail, forms_endorsements, transaction_accounting, lifecycle_validation]}
+  - {dimension: claims_domain, weight_percent: 15, coverage_percent: 55, weighted_points: 8.25, remaining_gaps: [coverage_evaluation, litigation, catastrophe, fraud, detailed_recovery_and_expense]}
+  - {dimension: personal_auto_lob, weight_percent: 15, coverage_percent: 60, weighted_points: 9.0, remaining_gaps: [product_variants, detailed_risk_attributes, jurisdiction_overlays, forms_and_endorsements]}
+  - {dimension: silver_and_gold_modeling_standards, weight_percent: 10, coverage_percent: 65, weighted_points: 6.5, remaining_gaps: [naming_and_datatype_contracts, privacy_rules, reconciliation_catalog, physical_design]}
+  - {dimension: kpi_catalog_and_code_sets, weight_percent: 10, coverage_percent: 50, weighted_points: 5.0, remaining_gaps: [approved_formula_basis, actual_governed_values, owners, effective_versions]}
+  - {dimension: reference_alignment, weight_percent: 5, coverage_percent: 20, weighted_points: 1.0, remaining_gaps: [exact_fibo_selection, target_reference_model, traceable_mappings]}
+  - {dimension: expert_validation_and_evaluation, weight_percent: 5, coverage_percent: 0, weighted_points: 0.0, remaining_gaps: [sme_review, architect_review, unseen_proof_slice, measured_value]}
+next_threshold:
+  maturity: PILOT_CANDIDATE
+  minimum_percent: 60
+  blockers:
+    - independent_domain_and_architecture_review
+    - unseen_personal_auto_source_slice_evaluation
+    - approved_KPI_basis_and_minimum_code_set_examples
+path_to_broad_coverage:
+  target_percent: 85
+  additions:
+    - detailed_policy_premium_rating_forms_and_endorsement_knowledge
+    - detailed_claim_coverage_financial_litigation_recovery_and_catastrophe_knowledge
+    - state_overlay_framework_and_selected_state_packs
+    - governed_synonyms_code_values_KPIs_and_privacy_rules
+    - expert_review_and_regression_evaluation

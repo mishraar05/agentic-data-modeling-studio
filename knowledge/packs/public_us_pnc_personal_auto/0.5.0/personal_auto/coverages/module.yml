@@ -1,0 +1,62 @@
+schema_version: "1.0"
+module_id: personal_auto_coverages
+module_version: "0.5.0"
+layer: personal_auto
+approval_state: CANDIDATE
+runtime_eligible: false
+owner: TBD_PERSONAL_AUTO_PRODUCT_STEWARD
+scope: {lob: personal_auto, domains: [product, coverage]}
+non_scope: [state_mandates, policy_form_wording, carrier_offerings, legal_coverage_determination]
+content:
+  coverage_families:
+    liability: [bodily_injury_liability, property_damage_liability, combined_single_limit_liability]
+    first_party_injury: [medical_payments, personal_injury_protection]
+    physical_damage: [collision, comprehensive_or_other_than_collision]
+    uninsured_underinsured: [uninsured_underinsured_bodily_injury, uninsured_underinsured_property_damage, collision_deductible_waiver_when_applicable]
+    optional_services: [rental_reimbursement, towing_or_roadside, gap_or_loan_lease_when_offered]
+  coverage_semantics:
+    - coverage: bodily_injury_liability
+      purpose: Responds to covered legal liability for bodily injury to third parties.
+      common_limit_structures: [per_person_and_per_accident, combined_single_limit]
+      claim_context: claimant_by_coverage_part
+    - coverage: property_damage_liability
+      purpose: Responds to covered legal liability for damage to another party's property.
+      common_limit_structures: [per_accident, combined_single_limit]
+      claim_context: claimant_by_coverage_part
+    - coverage: collision
+      purpose: Physical damage protection for the covered vehicle from collision with a vehicle or object subject to policy terms.
+      common_term_structures: [deductible]
+      claim_context: covered_vehicle_or_insured_by_coverage_part
+    - coverage: comprehensive_or_other_than_collision
+      purpose: Physical damage protection for covered non-collision causes such as theft fire or vandalism subject to policy terms.
+      common_term_structures: [deductible]
+      claim_context: covered_vehicle_or_insured_by_coverage_part
+    - coverage: medical_payments
+      purpose: Limited first-party medical expense coverage for covered persons after a motor vehicle accident without requiring fault as defined by the policy.
+      common_limit_structures: [per_person_limit]
+      claim_context: injured_person_by_coverage_part
+    - coverage: uninsured_underinsured_bodily_injury
+      purpose: Bodily injury protection for an insured when an at-fault driver is uninsured or insufficiently insured subject to jurisdiction and policy terms.
+      common_limit_structures: [per_person_and_per_accident]
+      claim_context: injured_person_by_coverage_part
+    - coverage: uninsured_underinsured_property_damage
+      purpose: Property damage protection when an at-fault driver is uninsured or insufficiently insured subject to jurisdiction and policy terms.
+      common_limit_structures: [per_accident_or_stated_limit, deductible_when_applicable]
+      claim_context: covered_property_or_claimant_by_coverage_part
+    - coverage: personal_injury_protection
+      purpose: Jurisdiction-dependent first-party benefits associated with no-fault systems.
+      common_term_structures: [benefit_limit, sublimit, deductible, waiting_or_elimination_period]
+      claim_context: benefit_or_claimant_by_coverage_part
+  structural_rules:
+    - Coverage definition selection attachment term and claim exposure are separate grains.
+    - Rental transportation or towing paid as part of a physical-damage claim is not automatically a separate claim count.
+    - Combined single limit and split bodily injury and property damage limits are different structures.
+    - Availability compulsory status limits deletion waiver and meaning require a jurisdiction and product overlay.
+  modeling_implications:
+    silver: Normalize selections attachment levels and multi-part terms while preserving source coverage codes and wording references.
+    gold: Support coverage-level policy exposure and claimant-by-coverage claims facts without forcing one universal claim grain.
+    sttm: Map source codes to candidate semantic families only with evidence confidence and unresolved-state handling.
+source_references: [naic_auto_consumer, ca_doi_auto_guide, ca_doi_auto_terms, naic_mcas_ppa_2026]
+legacy_source_assets: [knowledge/archive/pre_canonical_v0.1.0_v0.2.0/lob/personal_auto_candidate_v0.2.0.yml]
+dependencies: [insurance_core_product_and_coverage]
+review_requirements: [personal_auto_product_sme, jurisdiction_reviewer]

@@ -1,0 +1,47 @@
+schema_version: "1.0"
+module_id: personal_auto_driver_and_household
+module_version: "0.5.0"
+layer: personal_auto
+approval_state: CANDIDATE
+runtime_eligible: false
+owner: TBD_PERSONAL_AUTO_STEWARD
+scope: {lob: personal_auto, domains: [party, risk]}
+non_scope: [consumer_scoring_algorithm, protected_attribute_inference, carrier_underwriting_rules, identity_resolution_without_authorized_evidence]
+content:
+  identity_and_grain:
+    - {record: driver, grain: one source-asserted person or driver identity within the engagement boundary}
+    - {record: household, grain: one source-defined household identity and effective interval, warning: household_definition_is_product_and_source_dependent}
+    - {record: household_membership, grain: one person household relationship type and effective interval}
+    - {record: policy_driver_listing, grain: one policy version driver listing role and effective interval}
+    - {record: driver_vehicle_assignment, grain: one policy version driver vehicle assignment type and effective interval}
+    - {record: license_observation, grain: one driver licensing jurisdiction status class and observation time}
+  driver_roles: [named_insured, listed_driver, rated_driver, excluded_driver, occasional_driver, principal_driver, permissive_operator, involved_operator, claimant]
+  attributes_to_seek:
+    licensing: [licensing_jurisdiction, license_identifier_token_or_protected_value, license_status, license_class, years_licensed, observation_date]
+    policy_role: [driver_role, listing_status, exclusion_or_restriction_evidence, effective_interval]
+    assignment: [vehicle_assignment_type, assigned_vehicle, assignment_effective_interval]
+    household: [household_relationship_type, residency_or_membership_evidence, membership_effective_interval]
+    risk_observations: [driving_record_reference, accident_or_violation_observation, annual_mileage_or_use_evidence]
+  privacy_and_trust:
+    high_risk_fields: [driver_license_identifier, date_of_birth, contact_details, driving_record]
+    rules:
+      - Minimize values and retain tokens or protected references where the use case does not require raw identity data.
+      - Do not infer protected or sensitive characteristics from name address vehicle or household relationships.
+      - Record observed inferred unresolved and reviewer-approved states separately.
+  ambiguity_checks:
+    - Listed driver rated driver named insured household member and vehicle operator are not synonyms.
+    - Missing driver listing does not prove that a person is excluded or unlicensed.
+    - License status is time-sensitive and requires observation date and jurisdiction.
+    - Household membership cannot be made permanent from one policy snapshot.
+  modeling_implications:
+    silver: Separate person identity household membership policy driver role license observations and vehicle assignments with effective history.
+    gold: Use role-playing driver and party dimensions or bridges where requirements need named insured rated driver or involved operator views.
+    sttm: Require evidence for every role conversion and privacy transformation; unsupported role equivalence becomes a gap.
+  rules:
+    - Household membership and driver assignment are time-dependent governed relationships.
+    - Apply privacy minimization and prohibit inference of sensitive characteristics.
+    - Do not equate listed driver rated driver insured party and vehicle operator without evidence.
+source_references: [naic_auto_consumer, ca_doi_auto_guide, ca_doi_auto_terms]
+legacy_source_assets: [knowledge/archive/pre_canonical_v0.1.0_v0.2.0/lob/personal_auto_candidate_v0.2.0.yml]
+dependencies: [insurance_core_party, personal_auto_risk_and_vehicle]
+review_requirements: [personal_auto_sme, privacy_steward]

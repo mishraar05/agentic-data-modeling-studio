@@ -1,0 +1,21 @@
+schema_version: "1.0"
+module_id: insurance_core_party
+module_version: "0.3.0"
+layer: insurance_core
+approval_state: CANDIDATE
+runtime_eligible: false
+owner: TBD_PARTY_STEWARD
+scope: {domains: [party], lobs: [cross_lob, personal_auto]}
+non_scope: [client_mastering_rules, jurisdiction_identity_rules]
+content:
+  entities: [party, person, organization, contact_point, address, party_role, party_relationship]
+  roles: [policyholder, named_insured, additional_insured, claimant, payee, producer, adjuster, lienholder, driver]
+  rules:
+    - Separate party identity from time-dependent roles and relationships.
+    - Do not assume one source identifier masters a party across Policy Claims and Billing.
+    - Treat identity resolution and privacy classification as reviewed decisions.
+source_references: [edmc_fibo, naic_glossary]
+legacy_source_assets: [knowledge/archive/pre_canonical_v0.1.0_v0.2.0/business_glossary/pnc_personal_auto_candidate_v0.2.0.yml, knowledge/archive/pre_canonical_v0.1.0_v0.2.0/domain/pnc_policy_claims_party_product_candidate_v0.2.0.yml]
+dependencies: []
+review_requirements: [party_steward, privacy_steward]
+

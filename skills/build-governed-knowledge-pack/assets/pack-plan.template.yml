@@ -1,0 +1,56 @@
+schema_version: "1.0"
+pack_id: public_us_pnc_example_lob
+pack_version: "0.1.0"
+title: Candidate US P&C Example LOB knowledge pack
+created_at: "2026-07-16"
+owner: TBD_KNOWLEDGE_OWNER
+geography: US_general
+lob: example_lob
+lob_directory: example_lob
+domains: [party, product, coverage, policy, claims, billing, analytics]
+jurisdictions: [US_XX]
+non_scope: [carrier_specific_forms, rating_algorithms, client_source_code_mappings]
+precedence: [approved_client_evidence, approved_engagement_decisions, approved_enterprise_extension, approved_jurisdiction_extension, approved_product_extension, approved_platform_extension, approved_public_core]
+prohibitions: [no_runtime_use_while_candidate, no_silent_ontology_creation, no_unlicensed_vendor_content, no_jurisdiction_rule_without_applicability_context, no_source_code_mapping_without_evidence_and_review]
+modules:
+  - module_id: insurance_core_party
+    relative_path: insurance_core/party/module.yml
+    layer: insurance_core
+    owner: TBD_DOMAIN_STEWARD
+    scope: {domains: [party], lobs: [cross_lob, example_lob]}
+    non_scope: [client_identity_resolution_rules]
+    review_requirements: [domain_sme, data_architect]
+    dependencies: []
+  - module_id: example_lob_product_and_risk
+    relative_path: example_lob/product_and_risk/module.yml
+    layer: lob
+    owner: TBD_LOB_STEWARD
+    scope: {domains: [product, coverage, policy], lobs: [example_lob]}
+    non_scope: [jurisdiction_specific_obligations]
+    review_requirements: [lob_sme, data_architect]
+    dependencies: [insurance_core_party]
+  - module_id: extension_jurisdiction
+    relative_path: extensions/jurisdiction/module.yml
+    layer: extension
+    owner: TBD_JURISDICTION_STEWARD
+    scope: {extension_type: jurisdiction, jurisdictions: [US_XX], lobs: [example_lob]}
+    non_scope: [jurisdictions_not_explicitly_listed]
+    review_requirements: [jurisdiction_reviewer, lob_sme]
+    dependencies: [example_lob_product_and_risk]
+completeness_dimensions:
+  - {dimension: governance_and_provenance, weight_percent: 15}
+  - {dimension: core_business_glossary, weight_percent: 10}
+  - {dimension: insurance_core_domains, weight_percent: 15}
+  - {dimension: lob_semantics, weight_percent: 20}
+  - {dimension: jurisdiction_extension, weight_percent: 15}
+  - {dimension: kpis_code_sets_and_modeling_inputs, weight_percent: 10}
+  - {dimension: reference_alignment, weight_percent: 5}
+  - {dimension: expert_validation_and_evaluation, weight_percent: 10}
+seed_sources:
+  - source_id: project_requirements_charter
+    publisher: Agentic Data Modeling Studio
+    url: docs/requirements/REQUIREMENTS_CHARTER.md
+    source_class: internal_governing_requirement
+    usage_basis: governing_project_document
+    applicability: all_packs
+

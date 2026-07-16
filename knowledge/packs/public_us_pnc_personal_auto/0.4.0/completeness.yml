@@ -1,0 +1,17 @@
+schema_version: "1.0"
+pack_id: public_us_pnc_personal_auto
+pack_version: "0.4.0"
+content_completeness_percent: 55
+trusted_runtime_readiness_percent: 0
+assessment_confidence: MEDIUM_LOW
+assessment_basis: corrected_california_legal_baseline_without_new_completeness_claim
+dimensions:
+  - {dimension: governance_and_provenance, weight_percent: 10, coverage_percent: 80, gaps: [named_owner, legal_approval, effective_dates]}
+  - {dimension: core_business_glossary, weight_percent: 15, coverage_percent: 60, gaps: [synonyms, stewardship, disambiguation]}
+  - {dimension: policy_domain, weight_percent: 15, coverage_percent: 55, gaps: [premium_rating, forms, transaction_accounting]}
+  - {dimension: claims_domain, weight_percent: 15, coverage_percent: 55, gaps: [litigation, catastrophe, fraud, detailed_expenses]}
+  - {dimension: personal_auto_lob, weight_percent: 15, coverage_percent: 60, gaps: [product_variants, additional_state_overlays, detailed_risk_attributes]}
+  - {dimension: silver_gold_sttm_standards, weight_percent: 10, coverage_percent: 65, gaps: [approved_naming, physical_design, reconciliation_catalog]}
+  - {dimension: kpi_catalog_and_code_sets, weight_percent: 10, coverage_percent: 50, gaps: [approved_formulas, governed_values, owners]}
+  - {dimension: reference_alignment, weight_percent: 5, coverage_percent: 20, gaps: [exact_fibo_selection, target_reference_model]}
+  - {dimension: expert_validation_and_evaluation, weight_percent: 5, coverage_percent: 0, gaps: [sme_review, architect_review, unseen_proof_slice]}

@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentic-data-modeler:knowledge:code-set:1.0",
+  "type": "object",
+  "required": ["schema_version", "code_sets"],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "code_sets": {"type": "array", "items": {"type": "object", "required": ["code_set_id", "owner_status", "values_status"], "properties": {"code_set_id": {"type": "string"}, "owner_status": {"enum": ["TBD", "ASSIGNED"]}, "values_status": {"enum": ["NOT_SUPPLIED", "CANDIDATE", "APPROVED"]}, "source_reference": {"type": "string"}}}}
+  }
+}
+

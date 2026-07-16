@@ -1,0 +1,21 @@
+schema_version: "1.0"
+module_id: personal_auto_claims_lifecycle
+module_version: "0.3.0"
+layer: personal_auto
+approval_state: CANDIDATE
+runtime_eligible: false
+owner: TBD_PERSONAL_AUTO_CLAIMS_STEWARD
+scope: {lob: personal_auto, domains: [claims]}
+non_scope: [state_specific_claim_deadlines, carrier_claim_workflow]
+content:
+  stages: [loss, first_notice, triage, investigation, coverage_evaluation, liability_or_fault_context, damage_or_injury_evaluation, reserve, payment, recovery, closure, reopening]
+  physical_damage_concepts: [repair, total_loss, appraisal, prior_damage, salvage, rental_or_substitute_transportation]
+  rules:
+    - Separate police crash facts insurer observations and adjudicated decisions.
+    - Preserve claim exposure claimant incident vehicle and coverage grains.
+    - Settlement obligations and timelines require a jurisdiction extension.
+source_references: [ca_doi_auto_claims, ny_dfs_auto_resource, nhtsa_mmucc6]
+legacy_source_assets: [knowledge/archive/pre_canonical_v0.1.0_v0.2.0/domain/pnc_policy_claims_party_product_candidate_v0.2.0.yml, knowledge/archive/pre_canonical_v0.1.0_v0.2.0/lob/personal_auto_candidate_v0.2.0.yml]
+dependencies: [insurance_core_claims, personal_auto_risk_and_vehicle, personal_auto_coverages]
+review_requirements: [personal_auto_claims_sme, jurisdiction_reviewer]
+

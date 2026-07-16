@@ -1,0 +1,12 @@
+schema_version: "1.0"
+standard_id: silver_modeling_candidate
+version: "0.3.0"
+approval_state: CANDIDATE
+rules:
+  - Declare grain stable identity source identity effective time processing time and provenance.
+  - Preserve distinct Policy term version transaction risk and coverage grains when evidenced.
+  - Preserve distinct Claim incident claimant exposure reserve payment and recovery grains when evidenced.
+  - Retain source codes beside governed canonical codes with mapping status and version.
+  - Flag unresolved identities temporal overlaps orphan relationships incompatible units and unknown codes.
+source_references: [databricks_medallion, databricks_cdc_scd]
+

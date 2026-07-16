@@ -1,0 +1,43 @@
+schema_version: "1.0"
+asset_id: personal_auto_lob_candidate
+version: "0.1.0"
+approval_state: CANDIDATE
+authoritative: false
+scope:
+  lob: personal_auto
+  jurisdiction: unspecified
+jurisdiction_warning: >-
+  Coverage availability, names, mandatory status, limits, and legal meaning vary by
+  jurisdiction and policy form. Do not infer regulatory requirements from this asset.
+core_objects:
+  - vehicle
+  - driver
+  - policyholder
+  - insured_party
+  - coverage_selection
+  - loss_event
+  - claim
+coverage_families:
+  - coverage_id: bodily_injury_liability
+    candidate_purpose: Liability protection for covered bodily injury obligations to other parties.
+  - coverage_id: property_damage_liability
+    candidate_purpose: Liability protection for covered damage to another party's property.
+  - coverage_id: collision
+    candidate_purpose: Protection for covered physical damage to an insured vehicle arising from a collision.
+  - coverage_id: comprehensive
+    candidate_purpose: Protection for specified covered physical damage causes other than collision.
+  - coverage_id: uninsured_motorist
+    candidate_purpose: Protection for qualifying loss involving an at-fault driver without applicable insurance.
+  - coverage_id: underinsured_motorist
+    candidate_purpose: Protection when an at-fault driver's applicable insurance is insufficient for a qualifying loss.
+  - coverage_id: personal_injury_protection
+    candidate_purpose: Jurisdiction- and form-dependent protection for qualifying injury-related expenses or losses.
+  - coverage_id: medical_payments
+    candidate_purpose: Form-dependent protection for qualifying medical expenses.
+modeling_questions:
+  - Are drivers assigned to vehicles, policies, households, or combinations over effective time?
+  - Are coverages policy-level, vehicle-level, driver-level, or incident-specific?
+  - How are garaging, usage, ownership, and vehicle characteristics historized?
+  - Which loss participants and vehicles are captured independently of insured objects?
+source_references: [naic_auto_coverage, naic_glossary]
+

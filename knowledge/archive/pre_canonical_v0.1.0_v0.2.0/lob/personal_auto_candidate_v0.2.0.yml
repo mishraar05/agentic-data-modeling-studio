@@ -1,0 +1,49 @@
+schema_version: "1.0"
+asset_id: personal_auto_lob_candidate
+version: "0.2.0"
+approval_state: CANDIDATE
+authoritative: false
+scope: {lob: personal_auto, jurisdiction: US_general}
+jurisdiction_guardrail: >-
+  Coverage availability, compulsory status, limits, cancellation rules, fault
+  treatment, and claim obligations require a jurisdiction overlay.
+risk_structure:
+  candidate_objects: [policy, household, driver, vehicle, garaging_location, coverage_selection]
+  temporal_relationships:
+    - driver belongs_to_or_is_associated_with household
+    - driver is_listed_on policy
+    - driver may_be_assigned_to vehicle
+    - vehicle is_insured_or_listed_on policy
+    - vehicle is_principally_garaged_at location
+  vehicle_attributes_to_seek:
+    - VIN and source validation state
+    - make, model, model year, body type, ownership and registration
+    - usage, annual mileage, garaging, safety and anti-theft characteristics
+    - effective interval and source of each characteristic
+  driver_attributes_to_seek:
+    - identity resolution, licensing jurisdiction and status
+    - assignment, household relationship, experience and permitted usage
+    - privacy classification and effective interval
+coverage_families:
+  liability: [bodily_injury_liability, property_damage_liability]
+  first_party_injury: [personal_injury_protection, medical_payments]
+  physical_damage: [collision, comprehensive_or_other_than_collision]
+  uninsured_underinsured: [uninsured_motorist, underinsured_motorist]
+  optional_services: [rental_reimbursement, towing_or_roadside, gap_or_loan_lease_when_offered]
+coverage_modeling_rules:
+  - Preserve policy-, vehicle-, driver-, person-, occurrence-, and aggregate-level terms separately.
+  - Represent split and combined limits without collapsing their components.
+  - Preserve deductible basis, amount, applicability, and waiver rules as separate semantics.
+  - Do not infer coverage from a payment or claim code without policy and claim evidence.
+loss_and_crash_alignment:
+  external_concepts: [crash, vehicle_unit, driver, occupant, non_motorist, location, roadway, harmful_event]
+  guidance: >-
+    NHTSA MMUCC concepts can help interpret crash evidence, but police crash data and
+    insurance claim data have different purposes, identities, grains, and code sets.
+analytics_questions:
+  - Which unit defines exposure: vehicle-term, policy-term, coverage-term, or another basis?
+  - Are claim counts measured at claim, exposure, claimant, or occurrence grain?
+  - Which premium basis is written, earned, billed, collected, direct, net, or ceded?
+  - How are CAT, fault, territory, channel, vehicle, driver, and coverage dimensions governed?
+source_references: [naic_auto_consumer, naic_auto_coverage, ca_doi_auto_guide, ca_doi_auto_claims, ny_dfs_auto_resource, nhtsa_mmucc6]
+

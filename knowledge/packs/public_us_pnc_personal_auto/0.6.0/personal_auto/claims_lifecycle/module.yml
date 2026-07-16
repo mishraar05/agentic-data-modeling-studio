@@ -1,0 +1,79 @@
+schema_version: "1.0"
+module_id: personal_auto_claims_lifecycle
+module_version: "0.6.0"
+layer: personal_auto
+approval_state: CANDIDATE
+runtime_eligible: false
+owner: TBD_PERSONAL_AUTO_CLAIMS_STEWARD
+scope: {lob: personal_auto, domains: [claims]}
+non_scope: [state_specific_claim_deadlines_outside_jurisdiction_extension, carrier_claim_workflow, automated_fault_coverage_fraud_or_total_loss_decision]
+content:
+  lifecycle_stages:
+    - {stage: loss, evidence_outputs: [loss_occurrence, involved_parties, involved_vehicles, location, reported_circumstances]}
+    - {stage: first_notice, evidence_outputs: [report_time, reporter_role, presented_claim_or_information_only_state]}
+    - {stage: triage, evidence_outputs: [candidate_claimants, incidents, coverages, severity_or_complexity_observations]}
+    - {stage: investigation, evidence_outputs: [source_requests, statements, documents, inspections, contradictions]}
+    - {stage: coverage_evaluation, evidence_outputs: [coverage_decision_version, basis_reference, decision_time, unresolved_issues]}
+    - {stage: liability_or_fault_context, evidence_outputs: [party_allegations, insurer_observations, comparative_allocation_when_authorized, adjudicated_outcome]}
+    - {stage: damage_or_injury_evaluation, evidence_outputs: [claimant_or_property, estimate_or_bill, valuation_basis, prior_damage_observation]}
+    - {stage: financial_management, evidence_outputs: [reserve_transactions, payments, expenses, recoveries, valuation_snapshots]}
+    - {stage: closure, evidence_outputs: [closure_state, closure_time, payment_state, final_payment_time_when_applicable]}
+    - {stage: reopening, evidence_outputs: [reopen_time, reopen_reason, supplemental_request_time, linked_prior_episode]}
+  physical_damage:
+    partial_loss:
+      records: [damage_item, estimate_version, repair_operation, part_or_labor_component, deductible, betterment_or_depreciation_adjustment, repair_payment]
+      rules:
+        - Preserve estimate supplements invoices payments and adjustment explanations as separate evidence.
+        - Labor depreciation or betterment requires applicable contract and jurisdiction evidence.
+    total_loss:
+      records: [total_loss_evaluation, valuation_version, comparable_vehicle, adjustment_component, gross_settlement, deductible, tax_and_fee_component, salvage_value, salvage_retention_decision]
+      california_candidate_rules:
+        - Comparable vehicle evidence and every valuation adjustment require itemized source and calculation provenance.
+        - Gross settlement deductible taxes fees salvage value and net payment remain separate components.
+        - First-party reopen rights and deadlines belong to the California jurisdiction context and must not be generalized nationally.
+      source_ids: [ca_ccr_2695_8, ca_doi_auto_claims]
+  recovery_and_subrogation:
+    records: [recovery_opportunity, responsible_party, demand, recovery_transaction, recovery_expense, deductible_interest, allocation, closure_event]
+    rules:
+      - Preserve gross recovery recovery expense insured deductible share and net recovery separately.
+      - A recovery opportunity demand receipt and allocation are different lifecycle states.
+      - Recovery does not erase the original paid-loss transaction.
+      - Legal responsibility and comparative allocation require authorized evidence or reviewer decision.
+  litigation:
+    records: [lawsuit, lawsuit_party_role, cause_or_category, filing_event, status_event, defense_expense, settlement_or_judgment, closure_event]
+    rules:
+      - Lawsuit grain and claim or exposure links must be explicit.
+      - Consumer consideration is a reporting classification and not a substitute for payment or legal outcome detail.
+  suspected_fraud:
+    records: [indicator_observation, referral, investigation_state, authority_notification, outcome]
+    rules:
+      - Indicators and referrals remain allegations or observations until an authorized outcome exists.
+      - Do not expose sensitive fraud data outside authorized scope.
+      - Jurisdiction deadlines and reporting duties enter through the applicable extension.
+  catastrophe_context:
+    records: [external_event, catastrophe_designation, claim_event_link]
+    rule: A catastrophe code or event grouping requires an authorized external or enterprise designation and cannot be inferred from loss volume alone.
+  claim_handling_channel:
+    values: [digital, hybrid, non_digital, unknown]
+    rule: Channel describes handling process and must not create a different business claim identity.
+  reporting_contexts:
+    naic_mcas_claim_activity:
+      grain: claimant_or_insured_by_coverage_part
+      closure_states: [closed_with_payment, closed_without_payment]
+      duration_population: claims_closed_in_reporting_period
+      final_payment_duration_start: loss_reported_time_or_supplemental_request_received_time
+      duration_end: final_payment_issued_time
+      exclusions_from_median: [subrogation_payment]
+  evidence_separation:
+    - Police or crash-report facts insurer observations party allegations and adjudicated decisions remain distinct evidence classes.
+    - Coverage evaluation liability allocation damage valuation and payment authorization are separate decisions.
+    - A closed claim may have a prior final payment date; closure and payment milestones remain separate.
+    - Reopening for supplemental payment requires its own episode dates for duration analytics.
+  modeling_implications:
+    silver: Persist stage events evidence coverage decisions estimates valuations financial transactions recovery litigation and reopen episodes at natural grains.
+    gold: Build claim claimant coverage financial recovery litigation total-loss and duration facts separately with declared contexts.
+    sttm: Every lifecycle derivation identifies event timestamps grain inclusion rules financial basis and evidence class.
+source_references: [ca_doi_auto_claims, nhtsa_mmucc6, naic_mcas_ppa_2026, ca_ccr_2695_5, ca_ccr_2695_7, ca_ccr_2695_8]
+legacy_source_assets: [knowledge/archive/pre_canonical_v0.1.0_v0.2.0/domain/pnc_policy_claims_party_product_candidate_v0.2.0.yml, knowledge/archive/pre_canonical_v0.1.0_v0.2.0/lob/personal_auto_candidate_v0.2.0.yml]
+dependencies: [insurance_core_claims, personal_auto_risk_and_vehicle, personal_auto_coverages]
+review_requirements: [personal_auto_claims_sme, claims_finance_sme, jurisdiction_reviewer, legal_reviewer]

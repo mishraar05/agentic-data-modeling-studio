@@ -1,0 +1,21 @@
+schema_version: "1.0"
+module_id: insurance_core_common_analytics
+module_version: "0.3.0"
+layer: insurance_core
+approval_state: CANDIDATE
+runtime_eligible: false
+owner: TBD_ANALYTICS_STEWARD
+scope: {domains: [analytics], lobs: [cross_lob, personal_auto]}
+non_scope: [approved_enterprise_kpi_formulas]
+content:
+  measure_families: [exposure, written_premium, earned_premium, paid_loss, case_reserve, incurred_loss, loss_adjustment_expense, recovery]
+  required_metadata: [grain, time_basis, valuation_date, accounting_basis, currency, additivity, inclusions, exclusions, lineage, owner]
+  rules:
+    - Ratios require compatible numerator and denominator bases.
+    - Snapshot measures are not additive over time.
+    - Candidate formulas cannot override approved financial definitions.
+source_references: [naic_glossary]
+legacy_source_assets: [knowledge/archive/pre_canonical_v0.1.0_v0.2.0/kpi_catalog/pnc_personal_auto_candidate_v0.2.0.yml]
+dependencies: [insurance_core_policy, insurance_core_claims]
+review_requirements: [analytics_steward, finance_sme]
+

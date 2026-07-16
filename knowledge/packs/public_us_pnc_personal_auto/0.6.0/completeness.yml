@@ -1,0 +1,30 @@
+schema_version: "1.0"
+pack_id: public_us_pnc_personal_auto
+pack_version: "0.6.0"
+content_completeness_percent: 75
+trusted_runtime_readiness_percent: 0
+assessment_confidence: MEDIUM_LOW
+assessment_basis: evidence_backed_party_billing_claims_recovery_glossary_code_set_and_modeling_contract_expansion
+scoring_method:
+  method: weighted_dimension_mean_rounded_to_nearest_integer
+  unrounded_weighted_score: 74.85
+  score_increase_basis:
+    - Party and Billing now include natural grains role boundaries privacy handling premium and cash bases and reconciliation contracts.
+    - Claims now includes structured partial loss total loss valuation salvage subrogation recovery litigation fraud-evidence and catastrophe contexts.
+    - A consolidated 46-term candidate glossary and ten semantic code sets support retrieval and mapping while preserving unresolved source values.
+    - Silver Gold STTM naming datatype history privacy and data-quality standards now contain enforceable contracts and validation gates.
+    - FIBO is pinned to a reproducible release while exact concept approval remains unresolved.
+  non_credit:
+    - No score credit for copied unchanged files folder count or source-link count alone.
+    - No expert-validation credit until named reviewers and an unseen proof slice are supplied.
+    - No credit for carrier forms enterprise accounting rules or source code values because they are not authorized inputs.
+dimensions:
+  - {dimension: governance_and_provenance, weight_percent: 10, coverage_percent: 82, gaps: [named_owner, legal_and_licensing_approval, content_effective_dates]}
+  - {dimension: core_business_glossary, weight_percent: 15, coverage_percent: 82, gaps: [enterprise_synonyms, named_stewards, carrier_term_disambiguation]}
+  - {dimension: policy_domain, weight_percent: 15, coverage_percent: 80, gaps: [premium_rating, licensed_forms, enterprise_transaction_accounting, approved_policy_billing_reconciliation]}
+  - {dimension: claims_domain, weight_percent: 15, coverage_percent: 84, gaps: [catastrophe_designations, enterprise_fraud_process, detailed_legal_expense_rules, approved_reserving_and_recovery_accounting]}
+  - {dimension: personal_auto_lob, weight_percent: 15, coverage_percent: 82, gaps: [product_variants, carrier_vehicle_and_driver_values, licensed_forms, approved_california_product_detail]}
+  - {dimension: silver_gold_sttm_standards, weight_percent: 10, coverage_percent: 82, gaps: [enterprise_physical_naming, performance_design, approved_tolerances, implementation_proof]}
+  - {dimension: kpi_catalog_and_code_sets, weight_percent: 10, coverage_percent: 70, gaps: [approved_financial_kpis, exposure_and_earning_methods, carrier_source_code_mappings, named_owners]}
+  - {dimension: reference_alignment, weight_percent: 5, coverage_percent: 45, gaps: [approved_fibo_concepts, approved_target_reference_model, licensed_product_and_form_sources]}
+  - {dimension: expert_validation_and_evaluation, weight_percent: 5, coverage_percent: 0, gaps: [sme_review, architect_review, legal_and_licensing_review, unseen_proof_slice]}

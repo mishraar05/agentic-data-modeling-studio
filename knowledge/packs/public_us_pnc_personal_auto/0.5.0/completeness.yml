@@ -1,0 +1,28 @@
+schema_version: "1.0"
+pack_id: public_us_pnc_personal_auto
+pack_version: "0.5.0"
+content_completeness_percent: 65
+trusted_runtime_readiness_percent: 0
+assessment_confidence: MEDIUM_LOW
+assessment_basis: evidence_backed_policy_risk_coverage_claims_semantic_spine_expansion
+scoring_method:
+  method: weighted_dimension_mean_rounded_to_nearest_integer
+  unrounded_weighted_score: 64.8
+  score_increase_basis:
+    - Ten modules gained structured grains relationships time semantics modeling implications and ambiguity guards.
+    - Current NAIC Private Passenger Auto reporting definitions now support explicit claims and policy counting contexts.
+    - Vehicle identity and enrichment now distinguish observed VIN values from eCFR validation and NHTSA decoded observations.
+    - Seven regulator-aligned KPI definitions now have reproducible components grains populations and zero-denominator handling.
+  non_credit:
+    - No score credit for duplicated files folder count or unchanged modules.
+    - No expert-validation credit until named reviewers and an unseen proof slice are supplied.
+dimensions:
+  - {dimension: governance_and_provenance, weight_percent: 10, coverage_percent: 80, gaps: [named_owner, legal_and_licensing_approval, content_effective_dates]}
+  - {dimension: core_business_glossary, weight_percent: 15, coverage_percent: 68, gaps: [full_synonym_catalog, named_stewards, broader_billing_and_party_disambiguation]}
+  - {dimension: policy_domain, weight_percent: 15, coverage_percent: 70, gaps: [premium_rating, licensed_forms, transaction_accounting, billing_reconciliation_depth]}
+  - {dimension: claims_domain, weight_percent: 15, coverage_percent: 72, gaps: [litigation, catastrophe, operational_fraud, detailed_expenses, salvage_and_recovery_depth]}
+  - {dimension: personal_auto_lob, weight_percent: 15, coverage_percent: 72, gaps: [product_variants, governed_vehicle_and_driver_code_sets, licensed_forms, additional_california_product_detail]}
+  - {dimension: silver_gold_sttm_standards, weight_percent: 10, coverage_percent: 65, gaps: [approved_naming, physical_design, reconciliation_catalog]}
+  - {dimension: kpi_catalog_and_code_sets, weight_percent: 10, coverage_percent: 65, gaps: [approved_financial_kpis, exposure_and_earning_methods, governed_code_values, named_owners]}
+  - {dimension: reference_alignment, weight_percent: 5, coverage_percent: 30, gaps: [exact_fibo_selection, approved_target_reference_model, licensed_product_and_form_sources]}
+  - {dimension: expert_validation_and_evaluation, weight_percent: 5, coverage_percent: 0, gaps: [sme_review, architect_review, legal_and_licensing_review, unseen_proof_slice]}

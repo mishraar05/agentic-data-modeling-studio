@@ -1,0 +1,4 @@
+interface:
+  display_name: "Build Governed Knowledge Pack"
+  short_description: "Create evidence-backed candidate knowledge packs"
+  default_prompt: "Use $build-governed-knowledge-pack to create a governed candidate knowledge pack for a specified insurance LOB and jurisdiction."

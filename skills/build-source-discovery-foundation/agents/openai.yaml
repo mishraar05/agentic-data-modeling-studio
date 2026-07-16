@@ -1,0 +1,4 @@
+interface:
+  display_name: "Build Source Discovery Foundation"
+  short_description: "Build deterministic SDD evidence and context"
+  default_prompt: "Use $build-source-discovery-foundation to implement the governed Increment 2-3 Source Discovery foundation and return a validated builder handoff."

@@ -1,0 +1,129 @@
+schema_version: "1.0"
+catalog_id: public_us_pnc_personal_auto_semantic_code_sets
+version: "0.6.0"
+approval_state: CANDIDATE
+runtime_eligible: false
+rules:
+  - These values classify reusable semantic concepts; they are not carrier source-code mappings.
+  - A source value maps only with evidence confidence effective version and reviewer state.
+  - Unknown missing invalid not_applicable withheld and unmapped are never collapsed.
+code_sets:
+  - code_set_id: evidence_state
+    owner_status: TBD
+    values_status: CANDIDATE
+    source_reference: solution_requirements_charter
+    values:
+      - {code: OBSERVED, meaning: Directly present in authorized source evidence.}
+      - {code: INFERRED, meaning: Candidate semantic conclusion supported by cited evidence.}
+      - {code: DECIDED, meaning: Authorized human decision.}
+      - {code: UNRESOLVED, meaning: Evidence is insufficient or contradictory.}
+  - code_set_id: unknown_handling_state
+    owner_status: TBD
+    values_status: CANDIDATE
+    source_reference: solution_requirements_charter
+    values:
+      - {code: KNOWN, meaning: Value and meaning are established for the context.}
+      - {code: MISSING, meaning: No source value was supplied.}
+      - {code: UNKNOWN, meaning: Source explicitly represents unknown.}
+      - {code: INVALID, meaning: Value fails the applicable validity contract.}
+      - {code: NOT_APPLICABLE, meaning: Attribute does not apply to the record context.}
+      - {code: WITHHELD, meaning: Value exists but is unavailable due to policy or authorization.}
+      - {code: UNMAPPED, meaning: Source value exists but no approved semantic mapping exists.}
+  - code_set_id: party_role_family
+    owner_status: TBD
+    values_status: CANDIDATE
+    source_reference: ca_doi_auto_terms
+    values:
+      - {code: POLICY_PARTY, meaning: Applicant policyholder named or additional insured context.}
+      - {code: DRIVER_PARTY, meaning: Listed rated excluded permissive or involved operator context.}
+      - {code: CLAIM_PARTY, meaning: Claimant insured claimant payee adjuster attorney or recovery context.}
+      - {code: FINANCIAL_INTEREST, meaning: Lienholder loss payee payer or refund-payee context.}
+      - {code: DISTRIBUTION_PARTY, meaning: Producer agent broker or commission-payee context.}
+  - code_set_id: policy_lifecycle_event_type
+    owner_status: TBD
+    values_status: CANDIDATE
+    source_reference: naic_mcas_ppa_2026
+    values:
+      - {code: QUOTE_CREATED, meaning: Quote evidence created.}
+      - {code: APPLICATION_SUBMITTED, meaning: Application submitted for consideration.}
+      - {code: COVERAGE_BOUND, meaning: Authorized evidence indicates coverage bound.}
+      - {code: POLICY_ISSUED, meaning: Policy issued.}
+      - {code: ENDORSEMENT_EFFECTIVE, meaning: Policy change became effective.}
+      - {code: RENEWAL_OFFERED, meaning: Continuation offered for a succeeding term.}
+      - {code: RENEWAL_ACCEPTED, meaning: Continuation accepted or evidenced.}
+      - {code: CANCELLATION_NOTICED, meaning: Cancellation notice issued.}
+      - {code: CANCELLATION_EFFECTIVE, meaning: Midterm termination became effective.}
+      - {code: REINSTATEMENT_EFFECTIVE, meaning: Coverage restoration became effective.}
+      - {code: NONRENEWAL_NOTICED, meaning: Insurer nonrenewal notice issued.}
+      - {code: EXPIRED, meaning: Scheduled term expiration occurred.}
+      - {code: REWRITE_EFFECTIVE, meaning: Source-defined replacement became effective.}
+  - code_set_id: coverage_family
+    owner_status: TBD
+    values_status: CANDIDATE
+    source_reference: naic_mcas_ppa_2026
+    values:
+      - {code: LIABILITY_BI, meaning: Bodily injury liability.}
+      - {code: LIABILITY_PD, meaning: Property damage liability.}
+      - {code: COMBINED_SINGLE_LIMIT, meaning: Combined bodily injury and property damage liability limit.}
+      - {code: COLLISION, meaning: Collision physical damage.}
+      - {code: COMPREHENSIVE, meaning: Comprehensive or other-than-collision physical damage.}
+      - {code: MEDICAL_PAYMENTS, meaning: First-party medical payments.}
+      - {code: UM_UIM_BI, meaning: Uninsured or underinsured motorist bodily injury.}
+      - {code: UM_UIM_PD, meaning: Uninsured or underinsured motorist property damage.}
+      - {code: PIP, meaning: Jurisdiction-dependent personal injury protection.}
+      - {code: OPTIONAL_SERVICE, meaning: Towing rental roadside or other optional service subject to product evidence.}
+  - code_set_id: claim_counting_grain
+    owner_status: TBD
+    values_status: CANDIDATE
+    source_reference: naic_mcas_ppa_2026
+    values:
+      - {code: CLAIM_FILE, meaning: One source claim identity.}
+      - {code: OCCURRENCE, meaning: One real-world loss occurrence or approved grouping.}
+      - {code: CLAIMANT, meaning: One claimant within claim context.}
+      - {code: EXPOSURE, meaning: One claimant or insured coverage and incident context.}
+      - {code: MCAS_CLAIMANT_COVERAGE, meaning: NAIC MCAS claimant-or-insured by coverage-part context.}
+  - code_set_id: claim_status_family
+    owner_status: TBD
+    values_status: CANDIDATE
+    source_reference: naic_mcas_ppa_2026
+    values:
+      - {code: OPEN, meaning: Source claim or exposure remains open.}
+      - {code: CLOSED_WITH_PAYMENT, meaning: Closed with qualifying claimant or insured payment under declared context.}
+      - {code: CLOSED_WITHOUT_PAYMENT, meaning: Closed without qualifying claimant or insured payment under declared context.}
+      - {code: REOPENED, meaning: A new open episode follows closure.}
+      - {code: INFORMATION_ONLY, meaning: Reported event not presented as a claim for payment.}
+  - code_set_id: claim_financial_class
+    owner_status: TBD
+    values_status: CANDIDATE
+    source_reference: naic_glossary
+    values:
+      - {code: CASE_RESERVE, meaning: Exposure-level estimated future payment amount.}
+      - {code: LOSS_PAYMENT, meaning: Claim loss payment.}
+      - {code: EXPENSE_PAYMENT, meaning: Loss adjustment or defense expense payment.}
+      - {code: RECOVERY, meaning: Subrogation salvage or other recovery receipt.}
+      - {code: ADJUSTMENT, meaning: Non-cash or reclassification adjustment under source rules.}
+      - {code: VOID, meaning: Reversal or cancellation of a prior transaction.}
+      - {code: REISSUE, meaning: Replacement transaction linked to a prior payment.}
+  - code_set_id: vehicle_role
+    owner_status: TBD
+    values_status: CANDIDATE
+    source_reference: nhtsa_mmucc6
+    values:
+      - {code: INSURED, meaning: Vehicle attached to coverage under policy evidence.}
+      - {code: RATED, meaning: Vehicle included in rating context.}
+      - {code: INVOLVED, meaning: Vehicle involved in a loss event.}
+      - {code: CLAIMANT, meaning: Vehicle associated with a claimant.}
+      - {code: THIRD_PARTY, meaning: Other party vehicle.}
+      - {code: REPLACEMENT, meaning: Replacement vehicle in policy or settlement context.}
+      - {code: TEMPORARY_SUBSTITUTE, meaning: Temporary substitute under evidenced policy terms.}
+  - code_set_id: mapping_lifecycle_state
+    owner_status: TBD
+    values_status: CANDIDATE
+    source_reference: solution_requirements_charter
+    values:
+      - {code: DRAFT, meaning: Agent-created artifact awaiting review.}
+      - {code: IN_REVIEW, meaning: Submitted for authorized review.}
+      - {code: CHANGES_REQUESTED, meaning: Reviewer requires revision.}
+      - {code: APPROVED, meaning: Authorized human approval recorded for exact version.}
+      - {code: REJECTED, meaning: Reviewer rejected the artifact or mapping.}
+      - {code: SUPERSEDED, meaning: Replaced by a later governed version.}

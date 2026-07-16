@@ -1,0 +1,16 @@
+schema_version: "1.0"
+module_id: extension_platform
+module_version: "0.3.0"
+layer: extension
+approval_state: CANDIDATE
+runtime_eligible: false
+owner: TBD_PLATFORM_KNOWLEDGE_OWNER
+scope: {extension_type: platform, content_status: placeholder_contract_only}
+non_scope: [unlicensed_vendor_schema, core_contract_dependency]
+content:
+  accepted_inputs: [authorized_schema, module_metadata, code_sets, version_mapping, evidence_adapter]
+  rules: [exact_product_module_version_required, vendor_neutral_core_preserved]
+source_references: []
+legacy_source_assets: []
+dependencies: []
+review_requirements: [platform_owner, legal_licensing_reviewer]

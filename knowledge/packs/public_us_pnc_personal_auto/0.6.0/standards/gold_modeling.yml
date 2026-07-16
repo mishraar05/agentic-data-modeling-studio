@@ -1,0 +1,45 @@
+schema_version: "1.0"
+standard_id: gold_modeling_candidate
+version: "0.6.0"
+approval_state: CANDIDATE
+purpose: Requirement-driven dimensional modeling contract for existing and new Personal Auto analytics.
+required_model_contract:
+  facts: [business_process, grain_statement, fact_type, dimensions, measures, degenerate_dimensions, source_silver_grains, requirement_coverage]
+  dimensions: [business_subject, grain_statement, natural_key, surrogate_key, attributes, history_behavior, conformance_scope, unknown_member_policy]
+fact_types:
+  transaction: one row per evidenced business or financial event
+  periodic_snapshot: one row per declared subject and regular snapshot period
+  accumulating_snapshot: one row per process instance with explicitly governed milestone updates
+  factless: one row per qualifying event or coverage relationship without a numeric measure
+dimension_patterns:
+  - Conform only where identity meaning grain and history semantics agree across requirements and sources.
+  - Use role-playing dimensions for distinct date party driver vehicle or location roles when semantics are shared.
+  - Use bridges for valid many-to-many relationships and declare weighting or non-additive behavior.
+  - Every slowly changing dimension declares Type 1 Type 2 or other behavior per attribute group.
+measure_contract:
+  required_metadata: [grain, formula_version, population, time_basis, valuation_date, accounting_basis, currency, gross_or_net_basis, additivity, inclusions, exclusions, zero_rule, lineage]
+  rules:
+    - Snapshot balances are non-additive over time.
+    - Ratios and distribution statistics are recalculated from compatible atomic components.
+    - Semi-additive behavior must name the valid dimensions.
+    - Existing and new requirements must map to the same formula version or an explicit variant.
+personal_auto_candidate_facts:
+  - {fact: policy_transaction, candidate_grain: one_policy_transaction}
+  - {fact: policy_in_force_snapshot, candidate_grain: one_policy_term_or_policy_per_snapshot_date_under_approved_identity_rule}
+  - {fact: policy_vehicle_coverage, candidate_grain: one_policy_version_vehicle_coverage_selection}
+  - {fact: premium_transaction, candidate_grain: one_premium_component_transaction}
+  - {fact: billing_transaction, candidate_grain: one_charge_receipt_allocation_refund_or_adjustment_event}
+  - {fact: claim_exposure_snapshot, candidate_grain: one_claim_exposure_valuation_date_financial_basis}
+  - {fact: claim_financial_transaction, candidate_grain: one_claim_exposure_financial_transaction}
+  - {fact: claim_closure_episode, candidate_grain: one_claimant_coverage_closure_or_reopen_episode_under_declared_context}
+  - {fact: claim_recovery, candidate_grain: one_recovery_transaction_and_allocation}
+  - {fact: requirement_coverage, candidate_grain: one_requirement_model_element_or_measure_coverage_assertion}
+deterministic_validations:
+  - fact_grain_key_uniqueness
+  - dimension_surrogate_key_resolution
+  - unknown_member_and_late_arriving_policy
+  - measure_additivity_and_currency_compatibility
+  - requirement_to_model_coverage
+  - silver_to_gold_lineage_resolves
+  - aggregate_reconciles_to_approved_atomic_population
+source_references: [databricks_medallion, naic_mcas_ppa_2026, naic_mcas_ratios_2026]

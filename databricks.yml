@@ -1,0 +1,64 @@
+bundle:
+  name: agentic-data-modeling-studio
+  databricks_cli_version: ">=0.239.0"
+
+include:
+  - resources/*.yml
+
+variables:
+  resource_prefix:
+    description: Prefix applied to deployed resource names.
+    default: agentic-data-modeler
+  engagement_id:
+    description: Non-PII identifier for the modeling engagement.
+    default: REQUIRED_ENGAGEMENT_ID
+  lob:
+    description: Selected line of business for this bounded execution slice.
+    default: REQUIRED_LOB
+  domain:
+    description: Selected business domain for this bounded execution slice.
+    default: REQUIRED_DOMAIN
+  source_catalog:
+    description: Unity Catalog catalog containing the read-only source objects.
+    default: REQUIRED_SOURCE_CATALOG
+  source_schema:
+    description: Unity Catalog schema containing the read-only source objects.
+    default: REQUIRED_SOURCE_SCHEMA
+  source_tables:
+    description: Comma-separated allow-list of source tables.
+    default: REQUIRED_SOURCE_TABLES
+  output_catalog:
+    description: Unity Catalog catalog for solution-owned artifacts.
+    default: REQUIRED_OUTPUT_CATALOG
+  output_schema:
+    description: Unity Catalog schema for solution-owned artifacts.
+    default: REQUIRED_OUTPUT_SCHEMA
+  production_root_path:
+    description: Protected workspace path owned by the production deployer.
+    default: /Workspace/Applications/agentic-data-modeling-studio
+
+sync:
+  include:
+    - src/**
+    - contracts/**
+    - prompts/**
+    - skills/**
+    - evals/**
+    - knowledge/**
+  exclude:
+    - tests/**
+    - docs/**
+    - .github/**
+
+targets:
+  dev:
+    default: true
+    mode: development
+    workspace:
+      root_path: /Workspace/Users/${workspace.current_user.userName}/.bundle/${bundle.name}/${bundle.target}
+
+  prod:
+    mode: production
+    workspace:
+      root_path: ${var.production_root_path}/${bundle.target}
+

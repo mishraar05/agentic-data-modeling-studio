@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentic-data-modeler:knowledge:kpi:1.0",
+  "type": "object",
+  "required": ["schema_version", "kpis"],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "kpis": {"type": "array", "items": {"type": "object", "required": ["kpi_id", "grain", "formula_intent", "additivity", "approval_state"], "properties": {"kpi_id": {"type": "string"}, "grain": {"type": "string"}, "formula_intent": {"type": "string"}, "additivity": {"type": "string"}, "approval_state": {"enum": ["CANDIDATE", "APPROVED"]}}}}
+  }
+}
+

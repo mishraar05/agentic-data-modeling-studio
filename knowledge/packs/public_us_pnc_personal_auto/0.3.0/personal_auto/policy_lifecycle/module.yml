@@ -1,0 +1,20 @@
+schema_version: "1.0"
+module_id: personal_auto_policy_lifecycle
+module_version: "0.3.0"
+layer: personal_auto
+approval_state: CANDIDATE
+runtime_eligible: false
+owner: TBD_PERSONAL_AUTO_POLICY_STEWARD
+scope: {lob: personal_auto, domains: [policy]}
+non_scope: [state_specific_notice_periods, carrier_workflow]
+content:
+  candidate_events: [quote_created, application_submitted, coverage_bound, policy_issued, endorsement_effective, renewal_offered, renewal_accepted, cancellation_effective, reinstatement_effective, nonrenewal_effective, rewrite_effective, expiration]
+  rules:
+    - Event occurrence processing and effective timestamps must remain distinct.
+    - Cancellation nonrenewal lapse expiration rewrite and reinstatement are separate concepts.
+    - State examples must enter only through a jurisdiction extension.
+source_references: [naic_auto_consumer, ca_doi_auto_guide, ny_dfs_auto_resource]
+legacy_source_assets: [knowledge/archive/pre_canonical_v0.1.0_v0.2.0/domain/pnc_policy_claims_party_product_candidate_v0.2.0.yml]
+dependencies: [insurance_core_policy, personal_auto_coverages]
+review_requirements: [personal_auto_policy_sme, jurisdiction_reviewer]
+

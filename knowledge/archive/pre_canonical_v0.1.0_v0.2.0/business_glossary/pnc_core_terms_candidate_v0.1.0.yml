@@ -1,0 +1,67 @@
+schema_version: "1.0"
+asset_id: pnc_core_glossary_candidate
+version: "0.1.0"
+approval_state: CANDIDATE
+authoritative: false
+scope:
+  industry: property_and_casualty_insurance
+  lobs: [cross_lob, personal_auto]
+  domains: [policy, claims, party]
+usage_guardrail: >-
+  Candidate working vocabulary only. It must not override client terminology,
+  jurisdiction-specific definitions, policy wording, or approved enterprise knowledge.
+terms:
+  - term_id: policy
+    preferred_name: Insurance Policy
+    candidate_definition: >-
+      A contract record that identifies the parties, effective period, covered risks,
+      coverages, limits, conditions, and premium applicable to an insurance agreement.
+    source_references: [naic_glossary, naic_insurance_basics, edmc_fibo_repository]
+  - term_id: insured_party
+    preferred_name: Insured Party
+    candidate_definition: >-
+      A person or organization whose qualifying interests or risks are protected by
+      coverage under a policy; the role can differ from policyholder or payer.
+    source_references: [naic_insurance_basics, edmc_fibo_repository]
+  - term_id: insurer
+    preferred_name: Insurer
+    candidate_definition: >-
+      The organization assuming specified insurance risks and obligations under a policy.
+    source_references: [naic_insurance_basics, edmc_fibo_repository]
+  - term_id: coverage
+    preferred_name: Coverage
+    candidate_definition: >-
+      A defined protection within a policy, bounded by eligibility, conditions,
+      exclusions, limits, deductibles, and an effective period.
+    source_references: [naic_glossary, naic_insurance_basics]
+  - term_id: premium
+    preferred_name: Premium
+    candidate_definition: >-
+      The amount charged for providing the contracted insurance protection for a
+      stated period, before or after adjustments as explicitly qualified.
+    source_references: [naic_glossary, naic_insurance_basics]
+  - term_id: underwriting
+    preferred_name: Underwriting
+    candidate_definition: >-
+      The assessment and decision process used to determine whether and on what
+      terms an insurer will accept a risk.
+    source_references: [naic_glossary, naic_insurance_basics]
+  - term_id: loss_event
+    preferred_name: Loss Event
+    candidate_definition: >-
+      An occurrence or circumstance that may cause damage, injury, liability, or
+      another outcome potentially relevant to coverage.
+    source_references: [naic_glossary]
+  - term_id: claim
+    preferred_name: Claim
+    candidate_definition: >-
+      A recorded request or assertion that an insurer evaluate an event, loss, or
+      obligation under one or more policy coverages.
+    source_references: [naic_glossary, naic_insurance_basics]
+  - term_id: deductible
+    preferred_name: Deductible
+    candidate_definition: >-
+      An amount or rule assigning an initial portion of a covered loss to the insured,
+      subject to the applicable coverage and policy terms.
+    source_references: [naic_glossary, naic_insurance_basics]
+

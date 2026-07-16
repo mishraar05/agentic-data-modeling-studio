@@ -1,0 +1,179 @@
+schema_version: "1.0"
+assessment_id: public_pnc_policy_claims_personal_auto_completeness_2026_07_15
+assessment_version: "1.0.0"
+assessed_at: "2026-07-15"
+assessed_pack:
+  pack_id: public_pnc_policy_claims_personal_auto
+  pack_version: "0.1.0"
+  manifest: knowledge/manifests/public_pnc_policy_claims_personal_auto_candidate_v0.1.0.yml
+
+target_scope:
+  purpose: >-
+    Minimum reusable knowledge needed to support an evidence-grounded Personal Auto
+    proof slice across reconstructed Source Data Dictionary, Silver ODS, Gold
+    dimensional model, and source-to-target mappings.
+  lobs: [personal_auto]
+  domains: [policy, claims, party]
+  included:
+    - core_business_vocabulary
+    - policy_lifecycle_and_structure
+    - claims_lifecycle_and_financials
+    - personal_auto_risk_and_coverage_concepts
+    - silver_and_gold_modeling_standards
+    - kpi_and_code_set_guidance
+    - provenance_licensing_and_governance
+  excluded:
+    - jurisdiction_specific_legal_advice
+    - proprietary_vendor_schemas
+    - client_specific_business_rules
+    - physical_target_reference_model
+    - ontology_creation
+
+summary:
+  content_completeness_percent: 26
+  content_maturity: SEED
+  assessment_confidence: LOW
+  trusted_runtime_readiness_percent: 0
+  approval_state: CANDIDATE
+  interpretation: >-
+    The pack is a governed seed with useful orientation concepts, but it is not
+    sufficiently broad, detailed, validated, or approved for production retrieval.
+  warning: >-
+    Completeness measures coverage against the declared target scope. It does not
+    measure correctness, licensing approval, evidence quality, or suitability for a
+    particular client source estate.
+
+scoring_method:
+  method: weighted_coverage
+  formula: sum(dimension_weight_percent * coverage_percent) / 100
+  rounding: nearest_whole_percent
+  maturity_bands:
+    SKELETON: "0-19"
+    SEED: "20-39"
+    PARTIAL: "40-59"
+    PILOT_CANDIDATE: "60-79"
+    BROAD: "80-94"
+    SCOPE_COMPLETE: "95-100"
+  rules:
+    - dimensions_must_total_100_percent_weight
+    - zero_is_valid_when_a_required_category_is_absent
+    - unapproved_content_may_increase_coverage_but_not_runtime_readiness
+    - correctness_and_completeness_are_reported_separately
+    - a_score_must_link_to_observed_assets_and_explicit_gaps
+
+dimensions:
+  - dimension: governance_and_provenance
+    weight_percent: 10
+    coverage_percent: 70
+    weighted_points: 7.0
+    evidence:
+      - knowledge/manifests/source_register.yml
+      - docs/evidence/PUBLIC_PNC_KNOWLEDGE_PACK_REVIEW.md
+    gaps:
+      - named_knowledge_owner
+      - completed_legal_and_licensing_review
+      - effective_dates_and_supersession_policy
+
+  - dimension: core_business_glossary
+    weight_percent: 15
+    coverage_percent: 30
+    weighted_points: 4.5
+    evidence:
+      - knowledge/business_glossary/pnc_core_terms_candidate_v0.1.0.yml
+    gaps:
+      - policy_transaction_and_lifecycle_terms
+      - party_roles_and_relationships
+      - claims_financial_and_operational_terms
+      - synonyms_and_disambiguation_rules
+      - approved_stewardship
+
+  - dimension: policy_domain
+    weight_percent: 15
+    coverage_percent: 25
+    weighted_points: 3.75
+    evidence:
+      - knowledge/domain/policy_claims_candidate_v0.1.0.yml
+    gaps:
+      - quote_bind_issue_renewal_cancellation_reinstatement_rewrite
+      - policy_versioning_and_effective_dating
+      - risk_unit_and_coverage_term_structures
+      - producer_channel_and_organization_roles
+
+  - dimension: claims_domain
+    weight_percent: 15
+    coverage_percent: 20
+    weighted_points: 3.0
+    evidence:
+      - knowledge/domain/policy_claims_candidate_v0.1.0.yml
+    gaps:
+      - first_notice_of_loss_and_claim_lifecycle
+      - incident_exposure_feature_and_claimant_distinctions
+      - reserve_payment_recovery_and_salvage_subrogation_semantics
+      - claim_status_and_transaction_state_models
+
+  - dimension: personal_auto_lob
+    weight_percent: 15
+    coverage_percent: 25
+    weighted_points: 3.75
+    evidence:
+      - knowledge/lob/personal_auto_candidate_v0.1.0.yml
+    gaps:
+      - driver_vehicle_household_and_garaging_relationships
+      - risk_characteristics_and_usage
+      - endorsements_forms_limits_and_deductible_structures
+      - jurisdiction_and_product_variations
+
+  - dimension: silver_and_gold_modeling_standards
+    weight_percent: 10
+    coverage_percent: 35
+    weighted_points: 3.5
+    evidence:
+      - knowledge/modeling_standards/databricks_medallion_candidate_v0.1.0.yml
+    gaps:
+      - naming_datatype_and_key_standards
+      - canonicalization_and_history_decision_framework
+      - fact_dimension_grain_and_additivity_patterns
+      - privacy_data_quality_and_reconciliation_standards
+
+  - dimension: kpi_catalog_and_code_sets
+    weight_percent: 10
+    coverage_percent: 0
+    weighted_points: 0.0
+    evidence: []
+    gaps:
+      - approved_policy_and_claims_kpi_definitions
+      - measures_grain_additivity_and_dimensions
+      - governed_status_transaction_and_coverage_code_sets
+
+  - dimension: reference_alignment
+    weight_percent: 5
+    coverage_percent: 0
+    weighted_points: 0.0
+    evidence:
+      - knowledge/ontology/fibo_reference_candidate_v0.1.0.yml
+    gaps:
+      - selected_and_approved_fibo_release_and_concepts
+      - authorized_target_reference_model
+      - traceable_concept_mappings
+
+  - dimension: expert_validation_and_evaluation
+    weight_percent: 5
+    coverage_percent: 0
+    weighted_points: 0.0
+    evidence: []
+    gaps:
+      - domain_steward_review
+      - data_architect_review
+      - unseen_proof_slice_evaluation
+      - measured_effect_on_quality_and_reviewer_effort
+
+priority_actions_to_reach_pilot_candidate:
+  target_content_completeness_percent: 60
+  actions:
+    - expand_policy_and_claims_lifecycle_concepts_with_authoritative_sources
+    - add_personal_auto_party_risk_and_coverage_relationships
+    - create_candidate_kpi_and_code_set_metadata_without_inventing_values
+    - complete_silver_gold_naming_key_history_grain_and_quality_standards
+    - obtain_licensing_knowledge_owner_domain_steward_and_architect_reviews
+    - evaluate_the_pack_on_an_unseen_personal_auto_source_slice
+

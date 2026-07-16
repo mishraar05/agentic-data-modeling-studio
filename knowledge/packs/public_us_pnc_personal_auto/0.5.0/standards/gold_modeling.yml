@@ -1,0 +1,12 @@
+schema_version: "1.0"
+standard_id: gold_modeling_candidate
+version: "0.3.0"
+approval_state: CANDIDATE
+rules:
+  - Declare fact grain before dimensions and measures.
+  - Separate transaction periodic snapshot and accumulating snapshot facts.
+  - State measure basis additivity currency sign valuation date and late-arriving treatment.
+  - Conform dimensions only where semantics agree across sources and requirements.
+  - Trace every KPI to compatible Silver grains and approved rules.
+source_references: [databricks_medallion]
+

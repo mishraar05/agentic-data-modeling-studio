@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentic-data-modeler:knowledge:glossary:1.0",
+  "type": "object",
+  "required": ["schema_version", "terms"],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "terms": {"type": "array", "items": {"type": "object", "required": ["term_id", "preferred_name", "candidate_definition", "source_references"], "properties": {"term_id": {"type": "string"}, "preferred_name": {"type": "string"}, "candidate_definition": {"type": "string"}, "synonyms": {"type": "array", "items": {"type": "string"}}, "source_references": {"type": "array", "items": {"type": "string"}}}}}
+  }
+}

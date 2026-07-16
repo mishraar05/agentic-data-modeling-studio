@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentic-data-modeler:knowledge:module:1.0",
+  "title": "Knowledge module",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "module_id", "module_version", "layer", "approval_state", "runtime_eligible", "scope", "content", "source_references"],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "module_id": {"type": "string", "pattern": "^[a-z0-9_]+$"},
+    "module_version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+    "layer": {"enum": ["insurance_core", "lob", "personal_auto", "extension"]},
+    "approval_state": {"enum": ["CANDIDATE", "APPROVED", "REJECTED", "SUPERSEDED"]},
+    "runtime_eligible": {"type": "boolean"},
+    "owner": {"type": "string"},
+    "scope": {"type": "object"},
+    "non_scope": {"type": "array", "items": {"type": "string"}},
+    "content": {"type": "object"},
+    "source_references": {"type": "array", "items": {"type": "string"}},
+    "legacy_source_assets": {"type": "array", "items": {"type": "string"}},
+    "dependencies": {"type": "array", "items": {"type": "string"}},
+    "review_requirements": {"type": "array", "items": {"type": "string"}}
+  }
+}

@@ -1,0 +1,39 @@
+schema_version: "1.0"
+asset_id: databricks_modeling_standards_candidate
+version: "0.1.0"
+approval_state: CANDIDATE
+authoritative: false
+scope:
+  platform: databricks
+  layers: [silver, gold]
+standards:
+  - standard_id: silver_refined_detail
+    statement: >-
+      Silver models should contain validated, standardized, integrated detail at an
+      explicit grain while retaining the information required for deep analysis and
+      downstream model construction.
+    design_checks:
+      - grain is explicit
+      - business and technical keys are distinguished
+      - quality rules and rejected-record handling are defined
+      - effective-time and processing-time needs are decided
+    source_references: [databricks_medallion]
+  - standard_id: gold_requirement_driven
+    statement: >-
+      Gold models should be business-ready and derived from agreed analytical
+      requirements, using explicit fact grain, dimensions, measures, conformance,
+      and aggregations where appropriate.
+    design_checks:
+      - every measure has formula, grain, additivity, and source lineage
+      - every fact declares its grain before dimensions are selected
+      - existing and new requirements map to model elements
+    source_references: [databricks_medallion]
+  - standard_id: scd_intentional_history
+    statement: >-
+      Select current-state replacement or retained-history behavior from the analytical
+      requirement and source change semantics; do not choose an SCD pattern by habit.
+    design_checks:
+      - Type 1 use has an explicit no-history rationale
+      - Type 2 use defines effective interval, current indicator, and change detection
+    source_references: [databricks_cdc_scd]
+

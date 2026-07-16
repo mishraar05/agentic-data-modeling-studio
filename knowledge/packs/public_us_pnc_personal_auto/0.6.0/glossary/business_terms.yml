@@ -1,0 +1,58 @@
+schema_version: "1.0"
+glossary_id: public_us_pnc_personal_auto_business_glossary
+version: "0.6.0"
+approval_state: CANDIDATE
+runtime_eligible: false
+owner: TBD_GLOSSARY_STEWARD
+rules:
+  - Definitions are reusable candidate context and never override approved enterprise terminology policy wording or jurisdiction law.
+  - Synonyms support retrieval and source analysis; they do not prove semantic equivalence in a source system.
+  - Every applied term retains source evidence confidence and reviewer state.
+terms:
+  - {term_id: party, preferred_name: Party, candidate_definition: A person or organization participating in an insurance business context., synonyms: [person_or_organization], source_references: [edmc_fibo]}
+  - {term_id: party_role, preferred_name: Party Role, candidate_definition: A time- and context-dependent capacity in which a party participates., synonyms: [role], source_references: [edmc_fibo]}
+  - {term_id: policy, preferred_name: Policy, candidate_definition: The insurance contract between insurer and insured., synonyms: [insurance_contract], source_references: [naic_glossary, ca_doi_auto_terms]}
+  - {term_id: policy_term, preferred_name: Policy Term, candidate_definition: A bounded period for which policy coverage is scheduled to apply., synonyms: [contract_term], source_references: [naic_glossary]}
+  - {term_id: policy_version, preferred_name: Policy Version, candidate_definition: An effective-dated representation of policy state., synonyms: [policy_revision], source_references: [edmc_fibo]}
+  - {term_id: policy_transaction, preferred_name: Policy Transaction, candidate_definition: A source-recorded business action that creates or changes policy state., synonyms: [policy_activity], source_references: [edmc_fibo]}
+  - {term_id: quote, preferred_name: Quote, candidate_definition: An estimate or proposal of premium and terms that does not alone prove coverage., synonyms: [quotation], source_references: [ca_doi_auto_terms]}
+  - {term_id: binder, preferred_name: Binder, candidate_definition: Authorized evidence of temporary coverage pending policy issuance., synonyms: [temporary_insurance_agreement], source_references: [ca_doi_auto_terms]}
+  - {term_id: endorsement, preferred_name: Endorsement, candidate_definition: A written policy change that adds removes or modifies terms or coverage., synonyms: [policy_change], source_references: [ca_doi_auto_terms]}
+  - {term_id: cancellation, preferred_name: Cancellation, candidate_definition: Termination of coverage before scheduled policy expiration., synonyms: [midterm_termination], source_references: [ca_ins_code_auto_660_669_5, naic_mcas_ppa_2026]}
+  - {term_id: nonrenewal, preferred_name: Nonrenewal, candidate_definition: Insurer decision not to continue coverage at normal expiration., synonyms: [non_renewal], source_references: [ca_ins_code_auto_660_669_5, naic_mcas_ppa_2026]}
+  - {term_id: reinstatement, preferred_name: Reinstatement, candidate_definition: Restoration of policy coverage under evidenced terms after a cancellation or lapse state., synonyms: [policy_restoration], source_references: [naic_glossary]}
+  - {term_id: rewrite, preferred_name: Rewrite, candidate_definition: Source-defined replacement of policy identity or term that may or may not involve a lapse., synonyms: [policy_rewrite], source_references: [naic_mcas_ppa_2026]}
+  - {term_id: risk_unit, preferred_name: Risk Unit, candidate_definition: The insured subject or exposure unit to which policy terms or coverage attach., synonyms: [insured_risk], source_references: [edmc_fibo]}
+  - {term_id: vehicle, preferred_name: Vehicle, candidate_definition: A source-asserted motor vehicle identity with role and time-dependent characteristics., synonyms: [automobile, auto], source_references: [ecfr_49_cfr_565, nhtsa_vpic_api]}
+  - {term_id: driver, preferred_name: Driver, candidate_definition: A person participating in a licensing policy vehicle or loss context as an operator or listed role., synonyms: [operator], source_references: [ca_doi_auto_guide]}
+  - {term_id: coverage, preferred_name: Coverage, candidate_definition: Contractual protection or benefit subject to policy terms conditions exclusions limits and deductibles., synonyms: [insurance_coverage], source_references: [naic_glossary, ca_doi_auto_terms]}
+  - {term_id: coverage_selection, preferred_name: Coverage Selection, candidate_definition: A coverage accepted declined waived or otherwise recorded for a policy risk and effective version., synonyms: [elected_coverage], source_references: [edmc_fibo]}
+  - {term_id: limit, preferred_name: Coverage Limit, candidate_definition: The maximum payable benefit within the stated structure scope and policy terms., synonyms: [policy_limit], source_references: [ca_doi_auto_terms]}
+  - {term_id: deductible, preferred_name: Deductible, candidate_definition: The applicable portion of a covered loss borne by the policyholder., synonyms: [insured_retention], source_references: [ca_doi_auto_terms]}
+  - {term_id: premium, preferred_name: Premium, candidate_definition: The price charged for insurance coverage for a stated policy period or transaction., synonyms: [insurance_premium], source_references: [ca_doi_auto_guide, naic_glossary]}
+  - {term_id: written_premium, preferred_name: Written Premium, candidate_definition: Premium generated by policies written during a period under the adopted accounting basis., synonyms: [premium_written], source_references: [naic_glossary]}
+  - {term_id: direct_written_premium, preferred_name: Direct Written Premium, candidate_definition: Written premium before reinsurance adjustments under the adopted financial reporting definition., synonyms: [dwp], source_references: [naic_glossary, naic_mcas_ppa_2026]}
+  - {term_id: earned_premium, preferred_name: Earned Premium, candidate_definition: Premium allocated to elapsed coverage under the approved earning method., synonyms: [premium_earned], source_references: [naic_glossary]}
+  - {term_id: unearned_premium, preferred_name: Unearned Premium, candidate_definition: Premium associated with coverage that has not yet been provided under the approved accounting basis., synonyms: [unearned_premium_balance], source_references: [naic_glossary]}
+  - {term_id: commission, preferred_name: Commission, candidate_definition: Producer compensation based on an evidenced agreement and premium or other approved basis., synonyms: [producer_commission], source_references: [ca_doi_auto_terms, ca_doi_broker_disclosure]}
+  - {term_id: billing_account, preferred_name: Billing Account, candidate_definition: A source-defined account grouping billed obligations receipts and balances., synonyms: [account], source_references: [edmc_fibo]}
+  - {term_id: invoice, preferred_name: Invoice, candidate_definition: A bill presenting charges credits due dates and balance for an account or transaction., synonyms: [bill], source_references: [edmc_fibo]}
+  - {term_id: installment, preferred_name: Installment, candidate_definition: A scheduled premium or fee amount with a due date under a payment plan., synonyms: [scheduled_payment], source_references: [ca_doi_auto_guide]}
+  - {term_id: receivable, preferred_name: Receivable, candidate_definition: An amount owed at a valuation point under the billing system and accounting basis., synonyms: [amount_due], source_references: [edmc_fibo]}
+  - {term_id: payment_allocation, preferred_name: Payment Allocation, candidate_definition: Application of a received payment to an obligation unapplied balance or refund., synonyms: [cash_allocation], source_references: [edmc_fibo]}
+  - {term_id: refund, preferred_name: Refund, candidate_definition: Cash or credit returned to a payer or payee and linked to an evidenced balance or transaction., synonyms: [premium_refund], source_references: [naic_glossary]}
+  - {term_id: loss_event, preferred_name: Loss Event, candidate_definition: A real-world occurrence or related occurrence grouping that may give rise to claims., synonyms: [occurrence], source_references: [naic_glossary, nhtsa_mmucc6]}
+  - {term_id: claim_file, preferred_name: Claim File, candidate_definition: One insurer source claim identity and its associated records., synonyms: [claim], source_references: [ca_doi_auto_terms, naic_mcas_ppa_2026]}
+  - {term_id: claimant, preferred_name: Claimant, candidate_definition: A party making or having a claim made on their behalf., synonyms: [claiming_party], source_references: [ca_ccr_2695_2, naic_mcas_ppa_2026]}
+  - {term_id: claim_exposure, preferred_name: Claim Exposure, candidate_definition: A claim claimant or insured coverage-part and incident or risk unit requiring separate evaluation or financial handling., synonyms: [feature, reserve_line], source_references: [naic_mcas_ppa_2026]}
+  - {term_id: reserve, preferred_name: Claim Reserve, candidate_definition: An estimated amount held for future claim payments under a declared valuation and accounting basis., synonyms: [case_reserve, loss_reserve], source_references: [naic_glossary]}
+  - {term_id: claim_payment, preferred_name: Claim Payment, candidate_definition: A posted financial transaction paying a claimant insured provider or other payee for a claim obligation., synonyms: [loss_payment], source_references: [naic_mcas_ppa_2026]}
+  - {term_id: recovery, preferred_name: Claim Recovery, candidate_definition: Amount recovered or expected from a responsible party salvage or other authorized source after a loss payment., synonyms: [recoverable], source_references: [ca_doi_auto_claims, naic_glossary]}
+  - {term_id: subrogation, preferred_name: Subrogation, candidate_definition: Pursuit by an insurer of recovery from a party responsible for a loss paid under the policy., synonyms: [subro], source_references: [ca_doi_auto_claims, naic_glossary]}
+  - {term_id: salvage, preferred_name: Salvage, candidate_definition: Remaining damaged property or value addressed in a loss settlement and recovery process., synonyms: [salvage_value], source_references: [ca_doi_auto_terms, ca_ccr_2695_8]}
+  - {term_id: total_loss, preferred_name: Total Loss, candidate_definition: A loss for which repair is not feasible or is uneconomic relative to the applicable valuation under policy and jurisdiction rules., synonyms: [vehicle_total_loss], source_references: [ca_doi_auto_terms, ca_ccr_2695_8]}
+  - {term_id: loss_adjustment_expense, preferred_name: Loss Adjustment Expense, candidate_definition: Expense incurred to investigate defend adjust or settle claims under an approved allocation basis., synonyms: [lae], source_references: [naic_glossary]}
+  - {term_id: incurred_loss, preferred_name: Incurred Loss, candidate_definition: Loss measure combining paid and reserved components under a specified accounting formula and valuation basis., synonyms: [losses_incurred], source_references: [naic_glossary]}
+  - {term_id: loss_ratio, preferred_name: Loss Ratio, candidate_definition: Ratio of incurred-loss basis to earned-premium basis under an approved formula version., synonyms: [incurred_loss_ratio], source_references: [naic_glossary]}
+  - {term_id: final_payment_date, preferred_name: Final Payment Date, candidate_definition: Date the final payment for the adopted claimant and coverage reporting episode was issued., synonyms: [date_of_final_payment], source_references: [naic_mcas_ppa_2026]}
+  - {term_id: claim_reopen, preferred_name: Claim Reopen, candidate_definition: A new open episode on a previously closed claim or exposure with an evidenced reason and timestamp., synonyms: [reopened_claim], source_references: [naic_mcas_ppa_2026]}

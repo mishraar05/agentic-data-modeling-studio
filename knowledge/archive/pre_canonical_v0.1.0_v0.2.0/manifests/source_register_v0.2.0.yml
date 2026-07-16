@@ -1,0 +1,74 @@
+schema_version: "1.0"
+register_id: public_pnc_personal_auto_sources_v0.2.0
+retrieved_at: "2026-07-15"
+default_approval_state: CANDIDATE
+usage_policy: >-
+  Record links and independently authored paraphrases only unless an explicit open
+  license permits more. No source is an engagement fact or production authority.
+sources:
+  - source_id: edmc_fibo
+    publisher: Enterprise Data Management Council
+    title: Financial Industry Business Ontology
+    url: https://github.com/edmcouncil/fibo
+    source_class: open_ontology
+    license: MIT
+    observed_version: Q1_2026
+  - source_id: naic_glossary
+    publisher: National Association of Insurance Commissioners
+    title: Glossary of Insurance Terms
+    url: https://content.naic.org/glossary-insurance-terms
+    source_class: public_industry_reference
+    usage: link_and_independent_paraphrase_only_pending_permission_review
+  - source_id: naic_auto_consumer
+    publisher: National Association of Insurance Commissioners
+    title: Consumer Auto Insurance
+    url: https://content.naic.org/consumer/auto-insurance.htm
+    source_class: public_industry_reference
+    usage: link_and_independent_paraphrase_only_pending_permission_review
+  - source_id: naic_auto_coverage
+    publisher: National Association of Insurance Commissioners
+    title: What You Should Know About Auto Insurance Coverage
+    url: https://content.naic.org/article/what-you-should-know-about-auto-insurance-coverage
+    source_class: public_industry_reference
+    usage: link_and_independent_paraphrase_only_pending_permission_review
+  - source_id: ca_doi_auto_guide
+    publisher: California Department of Insurance
+    title: Automobile Insurance Guide
+    url: https://www.insurance.ca.gov/01-consumers/105-type/95-guides/01-auto/auto101.cfm
+    source_class: government_jurisdiction_reference
+    jurisdiction: US-CA
+    usage: link_and_independent_paraphrase
+  - source_id: ca_doi_auto_claims
+    publisher: California Department of Insurance
+    title: So You've Had an Accident, What's Next?
+    url: https://www.insurance.ca.gov/01-consumers/105-type/95-guides/01-auto/hadaccident.cfm
+    source_class: government_jurisdiction_reference
+    jurisdiction: US-CA
+    usage: link_and_independent_paraphrase
+  - source_id: ny_dfs_auto_resource
+    publisher: New York Department of Financial Services
+    title: Auto Insurance Information for Consumers
+    url: https://www.dfs.ny.gov/consumers/auto_insurance/Auto_resource_center
+    source_class: government_jurisdiction_reference
+    jurisdiction: US-NY
+    usage: link_and_independent_paraphrase
+  - source_id: nhtsa_mmucc6
+    publisher: National Highway Traffic Safety Administration
+    title: Model Minimum Uniform Crash Criteria, Sixth Edition
+    url: https://www.nhtsa.gov/traffic-records/model-minimum-uniform-crash-criteria
+    source_class: us_government_data_standard
+    observed_version: 6th_edition_2024
+    usage: public_reference_and_independent_model_alignment
+  - source_id: databricks_medallion
+    publisher: Databricks
+    title: Medallion lakehouse architecture
+    url: https://docs.databricks.com/aws/en/lakehouse/medallion
+    source_class: official_technical_documentation
+    usage: link_and_independent_paraphrase
+  - source_id: databricks_cdc_scd
+    publisher: Databricks
+    title: Change data capture and slowly changing dimensions
+    url: https://docs.databricks.com/aws/en/data-engineering/what-is-cdc
+    source_class: official_technical_documentation
+    usage: link_and_independent_paraphrase
+

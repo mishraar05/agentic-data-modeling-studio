@@ -1,0 +1,61 @@
+schema_version: "1.0"
+pack_id: public_us_pnc_personal_auto
+pack_version: "0.4.0"
+title: Corrected canonical modular US P&C Personal Auto candidate knowledge pack
+approval_state: CANDIDATE
+runtime_eligible: false
+immutable: true
+created_at: "2026-07-15"
+owner: TBD_KNOWLEDGE_OWNER
+scope:
+  geography: US_general
+  lob: personal_auto
+  domains: [party, product, coverage, policy, claims, billing, analytics]
+precedence: [approved_client_evidence, approved_engagement_decisions, approved_enterprise_extension, approved_jurisdiction_extension, approved_product_extension, approved_platform_extension, approved_public_core]
+source_registry: knowledge/sources/public_references_v0.4.0.yml
+completeness: knowledge/packs/public_us_pnc_personal_auto/0.4.0/completeness.yml
+standards:
+  - knowledge/packs/public_us_pnc_personal_auto/0.4.0/standards/silver_modeling.yml
+  - knowledge/packs/public_us_pnc_personal_auto/0.4.0/standards/gold_modeling.yml
+  - knowledge/packs/public_us_pnc_personal_auto/0.4.0/standards/sttm.yml
+  - knowledge/packs/public_us_pnc_personal_auto/0.4.0/standards/naming_datatypes_quality.yml
+references:
+  - knowledge/packs/public_us_pnc_personal_auto/0.4.0/references/ontology/fibo.yml
+  - knowledge/packs/public_us_pnc_personal_auto/0.4.0/references/target_reference_models/README.md
+modules:
+  - {module_id: insurance_core_party, path: knowledge/packs/public_us_pnc_personal_auto/0.4.0/insurance_core/party/module.yml, sha256: 0caa6e45ca11ad0eaecc5e9aec7254f034a1ce4b6fe0ede1b782c4f630a85d02}
+  - {module_id: insurance_core_policy, path: knowledge/packs/public_us_pnc_personal_auto/0.4.0/insurance_core/policy/module.yml, sha256: 951dfc83a9037dd81ee251ee84824ccd5e85d21256c752f6414fdd7ca781345e}
+  - {module_id: insurance_core_product_and_coverage, path: knowledge/packs/public_us_pnc_personal_auto/0.4.0/insurance_core/product_and_coverage/module.yml, sha256: ccd983e6ace878b828af2689fde6c62950919dc649a0371063da80310e651c1c}
+  - {module_id: insurance_core_claims, path: knowledge/packs/public_us_pnc_personal_auto/0.4.0/insurance_core/claims/module.yml, sha256: aa392c0a9127d11c69539270f33e2d51d1d2e910b184105f03a7e3bbc93098ec}
+  - {module_id: insurance_core_billing, path: knowledge/packs/public_us_pnc_personal_auto/0.4.0/insurance_core/billing/module.yml, sha256: b9f481c03083f0f3375a56af80e66ed1a0a5acfde1238e0c8ae60ea833d9838f}
+  - {module_id: insurance_core_common_analytics, path: knowledge/packs/public_us_pnc_personal_auto/0.4.0/insurance_core/common_analytics/module.yml, sha256: 5547b080b1a9cf5163c255ef55d51db4b853c8719dc0a754d7779d8aee352d61}
+  - {module_id: personal_auto_risk_and_vehicle, path: knowledge/packs/public_us_pnc_personal_auto/0.4.0/personal_auto/risk_and_vehicle/module.yml, sha256: 19cfcaf735a7dae7645be6982edb33e540f937c25cc14e253fa46f6c227632b9}
+  - {module_id: personal_auto_driver_and_household, path: knowledge/packs/public_us_pnc_personal_auto/0.4.0/personal_auto/driver_and_household/module.yml, sha256: 3439869b74b7bab9ac772f2a0556e63d9ab7f17f3bb5e4ce6bca191265d573d6}
+  - {module_id: personal_auto_coverages, path: knowledge/packs/public_us_pnc_personal_auto/0.4.0/personal_auto/coverages/module.yml, sha256: 89f7567af05c8d1abc65b1c33bca9e5b0d0c5d461c48004edb0f51dfa3c683cf}
+  - {module_id: personal_auto_policy_lifecycle, path: knowledge/packs/public_us_pnc_personal_auto/0.4.0/personal_auto/policy_lifecycle/module.yml, sha256: 2e8d5ee4550d6c34bc2db9a9fd32a99cbb807916c24b1395f9aa65bc1af5c13f}
+  - {module_id: personal_auto_claims_lifecycle, path: knowledge/packs/public_us_pnc_personal_auto/0.4.0/personal_auto/claims_lifecycle/module.yml, sha256: 562440d35561c8f89d85379ec9751c211097136b5f887ba961a577ff4bc2367e}
+  - {module_id: personal_auto_kpis, path: knowledge/packs/public_us_pnc_personal_auto/0.4.0/personal_auto/kpis/module.yml, sha256: 17e694620d7fe892239eaa691886fbd0c72d5d5ac273d528d4e8dd58d42554da}
+  - {module_id: extension_jurisdiction, path: knowledge/packs/public_us_pnc_personal_auto/0.4.0/extensions/jurisdiction/module.yml, sha256: 598ba29e13e2999e99a35cd1787cfd92f2321a5e106d88512e524f0e07c0ad8b}
+  - {module_id: extension_enterprise, path: knowledge/packs/public_us_pnc_personal_auto/0.4.0/extensions/enterprise/module.yml, sha256: 8c1178d097833df060bcfd37894fef8ac9e646b2fa73ae6ac120e6a03fa99490}
+  - {module_id: extension_product, path: knowledge/packs/public_us_pnc_personal_auto/0.4.0/extensions/product/module.yml, sha256: 212f115f2abde63c9e48bb82f5b7d3b235ca3332cb7286c34e0d7a7bf6bdc311}
+  - {module_id: extension_platform, path: knowledge/packs/public_us_pnc_personal_auto/0.4.0/extensions/platform/module.yml, sha256: ae29491a3a3054c50441cf56ba0f5157929921c647f0822c7eb3d4040e7183c9}
+assets:
+  - {path: knowledge/packs/public_us_pnc_personal_auto/0.4.0/completeness.yml, sha256: b4b685626041cea79d9003a8eb160049c577cec962a2c717ab5a42274758b2a3}
+  - {path: knowledge/packs/public_us_pnc_personal_auto/0.4.0/standards/silver_modeling.yml, sha256: 4908a8be24f35f9ff8f49a2e589abd677b661e8fc79a9bc014a96a28a53265d9}
+  - {path: knowledge/packs/public_us_pnc_personal_auto/0.4.0/standards/gold_modeling.yml, sha256: 0423dd5b47412e1ffb03d4c83f1f4b92542ab639bb2159ad0a614ecfa9ec47a6}
+  - {path: knowledge/packs/public_us_pnc_personal_auto/0.4.0/standards/sttm.yml, sha256: c220968e30b494f002a2b8c6dc86701cf54f2a258a7010023a9dfc3a280a8b62}
+  - {path: knowledge/packs/public_us_pnc_personal_auto/0.4.0/standards/naming_datatypes_quality.yml, sha256: 9a0d8b24ca50af6a09005d5a18cceba0ea03615244f0710ec294068654b10349}
+  - {path: knowledge/packs/public_us_pnc_personal_auto/0.4.0/references/ontology/fibo.yml, sha256: cc2d75485858d74c2c36cf300c4e1fe431ffaca2bb9bbadb5ac17d4aefbe3b41}
+  - {path: knowledge/packs/public_us_pnc_personal_auto/0.4.0/references/target_reference_models/README.md, sha256: 6cf6ef7ebce4dc6ef7a5fde9b48524cfd3e3cf23fddd6ab7d5c0508488f31ebe}
+  - {path: knowledge/sources/public_references_v0.4.0.yml, sha256: 804782205b5f62dad4df98b0c522816a584a9ccad5e55bff83472ea18cea0749}
+legacy_inputs:
+  - knowledge/packs/public_us_pnc_personal_auto/0.3.0/manifest.yml
+  - knowledge/archive/pre_canonical_v0.1.0_v0.2.0/manifests/public_us_pnc_personal_auto_candidate_v0.2.0.yml
+  - knowledge/archive/pre_canonical_v0.1.0_v0.2.0/assessments/public_us_pnc_personal_auto_v0.2.0_completeness_v2.0.0.yml
+prohibitions:
+  - no_runtime_use_while_candidate
+  - no_directory_scanning
+  - no_cross_version_fallback
+  - no_silent_ontology_creation
+  - no_unlicensed_vendor_content
+  - no_jurisdiction_rule_without_applicability_context

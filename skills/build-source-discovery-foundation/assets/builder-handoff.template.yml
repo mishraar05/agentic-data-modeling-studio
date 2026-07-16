@@ -1,0 +1,38 @@
+schema_version: "1.0"
+skill:
+  name: build-source-discovery-foundation
+  version: "0.2.0-DRAFT"
+build:
+  build_id: REQUIRED_BUILD_ID
+  mode: ALIGNMENT_ONLY
+  status: DRAFT
+  contract_set_version: REQUIRED_CONTRACT_SET_VERSION
+  target: dev
+  started_at: REQUIRED_ISO_8601_TIMESTAMP
+  completed_at: null
+governance:
+  authorized_decision_refs: []
+  real_source_used: false
+  positive_project_knowledge_path_used: false
+  mutated_governing_documents: false
+  mutated_approval_state: false
+  mutated_runtime_eligibility: false
+bundle_validation:
+  status: NOT_RUN
+  target: dev
+  evidence_ref: null
+work_packages:
+  - {id: I23-00, status: NOT_STARTED, contract_refs: [], files_changed: [], tests: [], decision_refs: [], blockers: []}
+  - {id: I23-01, status: NOT_STARTED, contract_refs: [], files_changed: [], tests: [], decision_refs: [], blockers: []}
+  - {id: I23-02, status: NOT_STARTED, contract_refs: [], files_changed: [], tests: [], decision_refs: [], blockers: []}
+  - {id: I23-03, status: NOT_STARTED, contract_refs: [], files_changed: [], tests: [], decision_refs: [], blockers: []}
+  - {id: I23-04, status: NOT_STARTED, contract_refs: [], files_changed: [], tests: [], decision_refs: [], blockers: []}
+  - {id: I23-05, status: NOT_STARTED, contract_refs: [], files_changed: [], tests: [], decision_refs: [], blockers: []}
+  - {id: I23-06, status: NOT_STARTED, contract_refs: [], files_changed: [], tests: [], decision_refs: [], blockers: []}
+  - {id: I23-07, status: NOT_STARTED, contract_refs: [], files_changed: [], tests: [], decision_refs: [], blockers: []}
+  - {id: I23-08, status: NOT_STARTED, contract_refs: [], files_changed: [], tests: [], decision_refs: [], blockers: []}
+blocking_findings: []
+review:
+  contract_review_state: PENDING
+  architecture_review_state: PENDING
+  reviewer_refs: []

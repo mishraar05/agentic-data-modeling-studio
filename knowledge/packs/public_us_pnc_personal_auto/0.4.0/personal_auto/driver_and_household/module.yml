@@ -1,0 +1,21 @@
+schema_version: "1.0"
+module_id: personal_auto_driver_and_household
+module_version: "0.3.0"
+layer: personal_auto
+approval_state: CANDIDATE
+runtime_eligible: false
+owner: TBD_PERSONAL_AUTO_STEWARD
+scope: {lob: personal_auto, domains: [party, risk]}
+non_scope: [consumer_scoring_algorithm, protected_attribute_inference]
+content:
+  objects: [driver, household, driver_vehicle_assignment, policy_driver_listing]
+  attributes_to_seek: [licensing_jurisdiction, license_status, assignment, household_relationship, experience, permitted_usage, effective_interval]
+  rules:
+    - Household membership and driver assignment are time-dependent governed relationships.
+    - Apply privacy minimization and prohibit inference of sensitive characteristics.
+    - Do not equate listed driver rated driver insured party and vehicle operator without evidence.
+source_references: [naic_auto_consumer, ca_doi_auto_guide]
+legacy_source_assets: [knowledge/archive/pre_canonical_v0.1.0_v0.2.0/lob/personal_auto_candidate_v0.2.0.yml]
+dependencies: [insurance_core_party, personal_auto_risk_and_vehicle]
+review_requirements: [personal_auto_sme, privacy_steward]
+

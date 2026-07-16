@@ -1,0 +1,4 @@
+interface:
+  display_name: "Author Source Discovery Contracts"
+  short_description: "Create governed Increment-1 data contracts"
+  default_prompt: "Use $author-source-discovery-contracts to author or revise the Increment-1 source-discovery contract suite."

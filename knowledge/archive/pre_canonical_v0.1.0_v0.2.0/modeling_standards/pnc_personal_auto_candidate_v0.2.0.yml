@@ -1,0 +1,41 @@
+schema_version: "1.0"
+asset_id: pnc_personal_auto_modeling_standards_candidate
+version: "0.2.0"
+approval_state: CANDIDATE
+authoritative: false
+silver_rules:
+  - Declare grain, stable identity, source identity, effective time, processing time, and record provenance for every entity.
+  - Separate Party roles and relationships from Party identity.
+  - Preserve Policy, term, version, transaction, risk, and coverage grains when sources distinguish them.
+  - Preserve Claim, incident, claimant, exposure or feature, reserve, payment, and recovery grains when evidenced.
+  - Store financial transactions immutably where possible; derive balances with explicit valuation logic.
+  - Keep source codes and governed canonical codes with mapping status and effective version.
+  - Quarantine or flag unresolved identities, invalid temporal intervals, orphan relationships, and incompatible units.
+gold_rules:
+  - Declare fact grain before selecting dimensions or measures.
+  - Separate transaction, periodic snapshot, and accumulating snapshot facts.
+  - State measure basis, additivity, currency, sign, valuation date, and late-arriving treatment.
+  - Conform Party, Policy, Product, Coverage, Geography, Vehicle, Driver, Claim, Loss Cause, Channel, and Date dimensions only where semantics agree.
+  - Use role-playing dates for policy effective, expiration, transaction, loss, report, posting, payment, closure, and valuation contexts.
+  - Trace every KPI to compatible Silver grains and approved business rules.
+candidate_fact_patterns:
+  - {fact: policy_transaction, pattern: transaction, candidate_grain: one posted policy transaction component}
+  - {fact: policy_exposure, pattern: periodic_snapshot_or_accumulated_exposure, candidate_grain: one policy-risk-coverage exposure unit per period}
+  - {fact: premium, pattern: transaction_or_periodic, candidate_grain: one premium component by accounting basis and period}
+  - {fact: claim_financial_transaction, pattern: transaction, candidate_grain: one posted reserve payment recovery or adjustment transaction}
+  - {fact: claim_snapshot, pattern: periodic_snapshot, candidate_grain: one claim or exposure at one valuation snapshot}
+  - {fact: claim_lifecycle, pattern: accumulating_snapshot, candidate_grain: one claim or exposure with governed milestone dates}
+history_rules:
+  - Type 1 is permitted only when prior values are analytically and operationally unnecessary.
+  - Type 2 requires effective start, effective end, current indicator, change rule, and late-arriving policy.
+  - Bitemporal treatment should be considered when business-effective and system-recorded timelines differ materially.
+dq_rule_families:
+  - identity_uniqueness_and_collision
+  - temporal_interval_validity_and_overlap
+  - relationship_referential_integrity
+  - coverage_limit_and_deductible_structure
+  - financial_balance_and_transaction_reconciliation
+  - policy_claim_coverage_alignment
+  - code_set_mapping_and_unknown_rate
+  - privacy_classification_and_minimization
+source_references: [databricks_medallion, databricks_cdc_scd]

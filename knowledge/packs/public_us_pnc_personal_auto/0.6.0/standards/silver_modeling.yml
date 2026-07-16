@@ -1,0 +1,60 @@
+schema_version: "1.0"
+standard_id: silver_modeling_candidate
+version: "0.6.0"
+approval_state: CANDIDATE
+purpose: Source-aligned and reusable ODS modeling contract for evidence-backed Personal Auto Policy and Claims modernization.
+required_entity_contract:
+  - business_name
+  - physical_name
+  - grain_statement
+  - source_and_business_keys
+  - parent_and_child_relationships
+  - effective_and_processing_time_axes
+  - history_strategy
+  - source_coverage
+  - privacy_classification
+  - data_quality_rules
+  - provenance_and_lineage
+  - unresolved_questions
+patterns:
+  identity:
+    - Preserve every source identity before introducing a reviewed cross-source identity.
+    - Separate durable business identity source-system identity version identity and transaction identity.
+  history:
+    - Declare whether the entity is current-state append-only event effective-dated snapshot or bitemporal.
+    - Effective intervals require overlap gap open-end and late-arriving policies.
+    - Processing and source-capture timestamps never substitute for business-effective time.
+  raw_and_canonical_values:
+    - Retain raw source value normalized value candidate canonical value mapping version and mapping state.
+    - Unknown missing not_applicable invalid withheld and unmapped remain distinct states.
+  financial:
+    - Preserve transaction and snapshot grains sign convention currency gross_or_net basis valuation date reversal and posting status.
+    - Do not net payment reserve recovery expense refund or commission classes without an approved presentation rule.
+  privacy:
+    - Persist sensitivity class purpose and masking or tokenization treatment.
+    - Limit raw sensitive fields to authorized zones and use cases.
+subject_grain_guards:
+  policy: [policy, policy_term, policy_version, policy_transaction, policy_risk_coverage]
+  claims: [loss_event, claim_file, claimant, claim_exposure, coverage_evaluation, financial_transaction, financial_snapshot, recovery, litigation]
+  billing: [billing_account, invoice, installment, charge_or_credit, payment_receipt, allocation, receivable_snapshot, refund, commission]
+  party: [party, identifier, role, relationship, contact_point, address, identity_resolution_decision]
+deterministic_validations:
+  - key_uniqueness_within_declared_grain
+  - required_parent_referential_integrity
+  - effective_interval_validity_and_overlap_policy
+  - allowed_code_mapping_state
+  - financial_component_reconciliation
+  - source_inventory_and_attribute_coverage
+  - provenance_reference_resolves
+  - privacy_treatment_present_for_sensitive_fields
+semantic_review_gates:
+  - entity_boundary_and_grain
+  - role_and_relationship_meaning
+  - status_and_code_semantics
+  - identity_resolution
+  - history_and_late_arriving_behavior
+rules:
+  - Every entity and attribute is traced to source evidence governed input requirement or approved decision.
+  - Unresolved semantics remain visible and cannot be hidden by a default canonical value.
+  - Silver models are source-complete for the bounded scope but need not reproduce source implementation defects.
+source_references: [databricks_medallion, databricks_cdc_scd, nist_sp_800_122]

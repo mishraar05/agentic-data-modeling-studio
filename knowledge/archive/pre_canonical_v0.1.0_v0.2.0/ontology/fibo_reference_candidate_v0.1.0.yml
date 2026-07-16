@@ -1,0 +1,20 @@
+schema_version: "1.0"
+asset_id: fibo_reference_candidate
+version: "0.1.0"
+approval_state: CANDIDATE
+authoritative: false
+knowledge_role: supplied_external_ontology_reference
+ontology_creation_deliverable: false
+source_reference: edmc_fibo_repository
+license: MIT
+candidate_modules_for_review:
+  - module: FND
+    relevance: General concepts for people, organizations, places, agreements, and contracts.
+  - module: BE
+    relevance: Business entity concepts that may support party and organization alignment.
+usage_rules:
+  - Select exact FIBO IRIs and release only after ontology-owner review.
+  - Do not treat broad FIBO financial concepts as insurance-specific definitions.
+  - Do not generate new ontology concepts when no applicable approved concept exists.
+  - Preserve the exact upstream license and source version with every selected concept.
+

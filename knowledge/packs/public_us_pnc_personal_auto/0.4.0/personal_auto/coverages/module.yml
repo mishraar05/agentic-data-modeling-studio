@@ -1,0 +1,24 @@
+schema_version: "1.0"
+module_id: personal_auto_coverages
+module_version: "0.3.0"
+layer: personal_auto
+approval_state: CANDIDATE
+runtime_eligible: false
+owner: TBD_PERSONAL_AUTO_PRODUCT_STEWARD
+scope: {lob: personal_auto, domains: [product, coverage]}
+non_scope: [state_mandates, policy_form_wording, carrier_offerings]
+content:
+  families:
+    liability: [bodily_injury_liability, property_damage_liability]
+    first_party_injury: [personal_injury_protection, medical_payments]
+    physical_damage: [collision, comprehensive_or_other_than_collision]
+    uninsured_underinsured: [uninsured_motorist, underinsured_motorist]
+    optional_services: [rental_reimbursement, towing_or_roadside, gap_or_loan_lease_when_offered]
+  rules:
+    - Availability compulsory status limits and meaning require a jurisdiction and product overlay.
+    - Preserve attachment level limit structure deductible applicability and effective version.
+source_references: [naic_auto_consumer, ca_doi_auto_guide, ny_dfs_auto_resource]
+legacy_source_assets: [knowledge/archive/pre_canonical_v0.1.0_v0.2.0/lob/personal_auto_candidate_v0.2.0.yml]
+dependencies: [insurance_core_product_and_coverage]
+review_requirements: [personal_auto_product_sme, jurisdiction_reviewer]
+

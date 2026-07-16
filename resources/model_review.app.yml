@@ -1,0 +1,6 @@
+resources:
+  apps:
+    model_review_app:
+      name: ${var.resource_prefix}-review
+      description: Human review surface for Source Data Dictionary, Silver, Gold, and STTM artifacts.
+      source_code_path: ../src/apps/model_review

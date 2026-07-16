@@ -1,0 +1,32 @@
+schema_version: "1.0"
+module_id: insurance_core_common_analytics
+module_version: "0.5.0"
+layer: insurance_core
+approval_state: CANDIDATE
+runtime_eligible: false
+owner: TBD_ANALYTICS_STEWARD
+scope: {domains: [analytics], lobs: [cross_lob, personal_auto]}
+non_scope: [approved_enterprise_kpi_formulas, statutory_financial_statement_definition]
+content:
+  measure_contract:
+    required_metadata: [measure_id, grain, time_basis, valuation_date, accounting_basis, currency, gross_or_net_basis, additivity, inclusions, exclusions, zero_denominator_rule, lineage, owner, effective_dates]
+    measure_classes:
+      - {class: flow_count, examples: [new_business_count, claims_opened, claims_closed], additivity: additive_only_across_disjoint_periods_and_compatible_dimensions}
+      - {class: snapshot_count, examples: [policies_in_force, autos_in_force, open_claims], additivity: non_additive_over_time}
+      - {class: financial_flow, examples: [written_premium, payment, recovery, expense], additivity: additive_when_currency_accounting_and_gross_net_bases_match}
+      - {class: financial_snapshot, examples: [case_reserve, outstanding_loss], additivity: non_additive_over_time}
+      - {class: ratio, examples: [loss_ratio, closure_rate], additivity: non_additive_recalculate_from_compatible_components}
+      - {class: distribution_statistic, examples: [median_days_to_final_payment], additivity: non_additive_recalculate_from_atomic_population}
+  compatibility_rules:
+    - Numerator and denominator require compatible grain population period and inclusion rules.
+    - Snapshot and flow measures cannot be combined without a documented exposure or averaging method.
+    - Median average percentile and bucketed duration are distinct calculations.
+    - Regulatory analytical and enterprise-finance definitions must carry separate formula versions when they differ.
+  reconciliation_requirements:
+    - Preserve atomic component measures for every published ratio.
+    - Record source-to-Silver and Silver-to-Gold lineage for each component and filter.
+    - Reconcile counts at their declared grain before aggregation.
+source_references: [naic_glossary, naic_mcas_ppa_2026, naic_mcas_ratios_2026]
+legacy_source_assets: [knowledge/archive/pre_canonical_v0.1.0_v0.2.0/kpi_catalog/pnc_personal_auto_candidate_v0.2.0.yml]
+dependencies: [insurance_core_policy, insurance_core_claims]
+review_requirements: [analytics_steward, finance_sme]

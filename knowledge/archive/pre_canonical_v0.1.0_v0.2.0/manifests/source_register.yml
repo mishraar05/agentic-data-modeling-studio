@@ -1,0 +1,69 @@
+schema_version: "1.0"
+register_id: public_reference_sources_2026_07_15
+retrieved_at: "2026-07-15"
+default_trust: candidate_only
+sources:
+  - source_id: edmc_fibo_repository
+    publisher: Enterprise Data Management Council
+    title: Financial Industry Business Ontology (FIBO)
+    url: https://github.com/edmcouncil/fibo
+    source_class: open_ontology_reference
+    license: MIT
+    version_observed: Q1 2026 release
+    allowed_use: governed_reference_and_derivation_subject_to_license
+    approval_state: CANDIDATE
+    notes: >-
+      Use only selected, reviewed concepts. FIBO is a governed input; this solution
+      does not create or publish an ontology.
+
+  - source_id: naic_glossary
+    publisher: National Association of Insurance Commissioners
+    title: Glossary of Insurance Terms
+    url: https://content.naic.org/glossary-insurance-terms
+    source_class: public_reference
+    license: not_identified_as_open_content
+    allowed_use: link_and_independent_paraphrase_only_pending_permission_review
+    approval_state: CANDIDATE
+    approved_for_runtime_retrieval: false
+    notes: >-
+      Do not copy definitions. Terms vary by legal entity and context. Knowledge-owner
+      and legal review are required before production use.
+
+  - source_id: naic_insurance_basics
+    publisher: National Association of Insurance Commissioners
+    title: How Does Insurance Work?
+    url: https://content.naic.org/consumer/how-does-insurance-work
+    source_class: public_reference
+    license: not_identified_as_open_content
+    allowed_use: link_and_independent_paraphrase_only_pending_permission_review
+    approval_state: CANDIDATE
+    approved_for_runtime_retrieval: false
+
+  - source_id: naic_auto_coverage
+    publisher: National Association of Insurance Commissioners
+    title: What You Should Know About Auto Insurance Coverage
+    url: https://content.naic.org/article/what-you-should-know-about-auto-insurance-coverage
+    source_class: public_reference
+    license: not_identified_as_open_content
+    allowed_use: link_and_independent_paraphrase_only_pending_permission_review
+    approval_state: CANDIDATE
+    approved_for_runtime_retrieval: false
+
+  - source_id: databricks_medallion
+    publisher: Databricks
+    title: What is the medallion lakehouse architecture?
+    url: https://docs.databricks.com/aws/en/lakehouse/medallion
+    source_class: official_technical_documentation
+    license: documentation_reference
+    allowed_use: link_and_independent_paraphrase
+    approval_state: CANDIDATE
+
+  - source_id: databricks_cdc_scd
+    publisher: Databricks
+    title: Change data capture and slowly changing dimensions
+    url: https://docs.databricks.com/aws/en/data-engineering/what-is-cdc
+    source_class: official_technical_documentation
+    license: documentation_reference
+    allowed_use: link_and_independent_paraphrase
+    approval_state: CANDIDATE
+

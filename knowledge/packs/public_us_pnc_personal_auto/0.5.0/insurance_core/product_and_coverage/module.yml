@@ -1,0 +1,47 @@
+schema_version: "1.0"
+module_id: insurance_core_product_and_coverage
+module_version: "0.5.0"
+layer: insurance_core
+approval_state: CANDIDATE
+runtime_eligible: false
+owner: TBD_PRODUCT_STEWARD
+scope: {domains: [product, coverage], lobs: [cross_lob, personal_auto]}
+non_scope: [licensed_forms_content, carrier_product_configuration, jurisdiction_mandates, rating_algorithm]
+content:
+  identity_and_grain:
+    - {record: insurance_product, grain: one governed product identity}
+    - {record: product_version, grain: one product identity and effective version}
+    - {record: coverage_definition, grain: one governed coverage concept within product and version scope}
+    - {record: coverage_selection, grain: one policy version risk or policy attachment and selected coverage}
+    - {record: coverage_term, grain: one coverage selection term type qualifier and value}
+    - {record: form_or_endorsement_reference, grain: one authorized form identity edition and effective jurisdiction, rule: metadata_only_until_licensed_content_is_authorized}
+  coverage_term_model:
+    term_types:
+      - {type: limit, structures: [per_person, per_accident_or_occurrence, aggregate, combined_single_limit, stated_amount]}
+      - {type: deductible, structures: [per_coverage, per_occurrence, per_vehicle, percentage, waiting_period]}
+      - {type: condition, structures: [eligibility, trigger, obligation]}
+      - {type: exclusion, structures: [person, peril, property, location, use, time]}
+    required_context: [currency_or_unit, qualifier, attachment_level, effective_start, effective_end, source_evidence]
+  attachment_levels: [policy, policy_term, risk_unit, vehicle, driver, coverage, claimant_or_exposure]
+  semantic_terms:
+    - {term: coverage, definition: A contractual protection or benefit subject to policy terms conditions exclusions limits and deductibles.}
+    - {term: limit, definition: The maximum benefit payable within the stated limit structure and scope.}
+    - {term: deductible, definition: The portion of a covered loss borne by the policyholder under the applicable coverage terms.}
+    - {term: endorsement, definition: A written agreement that changes the policy by adding removing or modifying coverage or terms.}
+    - {term: exclusion, definition: A contractual provision that denies or restricts coverage for stated circumstances.}
+  modeling_implications:
+    silver: Separate coverage definitions from policy selections and represent multi-part terms as child records rather than concatenated text.
+    gold: Coverage dimensions may describe governed definitions while coverage-selection facts or bridges preserve policy risk and time context.
+    sttm: A mapped limit or deductible must identify its structure qualifier unit attachment and effective version.
+  ambiguity_checks:
+    - A coverage code cannot establish statutory status or policy meaning without product and jurisdiction evidence.
+    - Zero blank waived declined not_applicable and unlimited are distinct states.
+    - Split limits cannot be converted to a combined single limit without an approved rule.
+  rules:
+    - Preserve attachment level effective dates and product version.
+    - Keep split combined per-person per-occurrence and aggregate terms structurally distinct.
+    - Policy wording and authorized product configuration outrank public background knowledge.
+source_references: [edmc_fibo, naic_glossary, ca_doi_auto_terms, naic_mcas_ppa_2026]
+legacy_source_assets: [knowledge/archive/pre_canonical_v0.1.0_v0.2.0/domain/pnc_policy_claims_party_product_candidate_v0.2.0.yml, knowledge/archive/pre_canonical_v0.1.0_v0.2.0/lob/personal_auto_candidate_v0.2.0.yml]
+dependencies: []
+review_requirements: [product_sme, legal_licensing_reviewer]

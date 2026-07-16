@@ -1,0 +1,52 @@
+schema_version: "1.0"
+asset_id: pnc_policy_claims_party_product_domain_candidate
+version: "0.2.0"
+approval_state: CANDIDATE
+authoritative: false
+scope: {lobs: [cross_lob, personal_auto], domains: [party, product, policy, claims, billing]}
+principles:
+  - Business identity, system identity, version identity, and transaction identity are distinct until evidence proves otherwise.
+  - Lifecycle is modeled as effective-dated events and states; a universal state sequence must not be assumed.
+  - Coverage attachment level and claim operational unit vary by product and implementation.
+party_domain:
+  candidate_entities: [party, person, organization, party_role, contact_point, address, party_relationship]
+  temporal_relationships: [policyholder, named_insured, driver, claimant, payee, producer, adjuster, lienholder]
+  questions:
+    - Is a party mastered across Policy, Claims, and Billing or duplicated per system?
+    - Can one person hold multiple roles concurrently and with different effective intervals?
+product_domain:
+  candidate_entities: [insurance_product, product_version, coverage_definition, coverage_term_definition, form, endorsement_definition]
+  relationships:
+    - product_version offers coverage_definition
+    - coverage_definition uses coverage_term_definition
+    - form or endorsement_definition may alter contractual terms
+policy_domain:
+  candidate_entities: [quote, application, policy, policy_term, policy_version, policy_transaction, insured_risk, coverage_selection, premium_component]
+  candidate_events: [quoted, applied, bound, issued, endorsed, renewed, cancelled, reinstated, nonrenewed, rewritten, expired]
+  required_temporal_questions:
+    - What date controls legal effectiveness, processing order, accounting recognition, and reporting snapshots?
+    - Does an endorsement create a new policy version, transaction slice, or both?
+    - How are renewal and rewrite continuity represented?
+    - Can cancellation and reinstatement create gaps or retroactive changes?
+claims_domain:
+  candidate_entities: [loss_event, claim, incident, claimant, claim_exposure, coverage_evaluation, reserve, payment, recovery, claim_status_event]
+  candidate_events: [loss_occurred, loss_reported, claim_opened, coverage_evaluated, reserve_changed, payment_issued, recovery_recorded, claim_closed, claim_reopened]
+  financial_transaction_classes: [reserve_change, payment, recovery, adjustment, void, reissue]
+  required_temporal_questions:
+    - Are financials stored as transactions, current balances, snapshots, or combinations?
+    - Which dates represent loss, report, entry, posting, service, payment, and valuation?
+    - Are claim, exposure, incident, claimant, and coverage evaluation separate source grains?
+    - How are voids, reversals, transfers, and reopened claims represented?
+billing_domain:
+  candidate_entities: [billing_account, invoice, installment, charge, receivable, payment_receipt, allocation, refund, commission]
+  boundary_warning: >-
+    Billing premium, Policy premium, and financial-reporting premium may differ in
+    timing, grain, and accounting basis and must be reconciled rather than equated.
+cross_domain_relationships:
+  - policy_term covers insured_risk through coverage_selection
+  - claim may_reference policy_term and coverage_selection
+  - loss_event involves parties and risk_objects independently of insured status
+  - billing_account finances or collects amounts associated_with policy
+  - claim financial transactions roll_up only under governed accounting definitions
+source_references: [edmc_fibo, naic_glossary, naic_auto_consumer, ca_doi_auto_claims, ny_dfs_auto_resource]
+

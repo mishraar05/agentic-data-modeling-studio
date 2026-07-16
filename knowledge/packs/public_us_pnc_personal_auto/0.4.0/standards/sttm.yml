@@ -1,0 +1,12 @@
+schema_version: "1.0"
+standard_id: sttm_modeling_candidate
+version: "0.3.0"
+approval_state: CANDIDATE
+rules:
+  - Map every target attribute to a source derivation default or explicit gap.
+  - Record transformation joins lookups exceptions DQ rules lineage reconciliation and evidence.
+  - Distinguish observed source facts governed knowledge inferred meaning and human decisions.
+  - Prohibit invented source fields code values relationships and business rules.
+  - Require impact review before accepting a material mapping change.
+source_references: []
+

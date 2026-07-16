@@ -1,0 +1,23 @@
+schema_version: "1.0"
+asset_id: pnc_personal_auto_code_set_registry_candidate
+version: "0.2.0"
+approval_state: CANDIDATE
+authoritative: false
+purpose: >-
+  Inventory code sets the agent should seek and govern. This asset intentionally
+  contains no fabricated code values.
+required_metadata: [code_set_id, business_name, domain, owner, source_authority, version, effective_dates, values, descriptions, mappings, unknown_handling, approval]
+registries:
+  policy: [policy_status, policy_transaction_type, cancellation_reason, nonrenewal_reason, reinstatement_reason, business_type, distribution_channel]
+  product: [product, coverage, coverage_term_type, limit_structure, deductible_type, endorsement_or_form]
+  party: [party_type, party_role, relationship_type, address_type, contact_type]
+  auto_risk: [vehicle_body_type, vehicle_use, ownership_status, garaging_type, driver_status, license_status, driver_assignment_type]
+  claims: [claim_status, claim_close_reason, loss_cause, incident_type, exposure_or_feature_type, claimant_role, coverage_decision, fault_or_liability_status]
+  claim_financials: [transaction_type, cost_type, cost_category, payment_status, reserve_status, recovery_type, recovery_status, void_or_reversal_reason]
+  billing: [invoice_status, charge_type, payment_method, payment_status, delinquency_status, commission_type]
+external_alignment_candidates:
+  - registry: crash_vehicle_person_and_roadway_codes
+    source_reference: nhtsa_mmucc6
+    rule: Preserve source edition and local extensions; do not conflate police-report codes with insurer claim codes.
+source_references: [nhtsa_mmucc6, naic_glossary, ca_doi_auto_guide, ny_dfs_auto_resource]
+

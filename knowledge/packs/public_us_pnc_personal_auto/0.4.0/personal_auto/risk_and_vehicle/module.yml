@@ -1,0 +1,21 @@
+schema_version: "1.0"
+module_id: personal_auto_risk_and_vehicle
+module_version: "0.3.0"
+layer: personal_auto
+approval_state: CANDIDATE
+runtime_eligible: false
+owner: TBD_PERSONAL_AUTO_STEWARD
+scope: {lob: personal_auto, domains: [risk, vehicle]}
+non_scope: [rating_algorithm, proprietary_vehicle_enrichment]
+content:
+  objects: [vehicle, risk_unit, garaging_location]
+  attributes_to_seek: [vin, make, model, model_year, body_type, ownership, registration, usage, annual_mileage, garaging, safety_features, anti_theft_features]
+  rules:
+    - Represent characteristic source and effective interval.
+    - Separate insured rated involved and third-party vehicle roles.
+    - MMUCC alignment is external-event context and not an insurance claim schema.
+source_references: [naic_auto_consumer, ca_doi_auto_guide, nhtsa_mmucc6]
+legacy_source_assets: [knowledge/archive/pre_canonical_v0.1.0_v0.2.0/lob/personal_auto_candidate_v0.2.0.yml]
+dependencies: [insurance_core_product_and_coverage]
+review_requirements: [personal_auto_sme]
+

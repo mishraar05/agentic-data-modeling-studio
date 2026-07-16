@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=70"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agentic-data-modeling-studio"
+version = "0.1.0"
+description = "Agentic Source Data Dictionary, Silver, Gold, and STTM modeling solution"
+requires-python = ">=3.11"
+dependencies = [
+  "jsonschema>=4.23,<5",
+  "pyyaml>=6,<7",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8,<10",
+]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["agentic_data_modeler*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentic-data-modeler:contract:RECORD_NAME:SCHEMA_VERSION",
+  "$comment": "Neutral scaffold. Genie Code substitutes the explicit tokens from contract_inventory.yaml. The scaffold remains authoring-incomplete until x-authoring-status and the record-specific field block are replaced.",
+  "x-authoring-status": "TODO_RECORD_FIELDS",
+  "type": "object",
+  "allOf": [
+    {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/envelope"},
+    {
+      "properties": {
+        "schema_version": {"const": "SCHEMA_VERSION"},
+        "lifecycle_state": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/lifecycle_LIFECYCLE_FAMILY"},
+        "provenance": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/PROVENANCE_DEF"}
+      },
+      "required": []
+    },
+    {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/LIFECYCLE_GUARD_DEF"}
+  ],
+  "unevaluatedProperties": false
+}

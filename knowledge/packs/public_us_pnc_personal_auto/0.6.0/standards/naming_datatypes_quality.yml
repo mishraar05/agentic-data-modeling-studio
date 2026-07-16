@@ -1,0 +1,45 @@
+schema_version: "1.0"
+standard_id: naming_datatypes_quality_candidate
+version: "0.6.0"
+approval_state: CANDIDATE
+naming:
+  rules:
+    - Separate preferred business name physical name source name and display label.
+    - Use stable singular concept names for entities and explicit event or snapshot suffixes for facts.
+    - Expand or govern abbreviations; do not guess an opaque abbreviation.
+    - Role-qualified names distinguish named insured claimant payee driver vehicle and date roles.
+datatypes:
+  identifiers:
+    - Preserve source representation including leading zeros and formatting separately from normalized identifiers.
+    - Do not store identifiers as numeric solely because observed characters are digits.
+  numeric:
+    - Declare precision scale unit currency sign convention and rounding.
+    - Avoid binary floating point for monetary target attributes.
+  temporal:
+    - Declare date timestamp timezone and business meaning.
+    - Effective processing accounting valuation and capture timestamps are separate.
+  text:
+    - Preserve raw encoding and define normalization truncation and invalid-character handling.
+  boolean_and_state:
+    - Distinguish true false unknown missing not_applicable withheld and invalid where source semantics require it.
+history:
+  - Type 1 requires an explicit no-history rationale by attribute group.
+  - Type 2 requires business key effective start effective end current indicator and change-detection rule.
+  - Bitemporal modeling is considered when business-effective and system-recorded timelines differ materially.
+quality_dimensions:
+  completeness: in_scope_inventory_and_required_attribute_population
+  validity: datatype_format_range_and_allowed_state
+  uniqueness: declared_grain_key_uniqueness
+  consistency: cross_attribute_cross_record_and_cross_system_rules
+  referential_integrity: required_parent_and_reference_resolution
+  temporal_validity: interval_order_overlap_gap_and_as_of_consistency
+  reconciliation: financial_count_and_population_balance
+  provenance: evidence_lineage_and_context_resolution
+  privacy: classification_minimization_and_treatment
+finding_contract: [finding_id, rule_id, severity, affected_grain, observed_result, expected_contract, evidence, disposition, owner, status]
+severity_policy:
+  critical: security_privacy_cross_engagement_or_material_financial_integrity_failure
+  high: grain_key_lineage_or_material_mapping_failure
+  medium: semantic_code_temporal_or_requirement_coverage_issue
+  low: naming_documentation_or_nonmaterial_quality_issue
+source_references: [databricks_cdc_scd, nist_sp_800_122]

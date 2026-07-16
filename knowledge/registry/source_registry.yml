@@ -1,0 +1,16 @@
+schema_version: "1.0"
+active_registry: knowledge/sources/public_references_v0.6.0.yml
+previous_registries:
+  - knowledge/sources/public_references_v0.5.0.yml
+  - knowledge/sources/public_references_v0.4.0.yml
+  - knowledge/sources/public_references.yml
+legacy_registries:
+  - knowledge/archive/pre_canonical_v0.1.0_v0.2.0/manifests/source_register.yml
+  - knowledge/archive/pre_canonical_v0.1.0_v0.2.0/manifests/source_register_v0.2.0.yml
+policy:
+  unknown_source: reject
+  missing_usage_basis: reject
+  unapproved_proprietary_source: reject
+  regulation_primary_source: official_publisher_required
+  copyrighted_public_reference: independent_paraphrase_and_licensing_review_required
+  internal_governing_source: exact_version_or_path_required

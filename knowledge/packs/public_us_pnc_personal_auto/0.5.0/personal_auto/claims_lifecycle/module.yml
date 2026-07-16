@@ -1,0 +1,46 @@
+schema_version: "1.0"
+module_id: personal_auto_claims_lifecycle
+module_version: "0.5.0"
+layer: personal_auto
+approval_state: CANDIDATE
+runtime_eligible: false
+owner: TBD_PERSONAL_AUTO_CLAIMS_STEWARD
+scope: {lob: personal_auto, domains: [claims]}
+non_scope: [state_specific_claim_deadlines, carrier_claim_workflow, automated_fault_or_coverage_decision]
+content:
+  lifecycle_stages:
+    - {stage: loss, evidence_outputs: [loss_occurrence, involved_parties, involved_vehicles, location, reported_circumstances]}
+    - {stage: first_notice, evidence_outputs: [report_time, reporter_role, presented_claim_or_information_only_state]}
+    - {stage: triage, evidence_outputs: [candidate_claimants, incidents, coverages, severity_or_complexity_observations]}
+    - {stage: investigation, evidence_outputs: [source_requests, statements, documents, inspections, contradictions]}
+    - {stage: coverage_evaluation, evidence_outputs: [coverage_decision_version, basis_reference, decision_time, unresolved_issues]}
+    - {stage: liability_or_fault_context, evidence_outputs: [party_allegations, insurer_observations, comparative_allocation_when_authorized, adjudicated_outcome]}
+    - {stage: damage_or_injury_evaluation, evidence_outputs: [claimant_or_property, estimate_or_bill, valuation_basis, prior_damage_observation]}
+    - {stage: financial_management, evidence_outputs: [reserve_transactions, payments, expenses, recoveries, valuation_snapshots]}
+    - {stage: closure, evidence_outputs: [closure_state, closure_time, payment_state, final_payment_time_when_applicable]}
+    - {stage: reopening, evidence_outputs: [reopen_time, reopen_reason, supplemental_request_time, linked_prior_episode]}
+  physical_damage_concepts: [repair, total_loss, appraisal, prior_damage, salvage, subrogation, rental_or_substitute_transportation, deductible]
+  claim_handling_channel:
+    values: [digital, hybrid, non_digital, unknown]
+    rule: Channel describes handling process and must not create a different business claim identity.
+  reporting_contexts:
+    naic_mcas_claim_activity:
+      grain: claimant_or_insured_by_coverage_part
+      closure_states: [closed_with_payment, closed_without_payment]
+      duration_population: claims_closed_in_reporting_period
+      final_payment_duration_start: loss_reported_time_or_supplemental_request_received_time
+      duration_end: final_payment_issued_time
+      exclusions_from_median: [subrogation_payment]
+  evidence_separation:
+    - Police or crash-report facts insurer observations party allegations and adjudicated decisions remain distinct evidence classes.
+    - Coverage evaluation liability allocation damage valuation and payment authorization are separate decisions.
+    - A closed claim may have a prior final payment date; closure and payment milestones remain separate.
+    - Reopening for supplemental payment requires its own episode dates for duration analytics.
+  modeling_implications:
+    silver: Persist stage events evidence coverage decisions financial transactions and reopen episodes at their natural grains.
+    gold: Build claim claimant coverage financial and duration facts separately with declared counting contexts.
+    sttm: Every lifecycle derivation identifies event timestamps grain inclusion rules and evidence class.
+source_references: [ca_doi_auto_claims, nhtsa_mmucc6, naic_mcas_ppa_2026, ca_ccr_2695_5, ca_ccr_2695_7]
+legacy_source_assets: [knowledge/archive/pre_canonical_v0.1.0_v0.2.0/domain/pnc_policy_claims_party_product_candidate_v0.2.0.yml, knowledge/archive/pre_canonical_v0.1.0_v0.2.0/lob/personal_auto_candidate_v0.2.0.yml]
+dependencies: [insurance_core_claims, personal_auto_risk_and_vehicle, personal_auto_coverages]
+review_requirements: [personal_auto_claims_sme, jurisdiction_reviewer]

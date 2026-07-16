@@ -1,0 +1,21 @@
+schema_version: "1.0"
+module_id: personal_auto_kpis
+module_version: "0.3.0"
+layer: personal_auto
+approval_state: CANDIDATE
+runtime_eligible: false
+owner: TBD_PERSONAL_AUTO_ANALYTICS_STEWARD
+scope: {lob: personal_auto, domains: [analytics]}
+non_scope: [approved_enterprise_formula, statutory_reporting_definition]
+content:
+  kpis: [in_force_policy_count, insured_vehicle_exposure, written_premium, earned_premium, new_business_policy_count, renewal_retention_rate, cancellation_rate, claim_count, claim_frequency, paid_loss, case_reserve, incurred_loss, loss_adjustment_expense, claim_severity, loss_ratio, combined_ratio, closure_rate, average_days_to_close, recovery_rate, reopen_rate]
+  required_metadata: [grain, formula_version, basis, inclusions, exclusions, zero_denominator_rule, dimensions, lineage, owner, effective_dates]
+  rules:
+    - Every formula remains candidate until business and finance approval.
+    - Claim counts must declare claim exposure claimant or occurrence grain.
+    - Exposure and premium denominators must use compatible time and accounting bases.
+source_references: [naic_glossary, naic_auto_consumer]
+legacy_source_assets: [knowledge/archive/pre_canonical_v0.1.0_v0.2.0/kpi_catalog/pnc_personal_auto_candidate_v0.2.0.yml]
+dependencies: [insurance_core_common_analytics, personal_auto_policy_lifecycle, personal_auto_claims_lifecycle]
+review_requirements: [analytics_steward, finance_sme, personal_auto_sme]
+

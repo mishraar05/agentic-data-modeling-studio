@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentic-data-modeler:knowledge:completeness:1.0",
+  "type": "object",
+  "required": ["schema_version", "pack_id", "pack_version", "content_completeness_percent", "trusted_runtime_readiness_percent", "dimensions"],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "pack_id": {"type": "string"},
+    "pack_version": {"type": "string"},
+    "content_completeness_percent": {"type": "integer", "minimum": 0, "maximum": 100},
+    "trusted_runtime_readiness_percent": {"type": "integer", "minimum": 0, "maximum": 100},
+    "assessment_confidence": {"enum": ["LOW", "MEDIUM_LOW", "MEDIUM", "HIGH"]},
+    "dimensions": {"type": "array", "items": {"type": "object", "required": ["dimension", "weight_percent", "coverage_percent"], "properties": {"dimension": {"type": "string"}, "weight_percent": {"type": "number", "minimum": 0}, "coverage_percent": {"type": "number", "minimum": 0, "maximum": 100}, "gaps": {"type": "array", "items": {"type": "string"}}}}}
+  }
+}
+

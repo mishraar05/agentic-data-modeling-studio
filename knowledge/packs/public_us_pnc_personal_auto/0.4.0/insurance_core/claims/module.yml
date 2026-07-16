@@ -1,0 +1,22 @@
+schema_version: "1.0"
+module_id: insurance_core_claims
+module_version: "0.3.0"
+layer: insurance_core
+approval_state: CANDIDATE
+runtime_eligible: false
+owner: TBD_CLAIMS_STEWARD
+scope: {domains: [claims], lobs: [cross_lob, personal_auto]}
+non_scope: [carrier_claim_workflow, jurisdiction_settlement_deadlines]
+content:
+  entities: [loss_event, claim, incident, claimant, claim_exposure, coverage_evaluation, reserve, payment, recovery, claim_status_event]
+  events: [loss_occurred, loss_reported, claim_opened, coverage_evaluated, reserve_changed, payment_issued, recovery_recorded, claim_closed, claim_reopened]
+  financial_classes: [reserve_change, payment, recovery, adjustment, void, reissue]
+  rules:
+    - Determine whether claim incident claimant exposure and coverage evaluation are distinct source grains.
+    - Preserve transaction balance snapshot valuation and posting semantics.
+    - Never infer financial sign or coverage decision from a code label alone.
+source_references: [naic_glossary, ca_doi_auto_claims, ny_dfs_auto_resource]
+legacy_source_assets: [knowledge/archive/pre_canonical_v0.1.0_v0.2.0/domain/pnc_policy_claims_party_product_candidate_v0.2.0.yml]
+dependencies: [insurance_core_party, insurance_core_policy, insurance_core_product_and_coverage]
+review_requirements: [claims_sme, claims_finance_sme]
+

@@ -1,0 +1,91 @@
+schema_version: "1.0"
+module_id: personal_auto_kpis
+module_version: "0.5.0"
+layer: personal_auto
+approval_state: CANDIDATE
+runtime_eligible: false
+owner: TBD_PERSONAL_AUTO_ANALYTICS_STEWARD
+scope: {lob: personal_auto, domains: [analytics]}
+non_scope: [approved_enterprise_formula, statutory_financial_statement_definition, carrier_performance_target]
+content:
+  formula_contract:
+    required_metadata: [kpi_id, formula_version, purpose, grain, population, time_basis, numerator, denominator, inclusions, exclusions, zero_denominator_rule, dimensions, lineage, owner, effective_dates, approval_state]
+    rules:
+      - Store base measures and atomic durations so ratios and medians can be reproduced.
+      - A regulator-aligned formula is a named analytical context and does not automatically become the enterprise KPI.
+      - Ratios are recalculated from compatible components and are never summed or averaged across groups.
+  base_measures:
+    - {measure_id: policies_in_force_end_period, grain: policy, time_basis: end_of_reporting_period_snapshot, definition: Policies whose coverage is in effect at reporting-period end., additivity: non_additive_over_time}
+    - {measure_id: autos_in_force_end_period, grain: policy_vehicle, time_basis: end_of_reporting_period_snapshot, definition: Autos attached to policies in force at reporting-period end under the adopted reporting population., additivity: non_additive_over_time}
+    - {measure_id: new_business_policies_written, grain: policy, time_basis: effective_during_reporting_period, definition: Newly written coverage put into effect during the period., exclusions: [renewal, rewrite_without_lapse]}
+    - {measure_id: company_initiated_nonrenewals, grain: policy, time_basis: nonrenewal_effective_during_reporting_period, exclusions: [renewal_offer_not_accepted, policyholder_requested_nonrenewal]}
+    - {measure_id: cancellation_events, grain: policy_cancellation_event, time_basis: cancellation_effective_during_reporting_period, required_dimensions: [initiating_party, reason, days_from_original_inception_bucket]}
+    - {measure_id: claims_open_begin, grain: claimant_or_insured_by_coverage_part, time_basis: reporting_period_begin_snapshot}
+    - {measure_id: claims_opened, grain: claimant_or_insured_by_coverage_part, time_basis: opened_during_reporting_period}
+    - {measure_id: claims_closed_with_payment, grain: claimant_or_insured_by_coverage_part, time_basis: closed_during_reporting_period}
+    - {measure_id: claims_closed_without_payment, grain: claimant_or_insured_by_coverage_part, time_basis: closed_during_reporting_period}
+    - {measure_id: claims_open_end, grain: claimant_or_insured_by_coverage_part, time_basis: reporting_period_end_snapshot}
+    - {measure_id: direct_written_premium, grain: insurer_jurisdiction_lob_reporting_period, time_basis: financial_reporting_period, warning: accounting_definition_requires_finance_approval}
+  regulator_aligned_kpis:
+    - kpi_id: claims_closed_without_payment_ratio
+      formula_version: naic_mcas_2026_0
+      grain: reporting_period_coverage_population
+      numerator: claims_closed_without_payment
+      denominator: claims_closed_with_payment + claims_closed_without_payment
+      zero_denominator_rule: null_with_reason
+    - kpi_id: claims_unprocessed_end_period_ratio
+      formula_version: naic_mcas_2026_0
+      grain: reporting_period_coverage_population
+      numerator: claims_open_begin + claims_opened - claims_closed_with_payment - claims_closed_without_payment
+      denominator: claims_open_begin + claims_opened
+      zero_denominator_rule: null_with_reason
+      reconciliation: numerator_should_reconcile_to_claims_open_end_under_same_counting_basis
+    - kpi_id: claims_paid_beyond_60_days_ratio
+      formula_version: naic_mcas_2026_0
+      grain: reporting_period_coverage_population
+      numerator: claims_closed_with_payment_61_90 + claims_closed_with_payment_91_180 + claims_closed_with_payment_181_365 + claims_closed_with_payment_over_365
+      denominator: claims_closed_with_payment_all_duration_buckets
+      zero_denominator_rule: null_with_reason
+    - kpi_id: company_initiated_nonrenewals_to_policies_in_force
+      formula_version: naic_mcas_2026_0
+      grain: reporting_period_jurisdiction_population
+      numerator: company_initiated_nonrenewals
+      denominator: policies_in_force_end_period
+      zero_denominator_rule: null_with_reason
+    - kpi_id: company_cancellations_60_or_more_days_to_policies_in_force
+      formula_version: naic_mcas_2026_0
+      grain: reporting_period_jurisdiction_population
+      numerator: company_cancellations_60_90_days + company_cancellations_over_90_days
+      denominator: policies_in_force_end_period
+      zero_denominator_rule: null_with_reason
+    - kpi_id: company_cancellations_first_59_days_to_new_policies
+      formula_version: naic_mcas_2026_0
+      grain: reporting_period_jurisdiction_population
+      numerator: company_cancellations_first_59_days
+      denominator: new_business_policies_written
+      zero_denominator_rule: null_with_reason
+    - kpi_id: median_days_to_final_payment
+      formula_version: naic_mcas_ppa_2026_2
+      grain: reporting_period_coverage_and_claim_handling_channel_population
+      atomic_duration_start: loss_reported_time_or_supplemental_payment_request_received_time
+      atomic_duration_end: final_payment_issued_time
+      statistic: median
+      population: claims_closed_with_payment_during_reporting_period
+      exclusions: [subrogation_payments]
+      validation: median_must_be_consistent_with_reported_duration_bucket_population
+  unresolved_enterprise_kpis:
+    - {kpi_id: insured_vehicle_exposure, missing_approval: exposure_unit_and_earning_method}
+    - {kpi_id: earned_premium, missing_approval: accounting_and_earning_basis}
+    - {kpi_id: incurred_loss, missing_approval: reserve_payment_recovery_and_expense_basis}
+    - {kpi_id: claim_frequency, missing_approval: claim_grain_and_exposure_denominator}
+    - {kpi_id: claim_severity, missing_approval: loss_basis_claim_population_and_zero_handling}
+    - {kpi_id: loss_ratio, missing_approval: loss_and_premium_bases}
+    - {kpi_id: combined_ratio, missing_approval: expense_allocation_and_financial_basis}
+  rules:
+    - Every formula remains candidate until business and finance approval.
+    - Claim counts must declare claim file exposure claimant occurrence or regulator-aligned claimant-by-coverage grain.
+    - Exposure and premium denominators must use compatible time and accounting bases.
+source_references: [naic_glossary, naic_mcas_ppa_2026, naic_mcas_ratios_2026]
+legacy_source_assets: [knowledge/archive/pre_canonical_v0.1.0_v0.2.0/kpi_catalog/pnc_personal_auto_candidate_v0.2.0.yml]
+dependencies: [insurance_core_common_analytics, personal_auto_policy_lifecycle, personal_auto_claims_lifecycle]
+review_requirements: [analytics_steward, finance_sme, personal_auto_sme]

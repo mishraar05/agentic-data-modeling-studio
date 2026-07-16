@@ -1,0 +1,62 @@
+schema_version: "1.0"
+pack_id: public_pnc_policy_claims_personal_auto
+pack_version: "0.1.0"
+title: Public P&C Policy, Claims, and Personal Auto candidate knowledge pack
+approval_state: CANDIDATE
+runtime_eligible: false
+immutable: true
+created_at: "2026-07-15"
+effective_from: null
+effective_to: null
+owner: TBD_KNOWLEDGE_OWNER
+required_reviewers:
+  - p_and_c_domain_steward
+  - data_architect
+  - knowledge_owner
+  - legal_licensing_reviewer
+knowledge_types:
+  - business_glossary
+  - domain_knowledge
+  - lob_knowledge
+  - modeling_standards
+  - external_ontology_reference
+scope:
+  engagement: reusable_non_client
+  industry: property_and_casualty_insurance
+  lobs: [cross_lob, personal_auto]
+  domains: [policy, claims, party]
+  jurisdiction: unspecified
+  product: unspecified
+  module: unspecified
+  target_platform: databricks
+precedence:
+  - approved_client_evidence
+  - approved_engagement_decisions
+  - approved_enterprise_knowledge
+  - this_pack_after_approval
+prohibitions:
+  - must_not_be_treated_as_source_system_evidence
+  - must_not_override_client_or_jurisdiction_specific_meaning
+  - must_not_auto_approve_generated_artifacts
+  - must_not_create_or_extend_an_ontology
+  - must_not_be_loaded_into_runtime_context_while_candidate
+source_register: knowledge/manifests/source_register.yml
+evidence_review: docs/evidence/PUBLIC_PNC_KNOWLEDGE_PACK_REVIEW.md
+assets:
+  - path: knowledge/business_glossary/pnc_core_terms_candidate_v0.1.0.yml
+    sha256: b86134dc552a660359a277b20eaf45e43fa41013fa1e8663642ddbf39bf19b3d
+  - path: knowledge/domain/policy_claims_candidate_v0.1.0.yml
+    sha256: 3b3daf8a34c6516fc46a216ad924676024de7223f9c5b0c4977ba4e7929242be
+  - path: knowledge/lob/personal_auto_candidate_v0.1.0.yml
+    sha256: 6c9a5d4b35131ab7bafb90ac5a35bfcf548e1a53246c140baaee25e4e05c1f5e
+  - path: knowledge/modeling_standards/databricks_medallion_candidate_v0.1.0.yml
+    sha256: 64530dafd29b942a7e2ee0cc115e69e8e6e977a4bf3f911871cce2d3af026bbc
+  - path: knowledge/ontology/fibo_reference_candidate_v0.1.0.yml
+    sha256: 57192a66893fd5be7c6c64dcc94c68c250bf445566368eae1086b2d0ee797e88
+approval_conditions:
+  - confirm_no_third_party_definition_was_copied
+  - resolve_naic_reference_permission_policy
+  - select_exact_fibo_release_and_concepts_if_used
+  - approve_domain_and_lob_semantics
+  - approve_silver_and_gold_modeling_standards
+  - execute_unseen_proof_slice_evaluation

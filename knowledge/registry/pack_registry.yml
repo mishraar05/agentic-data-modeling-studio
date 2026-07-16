@@ -1,0 +1,39 @@
+schema_version: "1.0"
+selection_policy: exact_version_fail_closed
+packs:
+  - pack_id: public_us_pnc_personal_auto
+    pack_version: "0.6.0"
+    lifecycle: CANONICAL_CANDIDATE
+    approval_state: CANDIDATE
+    runtime_eligible: false
+    manifest: knowledge/packs/public_us_pnc_personal_auto/0.6.0/manifest.yml
+  - pack_id: public_us_pnc_personal_auto
+    pack_version: "0.5.0"
+    lifecycle: SUPERSEDED_CANDIDATE
+    approval_state: CANDIDATE
+    runtime_eligible: false
+    manifest: knowledge/packs/public_us_pnc_personal_auto/0.5.0/manifest.yml
+  - pack_id: public_us_pnc_personal_auto
+    pack_version: "0.4.0"
+    lifecycle: SUPERSEDED_CANDIDATE
+    approval_state: CANDIDATE
+    runtime_eligible: false
+    manifest: knowledge/packs/public_us_pnc_personal_auto/0.4.0/manifest.yml
+  - pack_id: public_us_pnc_personal_auto
+    pack_version: "0.3.0"
+    lifecycle: SUPERSEDED_CANDIDATE
+    approval_state: CANDIDATE
+    runtime_eligible: false
+    manifest: knowledge/packs/public_us_pnc_personal_auto/0.3.0/manifest.yml
+  - pack_id: public_us_pnc_personal_auto
+    pack_version: "0.2.0"
+    lifecycle: LEGACY_DEVELOPMENT
+    approval_state: CANDIDATE
+    runtime_eligible: false
+    manifest: knowledge/archive/pre_canonical_v0.1.0_v0.2.0/manifests/public_us_pnc_personal_auto_candidate_v0.2.0.yml
+  - pack_id: public_pnc_policy_claims_personal_auto
+    pack_version: "0.1.0"
+    lifecycle: LEGACY_DEVELOPMENT
+    approval_state: CANDIDATE
+    runtime_eligible: false
+    manifest: knowledge/archive/pre_canonical_v0.1.0_v0.2.0/manifests/public_pnc_policy_claims_personal_auto_candidate_v0.1.0.yml

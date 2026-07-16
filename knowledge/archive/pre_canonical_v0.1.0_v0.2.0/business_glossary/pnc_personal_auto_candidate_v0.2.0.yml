@@ -1,0 +1,56 @@
+schema_version: "1.0"
+asset_id: pnc_personal_auto_glossary_candidate
+version: "0.2.0"
+approval_state: CANDIDATE
+authoritative: false
+scope: {industry: property_and_casualty, lob: personal_auto, jurisdiction: US_general}
+usage_guardrail: >-
+  Independently authored candidate meanings. Approved client terminology, policy
+  wording, and jurisdictional rules take precedence.
+term_groups:
+  party_and_distribution:
+    - {term: policyholder, meaning: "Party that owns or controls the policy contract; may differ from insured, driver, or payer."}
+    - {term: named_insured, meaning: "Party explicitly identified in policy records as holding an insured role."}
+    - {term: additional_insured, meaning: "Additional party granted a defined insured status under applicable policy terms."}
+    - {term: claimant, meaning: "Party asserting a right to evaluation or recovery in connection with a claim."}
+    - {term: producer, meaning: "Licensed distribution party associated with selling, negotiating, or servicing coverage."}
+    - {term: adjuster, meaning: "Party responsible for investigating, evaluating, or facilitating resolution of a claim."}
+  policy_and_product:
+    - {term: quote, meaning: "Pre-contract representation of proposed coverage, terms, and price based on stated information."}
+    - {term: application, meaning: "Submission of information and requested coverage for underwriting consideration."}
+    - {term: binder, meaning: "Temporary evidence of coverage pending issuance of the formal policy, subject to applicable terms."}
+    - {term: policy_term, meaning: "Bounded effective period during which a policy version may provide coverage."}
+    - {term: endorsement, meaning: "Documented amendment that adds, removes, or changes policy terms or coverage."}
+    - {term: renewal, meaning: "Continuation into a subsequent policy term through a new contractual period or version."}
+    - {term: cancellation, meaning: "Termination of coverage before the scheduled end of the policy term."}
+    - {term: nonrenewal, meaning: "Decision not to continue coverage into a subsequent term; distinct from midterm cancellation."}
+    - {term: reinstatement, meaning: "Restoration of coverage after a cancellation or lapse, with effective treatment determined by evidence."}
+    - {term: rewrite, meaning: "Replacement of a policy with another policy record, potentially preserving selected business continuity."}
+    - {term: coverage, meaning: "Defined protection attached at a documented level and bounded by terms, limits, exclusions, and effective time."}
+    - {term: limit, meaning: "Maximum insurer obligation or applicable cap, qualified by coverage, participant, occurrence, aggregate, and period."}
+    - {term: deductible, meaning: "Amount or rule assigning an initial portion of qualifying loss to the insured."}
+    - {term: written_premium, meaning: "Premium recognized as written for policies or transactions during a reporting period, subject to accounting basis."}
+    - {term: earned_premium, meaning: "Portion of premium attributed to elapsed coverage exposure during a reporting period."}
+    - {term: unearned_premium, meaning: "Portion of written or collected premium associated with future, unexpired coverage."}
+  risk_and_auto:
+    - {term: risk_unit, meaning: "Insurable unit at which characteristics, coverage, price, or exposure may be evaluated."}
+    - {term: vehicle, meaning: "Motor vehicle represented as an insured, rated, involved, or third-party object in context."}
+    - {term: driver, meaning: "Person represented in a driving role; assignment to policy, household, or vehicle is time-dependent."}
+    - {term: household, meaning: "Candidate grouping of persons and risks used by some products; exact membership requires governed rules."}
+    - {term: garaging_location, meaning: "Location associated with where a vehicle is principally kept, when collected and applicable."}
+    - {term: exposure, meaning: "Measured amount of risk subject to loss over time; unit and basis must be explicit."}
+  claim_and_financial:
+    - {term: loss_event, meaning: "Occurrence or circumstance potentially producing damage, injury, liability, or covered expense."}
+    - {term: first_notice_of_loss, meaning: "Initial notification that starts or contributes to creation of a claim record."}
+    - {term: claim, meaning: "Insurer record for evaluating asserted loss or obligation under potentially applicable coverage."}
+    - {term: incident, meaning: "Distinct event, damage, or injury component represented within or alongside a claim."}
+    - {term: claim_exposure, meaning: "Operational unit used to manage a claimant, coverage, damage, or liability component; implementation varies."}
+    - {term: reserve, meaning: "Estimate recorded for anticipated unpaid claim cost, with category and valuation date explicitly identified."}
+    - {term: payment, meaning: "Claim financial transaction disbursing an amount to or for a payee under a defined cost category."}
+    - {term: recovery, meaning: "Amount recovered or expected from another party or source, classified by recovery basis."}
+    - {term: subrogation, meaning: "Recovery pursuit based on rights against a party responsible for a loss after or alongside insurer payment."}
+    - {term: salvage, meaning: "Residual property or proceeds associated with damaged property after a loss settlement."}
+    - {term: incurred_loss, meaning: "Reporting measure combining paid and unpaid loss components under an explicitly governed accounting definition."}
+    - {term: loss_adjustment_expense, meaning: "Expense associated with investigating, adjusting, defending, or settling claims, classified by governed rules."}
+source_references: [naic_glossary, naic_auto_consumer, ca_doi_auto_guide, ca_doi_auto_claims, ny_dfs_auto_resource]
+
