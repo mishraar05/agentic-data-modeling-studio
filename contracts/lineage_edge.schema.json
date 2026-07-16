@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentic-data-modeler:contract:lineage_edge:0.1.0",
+  "$comment": "Records lineage relationships between source attributes, evidence, and artifacts.",
+  "type": "object",
+  "allOf": [
+    {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/envelope"},
+    {
+      "properties": {
+        "schema_version": {"const": "0.1.0"},
+        "lifecycle_state": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/lifecycle_append_only"},
+        "provenance": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/provenance"},
+        "work_package_ref": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Reference to the work package"
+        },
+        "source_type": {
+          "type": "string",
+          "enum": ["SOURCE_ATTRIBUTE", "EVIDENCE_ITEM", "ARTIFACT"],
+          "description": "Type of source in lineage"
+        },
+        "source_ref": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Reference to the source record"
+        },
+        "target_ref": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Reference to the target record"
+        },
+        "transformation": {
+          "type": "string",
+          "description": "Description of transformation applied"
+        },
+        "evidence_item_ref": {
+          "type": "string",
+          "description": "Optional reference to supporting evidence"
+        },
+        "artifact_version_ref": {
+          "type": "string",
+          "description": "Optional reference to artifact version"
+        }
+      },
+      "required": ["work_package_ref", "source_type", "source_ref", "target_ref"]
+    },
+    {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/no_op_guard"}
+  ],
+  "unevaluatedProperties": false
+}

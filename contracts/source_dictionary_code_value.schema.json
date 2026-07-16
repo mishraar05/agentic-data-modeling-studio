@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentic-data-modeler:contract:source_dictionary_code_value:0.1.0",
+  "$comment": "Source Data Dictionary code value record with semantic claims and optional governed mapping.",
+  "type": "object",
+  "allOf": [
+    {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/envelope"},
+    {
+      "properties": {
+        "schema_version": {"const": "0.1.0"},
+        "lifecycle_state": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/lifecycle_material"},
+        "provenance": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/contextual_provenance"},
+        "context_snapshot_ref": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Reference to the context snapshot (required for contextual provenance)"
+        },
+        "attribute_ref": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Reference to the parent source_dictionary_attribute"
+        },
+        "evidence_item_ref": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Reference to supporting evidence"
+        },
+        "code": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The code value"
+        },
+        "meaning": {
+          "$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/semantic_claim",
+          "description": "Business meaning semantic claim"
+        },
+        "frequency": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Occurrence count from profile evidence"
+        },
+        "governed_code_ref": {
+          "$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/governed_code_ref",
+          "description": "Optional mapping to governed code value"
+        },
+        "profile_evidence_ref": {
+          "type": "string",
+          "description": "Reference to profile evidence supporting this code value"
+        },
+        "review_decision_ref": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Reference to review decision (required when APPROVED)"
+        },
+        "open_question_refs": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "References to open questions"
+        }
+      },
+      "required": ["context_snapshot_ref", "attribute_ref", "evidence_item_ref", "code", "meaning"],
+      "allOf": [
+        {
+          "if": {
+            "properties": {"lifecycle_state": {"const": "APPROVED"}}
+          },
+          "then": {
+            "required": ["review_decision_ref"]
+          }
+        }
+      ]
+    },
+    {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/material_approval_guard"}
+  ],
+  "unevaluatedProperties": false
+}

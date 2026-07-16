@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentic-data-modeler:contract:source_snapshot:0.1.0",
+  "$comment": "Immutable snapshot manifest of source metadata inventory for one work package execution. References the exact allow-listed source catalog, schema, table, column, key, and constraint metadata captured at run time.",
+  "type": "object",
+  "allOf": [
+    {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/envelope"},
+    {
+      "properties": {
+        "schema_version": {"const": "0.1.0"},
+        "lifecycle_state": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/lifecycle_append_only"},
+        "provenance": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/provenance"},
+        "work_package_ref": {"type": "string", "minLength": 1},
+        "snapshot_timestamp": {"type": "string", "format": "date-time"},
+        "source_catalog": {"type": "string", "minLength": 1},
+        "source_schema": {"type": "string", "minLength": 1},
+        "captured_table_count": {"type": "integer", "minimum": 1},
+        "captured_column_count": {"type": "integer", "minimum": 1},
+        "metadata_query_ref": {"type": "string", "minLength": 1},
+        "fingerprint": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "notes": {"type": "string"}
+      },
+      "required": [
+        "work_package_ref",
+        "snapshot_timestamp",
+        "source_catalog",
+        "source_schema",
+        "captured_table_count",
+        "captured_column_count",
+        "metadata_query_ref",
+        "fingerprint"
+      ]
+    },
+    {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/no_op_guard"}
+  ],
+  "unevaluatedProperties": false
+}

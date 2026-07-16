@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentic-data-modeler:contract:skill_resolution:0.1.0",
+  "$comment": "Records skill selection and execution for observability and debugging.",
+  "type": "object",
+  "allOf": [
+    {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/envelope"},
+    {
+      "properties": {
+        "schema_version": {"const": "0.1.0"},
+        "lifecycle_state": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/lifecycle_append_only"},
+        "provenance": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/provenance"},
+        "solution_run_ref": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Reference to the solution run"
+        },
+        "skill_name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Name of the skill invoked"
+        },
+        "skill_version": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+          "description": "Semantic version of the skill"
+        },
+        "trigger_conditions": {
+          "type": "array",
+          "items": {"type": "string"},
+          "minItems": 1,
+          "description": "Conditions that triggered skill selection"
+        },
+        "resolution_timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 timestamp when skill was resolved"
+        },
+        "execution_duration_seconds": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Duration of skill execution in seconds"
+        },
+        "context_snapshot_ref": {
+          "type": "string",
+          "description": "Optional reference to context snapshot if used"
+        }
+      },
+      "required": ["solution_run_ref", "skill_name", "skill_version", "trigger_conditions", "resolution_timestamp"]
+    },
+    {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/no_op_guard"}
+  ],
+  "unevaluatedProperties": false
+}

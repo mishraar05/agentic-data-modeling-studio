@@ -1,0 +1,114 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentic-data-modeler:contract:source_dictionary_handoff:0.1.0",
+  "$comment": "Finalized Source Data Dictionary handoff package with contextual provenance and issue gating.",
+  "type": "object",
+  "allOf": [
+    {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/envelope"},
+    {
+      "properties": {
+        "schema_version": {"const": "0.1.0"},
+        "lifecycle_state": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/lifecycle_handoff"},
+        "provenance": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/contextual_provenance"},
+        "artifact_version_ref": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Reference to the artifact version being handed off"
+        },
+        "context_snapshot_ref": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Reference to the context snapshot"
+        },
+        "evidence_set_ref": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Reference to the evidence set"
+        },
+        "requirement_set_ref": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Reference to the requirement set"
+        },
+        "review_decision_ref": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Reference to approval decision"
+        },
+        "source_snapshot_ref": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Reference to the source snapshot"
+        },
+        "profile_snapshot_ref": {
+          "type": "string",
+          "description": "Optional reference to profile snapshot"
+        },
+        "artifact_dependency_refs": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "References to artifact dependency records"
+        },
+        "lineage_edge_refs": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "References to lineage edge records"
+        },
+        "open_question_refs": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "References to open questions"
+        },
+        "handoff_timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 timestamp of handoff"
+        },
+        "object_count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of SDD objects in handoff"
+        },
+        "attribute_count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of SDD attributes in handoff"
+        },
+        "relationship_count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of SDD relationships in handoff"
+        },
+        "code_value_count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of SDD code values in handoff"
+        },
+        "coverage_percentage": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Percentage of source attributes covered"
+        },
+        "open_question_count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of open questions"
+        },
+        "handoff_fingerprint": {
+          "type": "string",
+          "pattern": "^[A-Fa-f0-9]{64}$",
+          "description": "SHA-256 hash of handoff package"
+        },
+        "intended_consumer": {
+          "type": "string",
+          "enum": ["SILVER_MODELER", "GOLD_MODELER"],
+          "description": "Intended downstream consumer"
+        }
+      },
+      "required": ["artifact_version_ref", "context_snapshot_ref", "evidence_set_ref", "requirement_set_ref", "review_decision_ref", "source_snapshot_ref", "handoff_timestamp", "object_count", "attribute_count", "relationship_count", "code_value_count", "coverage_percentage", "open_question_count", "handoff_fingerprint", "intended_consumer"]
+    },
+    {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/handoff_issue_guard"}
+  ],
+  "unevaluatedProperties": false
+}

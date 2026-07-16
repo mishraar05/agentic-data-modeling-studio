@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentic-data-modeler:contract:evidence_item:0.1.0",
+  "$comment": "Individual evidence item with provenance class, content, and citations. Evidence items are created before context assembly and may originate from source facts, documents, requirements, or governed inputs.",
+  "type": "object",
+  "allOf": [
+    {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/envelope"},
+    {
+      "properties": {
+        "schema_version": {"const": "0.1.0"},
+        "lifecycle_state": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/lifecycle_append_only"},
+        "provenance": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/provenance"},
+        "work_package_ref": {"type": "string", "minLength": 1},
+        "provenance_class": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/provenance_class"},
+        "evidence_type": {"enum": ["METADATA", "PROFILE", "DOCUMENT_EXCERPT", "REQUIREMENT", "GLOSSARY_TERM", "STANDARD", "PRIOR_DECISION"]},
+        "content": {"type": "string", "minLength": 1},
+        "source_snapshot_ref": {"type": "string", "minLength": 1},
+        "profile_snapshot_ref": {"type": "string", "minLength": 1},
+        "document_set_ref": {"type": "string", "minLength": 1},
+        "document_locator": {"type": "string", "minLength": 1},
+        "source_object_name": {"type": "string", "minLength": 1},
+        "source_attribute_name": {"type": "string", "minLength": 1},
+        "governed_pack_id": {"type": "string", "pattern": "^[a-z0-9_]+$"},
+        "governed_pack_version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+        "fingerprint": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "notes": {"type": "string"}
+      },
+      "required": [
+        "work_package_ref",
+        "provenance_class",
+        "evidence_type",
+        "content",
+        "fingerprint"
+      ]
+    },
+    {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/no_op_guard"}
+  ],
+  "unevaluatedProperties": false
+}

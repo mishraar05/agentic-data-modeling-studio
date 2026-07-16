@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentic-data-modeler:contract:context_snapshot:0.1.0",
+  "$comment": "Immutable governed context snapshot manifest. Records the exact knowledge pack version, selected modules, approved requirements, effective dates, and content fingerprints used to govern one SDD generation execution.",
+  "type": "object",
+  "allOf": [
+    {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/envelope"},
+    {
+      "properties": {
+        "schema_version": {"const": "0.1.0"},
+        "lifecycle_state": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/lifecycle_append_only"},
+        "provenance": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/provenance"},
+        "work_package_ref": {"type": "string", "minLength": 1},
+        "evidence_set_ref": {"type": "string", "minLength": 1},
+        "requirement_set_ref": {"type": "string", "minLength": 1},
+        "snapshot_timestamp": {"type": "string", "format": "date-time"},
+        "knowledge_pack_id": {"type": "string", "pattern": "^[a-z0-9_]+$"},
+        "knowledge_pack_version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+        "selected_modules": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"type": "string", "pattern": "^[a-z0-9_]+$"}
+        },
+        "context_effective_date": {"type": "string", "format": "date"},
+        "glossary_term_count": {"type": "integer", "minimum": 0},
+        "code_set_count": {"type": "integer", "minimum": 0},
+        "kpi_count": {"type": "integer", "minimum": 0},
+        "context_size_bytes": {"type": "integer", "minimum": 1},
+        "context_fingerprint": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "budget_compliance": {"type": "boolean"},
+        "notes": {"type": "string"}
+      },
+      "required": [
+        "work_package_ref",
+        "evidence_set_ref",
+        "snapshot_timestamp",
+        "knowledge_pack_id",
+        "knowledge_pack_version",
+        "selected_modules",
+        "context_effective_date",
+        "context_size_bytes",
+        "context_fingerprint",
+        "budget_compliance"
+      ]
+    },
+    {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/no_op_guard"}
+  ],
+  "unevaluatedProperties": false
+}

@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentic-data-modeler:contract:open_question:0.1.0",
+  "$comment": "Open question tracking missing or ambiguous information.",
+  "type": "object",
+  "allOf": [
+    {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/envelope"},
+    {
+      "properties": {
+        "schema_version": {"const": "0.1.0"},
+        "lifecycle_state": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/lifecycle_open_item"},
+        "provenance": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/provenance"},
+        "work_package_ref": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Reference to the work package"
+        },
+        "question_text": {
+          "type": "string",
+          "minLength": 10,
+          "description": "The open question"
+        },
+        "question_type": {
+          "type": "string",
+          "enum": ["MISSING_EVIDENCE", "AMBIGUOUS_MEANING", "CONFLICTING_EVIDENCE", "UNCLEAR_REQUIREMENT"],
+          "description": "Category of open question"
+        },
+        "affected_artifacts": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "References to affected artifact records"
+        },
+        "context_snapshot_ref": {
+          "type": "string",
+          "description": "Optional reference to context snapshot"
+        },
+        "evidence_item_ref": {
+          "type": "string",
+          "description": "Optional reference to related evidence"
+        },
+        "resolution_answer": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Answer or resolution (required when RESOLVED)"
+        }
+      },
+      "required": ["work_package_ref", "question_text", "question_type"],
+      "allOf": [
+        {
+          "if": {
+            "properties": {"lifecycle_state": {"const": "RESOLVED"}}
+          },
+          "then": {
+            "required": ["resolution_answer"]
+          }
+        }
+      ]
+    },
+    {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/no_op_guard"}
+  ],
+  "unevaluatedProperties": false
+}

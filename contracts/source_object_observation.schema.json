@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentic-data-modeler:contract:source_object_observation:0.1.0",
+  "$comment": "Evidence record capturing metadata observed for a source table or view.",
+  "type": "object",
+  "allOf": [
+    {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/envelope"},
+    {
+      "properties": {
+        "schema_version": {"const": "0.1.0"},
+        "lifecycle_state": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/lifecycle_append_only"},
+        "provenance": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/provenance"},
+        "source_snapshot_ref": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Reference to the source snapshot"
+        },
+        "evidence_item_ref": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Reference to the parent evidence item"
+        },
+        "catalog_name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Unity Catalog catalog name"
+        },
+        "schema_name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Unity Catalog schema name"
+        },
+        "object_name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Table or view name"
+        },
+        "object_type": {
+          "type": "string",
+          "enum": ["TABLE", "VIEW", "MATERIALIZED_VIEW"],
+          "description": "Type of database object"
+        },
+        "attribute_count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of attributes in this object"
+        },
+        "constraint_observations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "constraint_type": {"type": "string"},
+              "constraint_details": {"type": "string"}
+            },
+            "required": ["constraint_type"]
+          },
+          "description": "List of constraints observed on this object"
+        }
+      },
+      "required": ["source_snapshot_ref", "evidence_item_ref", "catalog_name", "schema_name", "object_name", "object_type", "attribute_count"]
+    },
+    {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/no_op_guard"}
+  ],
+  "unevaluatedProperties": false
+}

@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentic-data-modeler:contract:validation_finding:0.1.0",
+  "$comment": "Validation finding against artifact version for quality assurance.",
+  "type": "object",
+  "allOf": [
+    {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/envelope"},
+    {
+      "properties": {
+        "schema_version": {"const": "0.1.0"},
+        "lifecycle_state": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/lifecycle_open_item"},
+        "provenance": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/provenance"},
+        "artifact_version_ref": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Reference to the artifact version being validated"
+        },
+        "finding_type": {
+          "type": "string",
+          "enum": ["SCHEMA", "REFERENTIAL", "COVERAGE", "POLICY", "CONTRADICTION"],
+          "description": "Category of validation finding"
+        },
+        "severity": {
+          "type": "string",
+          "enum": ["BLOCKING", "ERROR", "WARNING", "INFO"],
+          "description": "Severity level of the finding"
+        },
+        "finding_text": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Description of the validation finding"
+        },
+        "affected_record_refs": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "References to records affected by this finding"
+        },
+        "evidence_item_ref": {
+          "type": "string",
+          "description": "Optional reference to supporting evidence"
+        }
+      },
+      "required": ["artifact_version_ref", "finding_type", "severity", "finding_text"]
+    },
+    {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/no_op_guard"}
+  ],
+  "unevaluatedProperties": false
+}

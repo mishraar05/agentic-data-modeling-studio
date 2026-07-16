@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentic-data-modeler:contract:relationship_candidate:0.1.0",
+  "$comment": "Evidence record capturing observed or inferred relationships between source objects.",
+  "type": "object",
+  "allOf": [
+    {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/envelope"},
+    {
+      "properties": {
+        "schema_version": {"const": "0.1.0"},
+        "lifecycle_state": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/lifecycle_append_only"},
+        "provenance": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/provenance"},
+        "evidence_item_ref": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Reference to the parent evidence item"
+        },
+        "parent_object_observation_ref": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Reference to parent object observation"
+        },
+        "child_object_observation_ref": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Reference to child object observation"
+        },
+        "relationship_type": {
+          "type": "string",
+          "enum": ["PRIMARY_KEY", "FOREIGN_KEY", "INFERRED_FK", "LOOKUP"],
+          "description": "Type of relationship"
+        },
+        "parent_attributes": {
+          "type": "array",
+          "items": {"type": "string"},
+          "minItems": 1,
+          "description": "Parent side attribute names"
+        },
+        "child_attributes": {
+          "type": "array",
+          "items": {"type": "string"},
+          "minItems": 1,
+          "description": "Child side attribute names"
+        },
+        "cardinality": {
+          "type": "string",
+          "enum": ["1:1", "1:M", "M:M"],
+          "description": "Relationship cardinality"
+        },
+        "profile_evidence_refs": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "References to supporting profile evidence"
+        }
+      },
+      "required": ["evidence_item_ref", "parent_object_observation_ref", "child_object_observation_ref", "relationship_type", "parent_attributes", "child_attributes", "cardinality"]
+    },
+    {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/no_op_guard"}
+  ],
+  "unevaluatedProperties": false
+}

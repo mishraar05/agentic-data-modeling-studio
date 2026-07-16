@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentic-data-modeler:contract:review_item:0.1.0",
+  "$comment": "Review item requiring human decision, optionally linked to validation findings.",
+  "type": "object",
+  "allOf": [
+    {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/envelope"},
+    {
+      "properties": {
+        "schema_version": {"const": "0.1.0"},
+        "lifecycle_state": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/lifecycle_open_item"},
+        "provenance": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/provenance"},
+        "artifact_version_ref": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Reference to the artifact version under review"
+        },
+        "validation_finding_refs": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "References to related validation findings"
+        },
+        "review_question": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The question requiring review"
+        },
+        "assigned_to": {
+          "type": "string",
+          "description": "Email or identifier of assigned reviewer"
+        },
+        "resolution_timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 timestamp when item was resolved"
+        }
+      },
+      "required": ["artifact_version_ref", "review_question"],
+      "allOf": [
+        {
+          "if": {
+            "properties": {"lifecycle_state": {"const": "RESOLVED"}}
+          },
+          "then": {
+            "required": ["resolution_timestamp"]
+          }
+        }
+      ]
+    },
+    {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/no_op_guard"}
+  ],
+  "unevaluatedProperties": false
+}

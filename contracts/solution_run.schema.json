@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentic-data-modeler:contract:solution_run:0.1.0",
+  "$comment": "Records a single bounded execution of the agentic data modeler within a work package scope.",
+  "type": "object",
+  "allOf": [
+    {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/envelope"},
+    {
+      "properties": {
+        "schema_version": {"const": "0.1.0"},
+        "lifecycle_state": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/lifecycle_operational"},
+        "provenance": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/provenance"},
+        "work_package_ref": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Reference to the work package record ID"
+        },
+        "run_type": {
+          "type": "string",
+          "enum": ["VALIDATE", "METADATA", "PROFILE", "EVIDENCE", "CONTEXT", "SDD", "REVIEW"],
+          "description": "Type of solution execution"
+        },
+        "start_timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 timestamp when the run started"
+        },
+        "end_timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 timestamp when the run completed or failed"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["RUNNING", "COMPLETED", "FAILED", "CANCELLED"],
+          "description": "Current execution status"
+        },
+        "error_message": {
+          "type": "string",
+          "description": "Error details if status is FAILED"
+        },
+        "cost_usd": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Approximate compute cost in USD for this run"
+        }
+      },
+      "required": ["work_package_ref", "run_type", "start_timestamp", "end_timestamp", "status"]
+    },
+    {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/no_op_guard"}
+  ],
+  "unevaluatedProperties": false
+}

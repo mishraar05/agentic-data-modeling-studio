@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentic-data-modeler:contract:evidence_set:0.1.0",
+  "$comment": "Immutable assembly of evidence items from source metadata, profiles, and requirements for SDD authoring.",
+  "type": "object",
+  "allOf": [
+    {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/envelope"},
+    {
+      "properties": {
+        "schema_version": {"const": "0.1.0"},
+        "lifecycle_state": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/lifecycle_append_only"},
+        "provenance": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/provenance"},
+        "work_package_ref": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Reference to the work package"
+        },
+        "solution_run_ref": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Reference to the solution run that assembled this evidence"
+        },
+        "source_snapshot_ref": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Reference to the source snapshot"
+        },
+        "profile_snapshot_ref": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Reference to the profile snapshot if profiling was performed"
+        },
+        "document_set_ref": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Reference to the document set if documents were provided"
+        },
+        "requirement_set_ref": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Reference to the requirement set if requirements were extracted"
+        },
+        "evidence_item_count": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Number of evidence items in this set"
+        },
+        "assembly_timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 timestamp when evidence was assembled"
+        },
+        "fingerprint": {
+          "type": "string",
+          "pattern": "^[A-Fa-f0-9]{64}$",
+          "description": "SHA-256 hash of evidence set for verification"
+        }
+      },
+      "required": ["work_package_ref", "solution_run_ref", "source_snapshot_ref", "evidence_item_count", "assembly_timestamp", "fingerprint"]
+    },
+    {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/no_op_guard"}
+  ],
+  "unevaluatedProperties": false
+}

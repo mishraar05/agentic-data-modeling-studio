@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentic-data-modeler:contract:source_dictionary_object:0.1.0",
+  "$comment": "Source Data Dictionary object record with semantic claims requiring context and approval.",
+  "type": "object",
+  "allOf": [
+    {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/envelope"},
+    {
+      "properties": {
+        "schema_version": {"const": "0.1.0"},
+        "lifecycle_state": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/lifecycle_material"},
+        "provenance": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/contextual_provenance"},
+        "context_snapshot_ref": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Reference to the context snapshot (required for contextual provenance)"
+        },
+        "source_object_observation_ref": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Reference to the source object observation"
+        },
+        "evidence_item_ref": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Reference to supporting evidence"
+        },
+        "source_object_name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Fully qualified source object name"
+        },
+        "business_name": {
+          "$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/semantic_claim",
+          "description": "Business name semantic claim"
+        },
+        "business_definition": {
+          "$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/semantic_claim",
+          "description": "Business definition semantic claim"
+        },
+        "business_purpose": {
+          "$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/semantic_claim",
+          "description": "Business purpose semantic claim"
+        },
+        "entity_type": {
+          "$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/semantic_claim",
+          "description": "Entity type semantic claim with CODE_VALUE"
+        },
+        "attribute_refs": {
+          "type": "array",
+          "items": {"type": "string"},
+          "minItems": 1,
+          "description": "References to attribute records"
+        },
+        "relationship_refs": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "References to relationship records"
+        },
+        "review_decision_ref": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Reference to review decision (required when APPROVED)"
+        },
+        "open_question_refs": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "References to open questions"
+        }
+      },
+      "required": ["context_snapshot_ref", "source_object_observation_ref", "evidence_item_ref", "source_object_name", "business_name", "business_definition", "business_purpose", "entity_type", "attribute_refs"],
+      "allOf": [
+        {
+          "if": {
+            "properties": {"lifecycle_state": {"const": "APPROVED"}}
+          },
+          "then": {
+            "required": ["review_decision_ref"]
+          }
+        }
+      ]
+    },
+    {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/material_approval_guard"}
+  ],
+  "unevaluatedProperties": false
+}

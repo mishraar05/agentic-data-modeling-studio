@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentic-data-modeler:contract:artifact_version:0.1.0",
+  "$comment": "Tracks versioned deliverable artifacts produced by solution runs, with approval gating for material records.",
+  "type": "object",
+  "allOf": [
+    {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/envelope"},
+    {
+      "properties": {
+        "schema_version": {"const": "0.1.0"},
+        "lifecycle_state": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/lifecycle_material"},
+        "provenance": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/provenance"},
+        "solution_run_ref": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Reference to the solution run that produced this version"
+        },
+        "artifact_type": {
+          "type": "string",
+          "enum": ["SDD_OBJECT", "SDD_ATTRIBUTE", "SDD_RELATIONSHIP", "SDD_CODE_VALUE", "SDD_HANDOFF"],
+          "description": "Type of artifact being versioned"
+        },
+        "artifact_count": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Number of records in this artifact version"
+        },
+        "version_number": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+          "description": "Semantic version number (major.minor.patch)"
+        },
+        "supersedes_version": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+          "description": "Previous version that this replaces, if any"
+        },
+        "review_decision_ref": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Reference to review decision record (required when lifecycle_state is APPROVED)"
+        }
+      },
+      "required": ["solution_run_ref", "artifact_type", "artifact_count", "version_number"],
+      "allOf": [
+        {
+          "if": {
+            "properties": {"lifecycle_state": {"const": "APPROVED"}}
+          },
+          "then": {
+            "required": ["review_decision_ref"]
+          }
+        }
+      ]
+    },
+    {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/material_approval_guard"}
+  ],
+  "unevaluatedProperties": false
+}

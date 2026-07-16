@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentic-data-modeler:contract:artifact_dependency:0.1.0",
+  "$comment": "Records dependencies between artifact versions and their input snapshots/sets.",
+  "type": "object",
+  "allOf": [
+    {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/envelope"},
+    {
+      "properties": {
+        "schema_version": {"const": "0.1.0"},
+        "lifecycle_state": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/lifecycle_append_only"},
+        "provenance": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/provenance"},
+        "artifact_version_ref": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Reference to the artifact version"
+        },
+        "depends_on_context_snapshot_ref": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Reference to context snapshot dependency"
+        },
+        "depends_on_evidence_set_ref": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Reference to evidence set dependency"
+        },
+        "depends_on_requirement_set_ref": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Reference to requirement set dependency"
+        },
+        "dependency_type": {
+          "type": "string",
+          "enum": ["GOVERNED_CONTEXT", "SOURCE_EVIDENCE", "REQUIREMENT", "PRIOR_VERSION"],
+          "description": "Type of dependency relationship"
+        }
+      },
+      "required": ["artifact_version_ref", "dependency_type"]
+    },
+    {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/no_op_guard"}
+  ],
+  "unevaluatedProperties": false
+}

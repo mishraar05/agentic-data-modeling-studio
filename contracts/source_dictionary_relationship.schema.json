@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentic-data-modeler:contract:source_dictionary_relationship:0.1.0",
+  "$comment": "Source Data Dictionary relationship record with semantic claims requiring context and approval.",
+  "type": "object",
+  "allOf": [
+    {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/envelope"},
+    {
+      "properties": {
+        "schema_version": {"const": "0.1.0"},
+        "lifecycle_state": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/lifecycle_material"},
+        "provenance": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/contextual_provenance"},
+        "context_snapshot_ref": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Reference to the context snapshot (required for contextual provenance)"
+        },
+        "relationship_candidate_ref": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Reference to the relationship candidate evidence"
+        },
+        "evidence_item_ref": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Reference to supporting evidence"
+        },
+        "parent_object_name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Parent object name"
+        },
+        "child_object_name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Child object name"
+        },
+        "relationship_name": {
+          "$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/semantic_claim",
+          "description": "Business name for the relationship"
+        },
+        "cardinality": {
+          "$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/semantic_claim",
+          "description": "Cardinality semantic claim with CARDINALITY value"
+        },
+        "optionality": {
+          "$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/semantic_claim",
+          "description": "Optionality semantic claim"
+        },
+        "review_decision_ref": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Reference to review decision (required when APPROVED)"
+        },
+        "open_question_refs": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "References to open questions"
+        }
+      },
+      "required": ["context_snapshot_ref", "relationship_candidate_ref", "evidence_item_ref", "parent_object_name", "child_object_name", "relationship_name", "cardinality", "optionality"],
+      "allOf": [
+        {
+          "if": {
+            "properties": {"lifecycle_state": {"const": "APPROVED"}}
+          },
+          "then": {
+            "required": ["review_decision_ref"]
+          }
+        }
+      ]
+    },
+    {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/material_approval_guard"}
+  ],
+  "unevaluatedProperties": false
+}

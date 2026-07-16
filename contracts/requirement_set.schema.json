@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentic-data-modeler:contract:requirement_set:0.1.0",
+  "$comment": "Immutable record of extracted analytical and reporting requirements from documents.",
+  "type": "object",
+  "allOf": [
+    {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/envelope"},
+    {
+      "properties": {
+        "schema_version": {"const": "0.1.0"},
+        "lifecycle_state": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/lifecycle_append_only"},
+        "provenance": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/provenance"},
+        "work_package_ref": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Reference to the work package"
+        },
+        "document_set_ref": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Reference to the document set from which requirements were extracted"
+        },
+        "analytical_requirement_count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of analytical requirements extracted"
+        },
+        "reporting_requirement_count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of reporting requirements extracted"
+        },
+        "extraction_timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 timestamp when requirements were extracted"
+        },
+        "fingerprint": {
+          "type": "string",
+          "pattern": "^[A-Fa-f0-9]{64}$",
+          "description": "SHA-256 hash of requirement set for verification"
+        }
+      },
+      "required": ["work_package_ref", "analytical_requirement_count", "reporting_requirement_count", "extraction_timestamp", "fingerprint"]
+    },
+    {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/no_op_guard"}
+  ],
+  "unevaluatedProperties": false
+}

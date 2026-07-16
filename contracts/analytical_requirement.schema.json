@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentic-data-modeler:contract:analytical_requirement:0.1.0",
+  "$comment": "Captured analytical requirement from business documents, subject to review and approval.",
+  "type": "object",
+  "allOf": [
+    {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/envelope"},
+    {
+      "properties": {
+        "schema_version": {"const": "0.1.0"},
+        "lifecycle_state": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/lifecycle_material"},
+        "provenance": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/provenance"},
+        "work_package_ref": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Reference to the work package"
+        },
+        "evidence_item_ref": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Reference to supporting evidence"
+        },
+        "requirement_text": {
+          "type": "string",
+          "minLength": 10,
+          "description": "Full text of the requirement"
+        },
+        "acceptance_criteria": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Criteria for requirement satisfaction"
+        },
+        "priority": {
+          "type": "string",
+          "enum": ["MUST", "SHOULD", "NICE_TO_HAVE"],
+          "description": "Requirement priority"
+        },
+        "source_document_ref": {
+          "type": "string",
+          "description": "Reference to source document if from document_set"
+        },
+        "source_locator": {
+          "type": "string",
+          "description": "Page number or section identifier within document"
+        },
+        "review_decision_ref": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Reference to review decision (required when APPROVED)"
+        }
+      },
+      "required": ["work_package_ref", "evidence_item_ref", "requirement_text", "acceptance_criteria", "priority"],
+      "allOf": [
+        {
+          "if": {
+            "properties": {"lifecycle_state": {"const": "APPROVED"}}
+          },
+          "then": {
+            "required": ["review_decision_ref"]
+          }
+        }
+      ]
+    },
+    {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/material_approval_guard"}
+  ],
+  "unevaluatedProperties": false
+}

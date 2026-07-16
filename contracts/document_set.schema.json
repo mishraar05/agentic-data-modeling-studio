@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentic-data-modeler:contract:document_set:0.1.0",
+  "$comment": "Immutable inventory of documents ingested for requirement and context extraction.",
+  "type": "object",
+  "allOf": [
+    {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/envelope"},
+    {
+      "properties": {
+        "schema_version": {"const": "0.1.0"},
+        "lifecycle_state": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/lifecycle_append_only"},
+        "provenance": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/provenance"},
+        "work_package_ref": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Reference to the work package"
+        },
+        "document_count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of documents in this set"
+        },
+        "document_locators": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uri",
+            "description": "URI or path to document"
+          },
+          "description": "List of document locations"
+        },
+        "ingestion_timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 timestamp when documents were ingested"
+        },
+        "fingerprint": {
+          "type": "string",
+          "pattern": "^[A-Fa-f0-9]{64}$",
+          "description": "SHA-256 hash of document set for verification"
+        }
+      },
+      "required": ["work_package_ref", "document_count", "document_locators", "ingestion_timestamp", "fingerprint"]
+    },
+    {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/no_op_guard"}
+  ],
+  "unevaluatedProperties": false
+}

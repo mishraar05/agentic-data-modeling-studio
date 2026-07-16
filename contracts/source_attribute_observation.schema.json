@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentic-data-modeler:contract:source_attribute_observation:0.1.0",
+  "$comment": "Evidence record capturing metadata observed for a single source attribute (column).",
+  "type": "object",
+  "allOf": [
+    {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/envelope"},
+    {
+      "properties": {
+        "schema_version": {"const": "0.1.0"},
+        "lifecycle_state": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/lifecycle_append_only"},
+        "provenance": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/provenance"},
+        "source_snapshot_ref": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Reference to the source snapshot"
+        },
+        "evidence_item_ref": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Reference to the parent evidence item"
+        },
+        "object_name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Parent table or view name"
+        },
+        "attribute_name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Column name"
+        },
+        "ordinal_position": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Column position (1-based)"
+        },
+        "data_type": {
+          "type": "string",
+          "minLength": 1,
+          "description": "SQL data type from source metadata"
+        },
+        "nullable": {
+          "type": "boolean",
+          "description": "Whether NULL values are permitted"
+        },
+        "default_value": {
+          "type": "string",
+          "description": "Default value expression if any"
+        },
+        "length": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Length for character types"
+        },
+        "precision": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Precision for numeric types"
+        },
+        "scale": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Scale for numeric types"
+        },
+        "constraint_role": {
+          "type": "string",
+          "enum": ["PRIMARY_KEY", "FOREIGN_KEY", "UNIQUE", "CHECK", "NONE"],
+          "description": "Constraint role this attribute participates in"
+        }
+      },
+      "required": ["source_snapshot_ref", "evidence_item_ref", "object_name", "attribute_name", "ordinal_position", "data_type", "nullable", "constraint_role"]
+    },
+    {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/no_op_guard"}
+  ],
+  "unevaluatedProperties": false
+}

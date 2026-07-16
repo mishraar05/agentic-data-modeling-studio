@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentic-data-modeler:contract:profile_evidence:0.1.0",
+  "$comment": "Evidence record capturing data profiling statistics for a source attribute.",
+  "type": "object",
+  "allOf": [
+    {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/envelope"},
+    {
+      "properties": {
+        "schema_version": {"const": "0.1.0"},
+        "lifecycle_state": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/lifecycle_append_only"},
+        "provenance": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/provenance"},
+        "profile_snapshot_ref": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Reference to the profile snapshot"
+        },
+        "evidence_item_ref": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Reference to the parent evidence item"
+        },
+        "object_name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Parent table or view name"
+        },
+        "attribute_name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Column name"
+        },
+        "row_count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Total rows examined"
+        },
+        "null_count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of NULL values"
+        },
+        "distinct_count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of distinct values"
+        },
+        "min_value": {
+          "description": "Minimum value observed"
+        },
+        "max_value": {
+          "description": "Maximum value observed"
+        },
+        "top_values": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "value": {"description": "Value"},
+              "count": {"type": "integer", "minimum": 0}
+            },
+            "required": ["value", "count"]
+          },
+          "description": "Most frequent values with counts"
+        },
+        "pattern_sample": {
+          "type": "string",
+          "description": "Representative pattern or format example"
+        }
+      },
+      "required": ["profile_snapshot_ref", "evidence_item_ref", "object_name", "attribute_name", "row_count", "null_count", "distinct_count"]
+    },
+    {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/no_op_guard"}
+  ],
+  "unevaluatedProperties": false
+}
