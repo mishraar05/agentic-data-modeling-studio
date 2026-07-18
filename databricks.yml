@@ -12,6 +12,9 @@ variables:
   engagement_id:
     description: Non-PII identifier for the modeling engagement.
     default: REQUIRED_ENGAGEMENT_ID
+  work_package_id:
+    description: Non-PII identifier for one bounded source-discovery work package.
+    default: REQUIRED_WORK_PACKAGE_ID
   lob:
     description: Selected line of business for this bounded execution slice.
     default: REQUIRED_LOB
@@ -27,6 +30,30 @@ variables:
   source_tables:
     description: Comma-separated allow-list of source tables.
     default: REQUIRED_SOURCE_TABLES
+  source_tables_json:
+    description: JSON-array allow-list of source tables for per-run source discovery.
+    default: REQUIRED_SOURCE_TABLES_JSON
+  source_system_id:
+    description: Stable non-secret identity of the source system.
+    default: REQUIRED_SOURCE_SYSTEM_ID
+  source_product:
+    description: Optional declared source product.
+    default: ""
+  source_module:
+    description: Optional declared source module.
+    default: ""
+  source_version:
+    description: Optional declared source version.
+    default: ""
+  run_mode:
+    description: Profiling mode from the approved profile_snapshot contract.
+    default: METADATA_ONLY
+  profiling_policy_id:
+    description: Exact approved profiling policy identifier.
+    default: REQUIRED_PROFILING_POLICY_ID
+  profiling_policy_version:
+    description: Exact semantic version of the approved profiling policy.
+    default: REQUIRED_PROFILING_POLICY_VERSION
   output_catalog:
     description: Unity Catalog catalog for solution-owned artifacts.
     default: REQUIRED_OUTPUT_CATALOG
@@ -61,4 +88,3 @@ targets:
     mode: production
     workspace:
       root_path: ${var.production_root_path}/${bundle.target}
-

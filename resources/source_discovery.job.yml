@@ -1,0 +1,78 @@
+resources:
+  jobs:
+    source_discovery:
+      name: ${var.resource_prefix}-source-discovery
+      description: >-
+        Bounded deterministic source onboarding for one authorized LOB/domain
+        work package. This initial slice validates per-run scope before any
+        source access.
+      max_concurrent_runs: 1
+      parameters:
+        - name: engagement_id
+          default: ${var.engagement_id}
+        - name: work_package_id
+          default: ${var.work_package_id}
+        - name: lob
+          default: ${var.lob}
+        - name: domain
+          default: ${var.domain}
+        - name: source_catalog
+          default: ${var.source_catalog}
+        - name: source_schema
+          default: ${var.source_schema}
+        - name: source_tables
+          default: ${var.source_tables_json}
+        - name: source_system_id
+          default: ${var.source_system_id}
+        - name: source_product
+          default: ${var.source_product}
+        - name: source_module
+          default: ${var.source_module}
+        - name: source_version
+          default: ${var.source_version}
+        - name: run_mode
+          default: ${var.run_mode}
+        - name: profiling_policy_id
+          default: ${var.profiling_policy_id}
+        - name: profiling_policy_version
+          default: ${var.profiling_policy_version}
+        - name: document_set_id
+          default: ""
+        - name: requirement_set_id
+          default: ""
+        - name: output_catalog
+          default: ${var.output_catalog}
+        - name: output_schema
+          default: ${var.output_schema}
+        - name: contract_set_version
+          default: 0.2.0
+      tasks:
+        - task_key: validate_scope
+          notebook_task:
+            notebook_path: ../src/workflows/validate_source_discovery_scope.py
+            source: WORKSPACE
+            base_parameters:
+              run_id: source_discovery_{{job.run_id}}
+              engagement_id: "{{job.parameters.engagement_id}}"
+              work_package_id: "{{job.parameters.work_package_id}}"
+              lob: "{{job.parameters.lob}}"
+              domain: "{{job.parameters.domain}}"
+              source_catalog: "{{job.parameters.source_catalog}}"
+              source_schema: "{{job.parameters.source_schema}}"
+              source_tables: "{{job.parameters.source_tables}}"
+              source_system_id: "{{job.parameters.source_system_id}}"
+              source_product: "{{job.parameters.source_product}}"
+              source_module: "{{job.parameters.source_module}}"
+              source_version: "{{job.parameters.source_version}}"
+              run_mode: "{{job.parameters.run_mode}}"
+              profiling_policy_id: "{{job.parameters.profiling_policy_id}}"
+              profiling_policy_version: "{{job.parameters.profiling_policy_version}}"
+              document_set_id: "{{job.parameters.document_set_id}}"
+              requirement_set_id: "{{job.parameters.requirement_set_id}}"
+              output_catalog: "{{job.parameters.output_catalog}}"
+              output_schema: "{{job.parameters.output_schema}}"
+              contract_set_version: "{{job.parameters.contract_set_version}}"
+      tags:
+        solution: agentic-data-modeling-studio
+        artifact_scope: source-data-dictionary
+        execution_boundary: source-discovery
