@@ -1,0 +1,188 @@
+# Environment Configuration for Agentic Data Modeling Studio
+# This file defines Unity Catalog structure and naming conventions
+
+# Unity Catalog Configuration
+catalog:
+  name: insurance_source_discovery
+  description: "Insurance source data discovery and reconstruction system"
+  owner: "Data Governance Team"
+  tags:
+    - key: "internal_use"
+      value: "true"
+    - key: "project"
+      value: "agentic_data_modeling_studio"
+
+# Guidewire Product Lines
+guidewire_products:
+  - code: gw_pc
+    name: "Guidewire PolicyCenter"
+    description: "P&C Insurance (Personal & Commercial Auto, Property, etc.)"
+    lob: "Property & Casualty"
+  
+  - code: gw_cc
+    name: "Guidewire ClaimCenter"
+    description: "Claims Processing"
+    lob: "Claims"
+  
+  - code: gw_bc
+    name: "Guidewire BillingCenter"
+    description: "Billing & Payments"
+    lob: "Billing"
+
+# Medallion Architecture Layers
+layers:
+  bronze:
+    suffix: bronze
+    description: "Raw/landing zone - source system data"
+    purpose: "Raw source data from PolicyCenter, ClaimCenter, BillingCenter systems"
+    tables_from_contracts: false  # Bronze contains actual source data, not contract tables
+  
+  silver:
+    suffix: silver
+    description: "Cleaned, conformed, ODS"
+    purpose: "Silver ODS model, cleaned entities"
+    tables_from_contracts: false  # Future increment
+  
+  gold:
+    suffix: gold
+    description: "Aggregated, dimensional model"
+    purpose: "Gold dimensional model, business-ready analytics"
+    tables_from_contracts: false  # Future increment
+
+# Control Schema (Framework/Agent Operations)
+control_schema:
+  name: control
+  description: "Agent/framework control, harness, and contract tables"
+  purpose: "31 contract tables (engagement, evidence, dictionary, governance, etc.), agent operation tracking, pipeline orchestration"
+  tables_from_contracts: true  # The 31 contract tables go here
+  tags:
+    - key: "agent_harness"
+      value: "true"
+    - key: "internal_use"
+      value: "true"
+    - key: "contract_tables"
+      value: "true"
+
+# Schema Naming Rules
+schema_naming:
+  pattern: "{product_code}_{layer_suffix}"
+  examples:
+    - gw_pc_bronze
+    - gw_pc_silver
+    - gw_pc_gold
+    - gw_cc_bronze
+    - gw_cc_silver
+    - gw_cc_gold
+    - gw_bc_bronze
+    - gw_bc_silver
+    - gw_bc_gold
+    - control
+
+# Proof Slice Configuration (First Implementation)
+proof_slice:
+  product: gw_pc
+  layer: bronze
+  jurisdiction: California
+  lob: "P&C Personal Auto"
+  description: "US P&C Personal Auto — California proof slice (source data)"
+
+# Table Naming Conventions
+table_naming:
+  pattern: snake_case
+  prefix_rules:
+    agent_tables: "agent_"
+    harness_tables: "harness_"
+    temp_tables: "temp_"
+  
+# Governance Tags (from GOV-002 Policy)
+governance_tags:
+  sensitivity_labels:
+    - INTERNAL
+    - CONFIDENTIAL
+    - RESTRICTED
+    - PUBLIC
+  
+  domains:
+    - data_governance
+    - source_discovery
+    - modeling
+    - analytics
+  
+  product_lines:
+    - guidewire_pc
+    - guidewire_cc
+    - guidewire_bc
+
+# Access Control Configuration
+access_control:
+  read:
+    principals:
+      - "all_analysts"
+    schemas:
+      - gw_pc_bronze
+      - gw_pc_silver
+      - gw_pc_gold
+      - gw_cc_bronze
+      - gw_cc_silver
+      - gw_cc_gold
+      - gw_bc_bronze
+      - gw_bc_silver
+      - gw_bc_gold
+  
+  write:
+    principals:
+      - "pipeline_service_principal"
+    schemas:
+      - gw_pc_bronze
+      - gw_pc_silver
+      - gw_pc_gold
+      - gw_cc_bronze
+      - gw_cc_silver
+      - gw_cc_gold
+      - gw_bc_bronze
+      - gw_bc_silver
+      - gw_bc_gold
+  
+  control:
+    principals:
+      - "agent_framework"
+      - "harness_service_principal"
+    schemas:
+      - control
+
+# Schema Builder Configuration
+schema_builder:
+  contracts_dir: contracts/
+  output_base_dir: generated/ddl/
+  validation_dir: tests/schema_builder/
+  
+  # DDL generation - contract tables go to control schema
+  generate_for:
+    - schema: control
+      layer: control
+      enabled: true  # Increment 2 - 31 contract tables
+      description: "31 contract tables for agent framework"
+    - product: gw_pc
+      layer: bronze
+      enabled: false  # Source data - future increment
+    - product: gw_cc
+      layer: bronze
+      enabled: false  # Source data - future increment
+    - product: gw_bc
+      layer: bronze
+      enabled: false  # Source data - future increment
+    - product: gw_pc
+      layer: silver
+      enabled: false  # Future increment
+    - product: gw_pc
+      layer: gold
+      enabled: false  # Future increment
+
+# Increment Tracking
+current_increment:
+  number: 2
+  name: "Schema Builder — Unity Catalog Delta Table Implementation"
+  target_schema: control
+  target_layer: control
+  status: "READY_TO_START"
+  description: "Deploy 31 contract tables to control schema"

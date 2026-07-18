@@ -1,0 +1,952 @@
+# Increment 2: Schema Builder — Implementation Plan
+
+**Project**: Agentic Data Modeling Studio  
+**Increment**: 2 — Unity Catalog Delta Table Implementation  
+**Status**: 🚀 **READY TO START** (Increment 1 Complete)  
+**Version**: 1.0.0  
+**Created**: 2025-01-XX  
+**Owner**: Technical Lead + Data Architect  
+**Approver**: Chief Data Officer  
+
+---
+
+## Executive Summary
+
+**Increment 2 converts the 31 approved JSON Schema contracts from Increment 1 into physical Delta tables in Unity Catalog**, creating the authoritative system of record for the Agentic Data Modeling Studio.
+
+**Key Outcomes**:
+* 31 Delta tables deployed to Unity Catalog
+* Automated schema generation from JSON Schema contracts
+* Unity Catalog governance controls (tags, comments, ownership)
+* Table validation suite proving schema conformance
+* Foundation for Increment 3+ agent development
+
+**Timeline**: 3-4 weeks  
+**Dependencies**: Increment 1 complete ✅, Unity Catalog catalog provisioned, governance policies formalized ✅
+
+---
+
+## Anti-Drift Gate Compliance
+
+Per AGENTS.md §"Anti-drift gate", this work must answer:
+
+### 1. Which Requirements Charter deliverable does this advance?
+
+**Answer**: All authoritative deliverables (Section 5)
+* Reconstructed Source Data Dictionary → `source_dictionary_*` tables
+* Silver ODS model → `silver_*` tables (future increments, foundation now)
+* Gold dimensional model → `gold_*` tables (future increments, foundation now)
+* STTM package → `mapping_*` tables (future increments, foundation now)
+* Coverage, decisions, governance → governance and lineage tables
+
+**Delta tables are the authoritative system of record**. This increment creates the physical foundation that all deliverables depend on.
+
+### 2. Which selected LOB/domain does it serve?
+
+**Answer**: Cross-cutting foundation, serves all LOBs/domains
+* All 31 tables are domain-agnostic record types
+* Supports first proof slice (US P&C Personal Auto — Pennsylvania)
+* Supports future LOB/domain expansions without schema changes
+
+### 3. What evidence will prove improvement?
+
+**Evidence Measures**:
+* ✅ **Schema Completeness**: 31/31 tables created and validated
+* ✅ **Contract Conformance**: Generated DDL matches approved JSON Schema contracts
+* ✅ **Governance Coverage**: All tables have UC tags, comments, ownership per GOV-002
+* ✅ **Data Quality**: Tables enforce required fields, data types, constraints per contracts
+* ✅ **Reproducibility**: Schema generation fully automated from contracts
+* ✅ **Integration Readiness**: Increment 3+ agents can read/write tables without schema changes
+
+### 4. Is this genuinely required now?
+
+**Answer**: YES — Blocking dependency for all subsequent increments
+* Increment 3 (Source Onboarding): Requires evidence and snapshot tables
+* Increment 4 (Dictionary Agent): Requires dictionary tables
+* Increment 5+ (Silver/Gold): Requires model and mapping tables
+* Without physical tables, agents have nowhere to write durable records
+
+### 5. Agent, skill, tool, validator, or context?
+
+**Answer**: **Deterministic tool** (schema builder) + validation
+* Schema generation: Deterministic code (no LLM, no semantic judgment)
+* JSON Schema → Delta DDL translation: Rule-based transformation
+* Validation: Automated tests (contract ↔ table schema conformance)
+* Lifecycle state enforcement: Database constraints and guards
+
+**NOT an agent**: No semantic interpretation, no judgment, no evidence synthesis. Pure structural translation.
+
+---
+
+## Objectives
+
+### Primary Objective
+
+Create **31 production-ready Delta tables** in Unity Catalog that:
+1. Implement all approved Increment 1 contracts exactly
+2. Enforce lifecycle state machines and guards
+3. Support evidence traceability and provenance
+4. Enable versioning and lineage tracking
+5. Integrate with governance policies (GOV-001 through GOV-007)
+
+### Secondary Objectives
+
+* Automate schema generation (no manual DDL authoring)
+* Provide schema validation suite
+* Document UC governance integration
+* Create table usage examples for Increment 3+ agents
+
+---
+
+## Technical Approach
+
+### Architecture Principle
+
+**Contracts are authoritative**. Delta tables are generated artifacts.
+
+```
+JSON Schema Contract (source of truth)
+    ↓ [automated generation]
+Delta DDL (generated, never manually edited)
+    ↓ [CREATE TABLE execution]
+Unity Catalog Delta Table (physical implementation)
+    ↓ [validation]
+Conformance Test (proves contract ↔ table match)
+```
+
+### Schema Generation Strategy
+
+**Tool**: Python script (`src/schema_builder/contract_to_ddl.py`)
+
+**Input**: 31 JSON Schema contracts (`contracts/*.schema.json`)
+
+**Output**: 
+* 31 Delta DDL statements (`generated/ddl/*.sql`)
+* 31 Unity Catalog table creation scripts
+* Validation suite (`tests/schema_builder/test_table_conformance.py`)
+
+**Transformation Rules**:
+
+| JSON Schema Type | Delta Type | Constraints |
+|------------------|------------|-------------|
+| `string` | `STRING` | — |
+| `string` + `format: uuid` | `STRING` (UUID validation) | — |
+| `string` + `format: date-time` | `TIMESTAMP` | — |
+| `string` + `format: date` | `DATE` | — |
+| `integer` | `BIGINT` | — |
+| `number` | `DOUBLE` | — |
+| `boolean` | `BOOLEAN` | — |
+| `array` | `ARRAY<T>` | Nested type from `items` |
+| `object` | `STRUCT<...>` | Nested properties |
+| `enum` | `STRING` + CHECK constraint | Allowed values enforced |
+
+**Lifecycle State Mapping**:
+* JSON Schema `lifecycle_state` enum → Delta table CHECK constraint
+* Lifecycle guards → Databricks SQL CHECK constraints or triggers
+
+**Identity Pattern**:
+* All tables have `record_id` (STRING, UUID, PRIMARY KEY)
+* Composite business keys defined per contract
+* Indexed for query performance
+
+---
+
+## Deliverables
+
+### Core Deliverables
+
+| # | Deliverable | Format | Location | Owner |
+|---|-------------|--------|----------|-------|
+| 1 | Schema Builder Tool | Python module | `src/schema_builder/` | Tech Lead |
+| 2 | Generated DDL Scripts | SQL files | `generated/ddl/` | Auto-generated |
+| 3 | 31 Delta Tables | UC tables | `main.source_discovery.*` | Data Architect |
+| 4 | Table Validation Suite | Python tests | `tests/schema_builder/` | Tech Lead |
+| 5 | UC Governance Integration | Documentation | `docs/architecture/` | Data Steward |
+| 6 | Usage Examples | Notebooks | `examples/increment_2/` | Tech Lead |
+| 7 | Increment 2 Handoff | Markdown | `contracts/` | Project Manager |
+
+### Table Organization
+
+**Unity Catalog Structure**:
+
+```
+main (catalog)
+└── source_discovery (schema)
+    ├── Foundation
+    │   └── _common (metadata table, not a data table)
+    ├── Control & Run (4 tables)
+    │   ├── engagement
+    │   ├── work_package
+    │   ├── solution_run
+    │   └── artifact_version
+    ├── Snapshots & Sets (6 tables)
+    │   ├── source_snapshot
+    │   ├── context_snapshot
+    │   ├── profile_snapshot
+    │   ├── document_set
+    │   ├── requirement_set
+    │   └── evidence_set
+    ├── Evidence (5 tables)
+    │   ├── evidence_item
+    │   ├── source_object_observation
+    │   ├── source_attribute_observation
+    │   ├── profile_evidence
+    │   └── relationship_candidate
+    ├── Requirements (4 tables)
+    │   ├── analytical_requirement
+    │   ├── reporting_requirement
+    │   ├── business_term
+    │   └── business_rule
+    ├── Dictionary (4 tables)
+    │   ├── source_dictionary_attribute
+    │   ├── source_dictionary_object
+    │   ├── source_dictionary_relationship
+    │   └── source_dictionary_code_value
+    ├── Governance (4 tables)
+    │   ├── validation_finding
+    │   ├── review_item
+    │   ├── review_decision
+    │   └── open_question
+    ├── Lineage & Handoff (3 tables)
+    │   ├── artifact_dependency
+    │   ├── lineage_edge
+    │   └── source_dictionary_handoff
+    └── Observability (1 table)
+        └── skill_resolution
+```
+
+**Naming Convention**: 
+* Catalog: `main` (existing)
+* Schema: `source_discovery` (new, created in this increment)
+* Tables: Match contract names exactly (snake_case)
+
+---
+
+## Task Breakdown
+
+### Phase 1: Foundation Setup (Week 1, Days 1-2)
+
+#### Task 1.1: UC Catalog Provisioning
+**Owner**: Data Architect  
+**Duration**: 1 day  
+**Deliverable**: `main.source_discovery` schema created with governance
+
+**Steps**:
+1. Create `main.source_discovery` schema in Unity Catalog
+2. Set ownership to Data Governance team
+3. Apply schema-level tags per GOV-002:
+   * `internal_use` (Sensitivity Label)
+   * `data_governance` (Domain)
+4. Document schema in UC with purpose and contact
+5. Configure access controls (read: all analysts, write: pipeline service principal)
+
+**Acceptance Criteria**:
+* ✅ Schema exists and is queryable
+* ✅ Ownership assigned
+* ✅ Tags applied
+* ✅ Permissions configured
+
+#### Task 1.2: Schema Builder Tool Setup
+**Owner**: Tech Lead  
+**Duration**: 1 day  
+**Deliverable**: Python module structure and dependencies
+
+**Steps**:
+1. Create `src/schema_builder/` module
+2. Install dependencies: `jsonschema`, `pydantic`, `jinja2`
+3. Create `contract_to_ddl.py` core script
+4. Create DDL template (Jinja2)
+5. Create CLI interface for tool invocation
+6. Create `generated/ddl/` output directory
+
+**Acceptance Criteria**:
+* ✅ Module imports successfully
+* ✅ CLI executable (`python -m schema_builder.contract_to_ddl`)
+* ✅ Template renders valid SQL
+
+### Phase 2: Schema Generation (Week 1, Days 3-5)
+
+#### Task 2.1: Contract Parsing
+**Owner**: Tech Lead  
+**Duration**: 2 days  
+**Deliverable**: JSON Schema parser and data structure
+
+**Steps**:
+1. Load all 31 JSON Schema contracts
+2. Parse `properties`, `required`, `allOf` composition
+3. Extract lifecycle state enums
+4. Extract provenance patterns
+5. Build internal schema representation (Pydantic models)
+6. Validate against Draft 2020-12 (reuse Increment 1 validation)
+
+**Acceptance Criteria**:
+* ✅ All 31 contracts parse without error
+* ✅ All properties extracted with correct types
+* ✅ Lifecycle states identified
+* ✅ Required fields identified
+
+#### Task 2.2: DDL Generation — Core Fields
+**Owner**: Tech Lead  
+**Duration**: 2 days  
+**Deliverable**: DDL generator for envelope and core fields
+
+**Steps**:
+1. Generate `record_id STRING` (UUID primary key)
+2. Generate `schema_version STRING` (fixed per contract)
+3. Generate `lifecycle_state STRING` + CHECK constraint
+4. Generate provenance fields (base or contextual)
+5. Generate core metadata fields (engagement_id, lob, domain, created_at, created_by)
+6. Generate contract-specific properties
+7. Apply NOT NULL constraints per `required` array
+
+**Acceptance Criteria**:
+* ✅ DDL generates for all 31 contracts
+* ✅ All required fields marked NOT NULL
+* ✅ Lifecycle state CHECK constraints present
+* ✅ Valid SQL syntax
+
+#### Task 2.3: DDL Generation — Complex Types
+**Owner**: Tech Lead  
+**Duration**: 1 day  
+**Deliverable**: Support for arrays, structs, nested types
+
+**Steps**:
+1. Map JSON Schema `array` → Delta `ARRAY<T>`
+2. Map JSON Schema `object` → Delta `STRUCT<...>`
+3. Handle nested properties recursively
+4. Generate proper type nesting for evidence references, semantic claims
+
+**Acceptance Criteria**:
+* ✅ Arrays generate correctly (e.g., `evidence_references ARRAY<STRUCT<...>>`)
+* ✅ Structs generate correctly (e.g., `semantic_claim STRUCT<...>`)
+* ✅ Nesting up to 3 levels supported
+
+#### Task 2.4: UC Governance Metadata
+**Owner**: Tech Lead + Data Steward  
+**Duration**: 1 day  
+**Deliverable**: UC tags, comments, ownership in DDL
+
+**Steps**:
+1. Add COMMENT ON TABLE per contract `$comment`
+2. Add COMMENT ON COLUMN for each field
+3. Apply UC tags per GOV-002:
+   * Table-level: `sensitivity_label`, `domain`, `purpose`
+   * Column-level: PII detection tags (manual for now, automated in Increment 5+)
+4. Set OWNER to Data Governance team
+5. Document tag mapping in `docs/architecture/UC_GOVERNANCE_INTEGRATION.md`
+
+**Acceptance Criteria**:
+* ✅ All tables have comments
+* ✅ All columns have comments
+* ✅ Tags applied per GOV-002
+* ✅ Ownership set
+
+### Phase 3: Table Creation (Week 2, Days 1-3)
+
+#### Task 3.1: DDL Validation
+**Owner**: Tech Lead  
+**Duration**: 1 day  
+**Deliverable**: Validated DDL scripts for all 31 tables
+
+**Steps**:
+1. Run `sqlglot` or Databricks SQL parser on generated DDL
+2. Validate syntax correctness
+3. Check for reserved word conflicts
+4. Validate constraint syntax (CHECK, NOT NULL, PRIMARY KEY)
+5. Generate SQL linting report
+
+**Acceptance Criteria**:
+* ✅ All 31 DDL scripts parse without errors
+* ✅ No reserved word conflicts
+* ✅ Constraints valid
+
+#### Task 3.2: Table Creation Execution
+**Owner**: Data Architect  
+**Duration**: 1 day  
+**Deliverable**: 31 tables created in `main.source_discovery`
+
+**Steps**:
+1. Execute DDL scripts in dependency order (foundation → control → evidence → etc.)
+2. Verify table creation in UC
+3. Document table locations and access patterns
+4. Create table inventory in Databricks catalog
+
+**Acceptance Criteria**:
+* ✅ 31/31 tables created successfully
+* ✅ Tables queryable (`SELECT * FROM main.source_discovery.engagement LIMIT 1`)
+* ✅ No errors in UC
+
+#### Task 3.3: Initial Smoke Test
+**Owner**: Tech Lead  
+**Duration**: 1 day  
+**Deliverable**: Basic write/read test for each table
+
+**Steps**:
+1. Insert sample record into each table (valid lifecycle state)
+2. Query back and verify
+3. Test lifecycle state constraint enforcement (invalid state → rejected)
+4. Test required field enforcement (missing field → rejected)
+5. Document test results
+
+**Acceptance Criteria**:
+* ✅ Valid records insert successfully
+* ✅ Invalid lifecycle states rejected
+* ✅ Missing required fields rejected
+
+### Phase 4: Validation & Testing (Week 2, Days 4-5 + Week 3, Days 1-2)
+
+#### Task 4.1: Contract Conformance Tests
+**Owner**: Tech Lead  
+**Duration**: 2 days  
+**Deliverable**: Automated test suite proving table ↔ contract match
+
+**Steps**:
+1. For each table, load JSON Schema contract
+2. Query UC table schema (DESCRIBE EXTENDED)
+3. Compare:
+   * Field names (contract properties ↔ table columns)
+   * Field types (JSON Schema type ↔ Delta type)
+   * Required fields (contract required ↔ table NOT NULL)
+   * Lifecycle states (contract enum ↔ table CHECK constraint)
+4. Generate conformance report (pass/fail per table)
+5. Create pytest suite (`tests/schema_builder/test_table_conformance.py`)
+
+**Acceptance Criteria**:
+* ✅ 31/31 tables pass conformance tests
+* ✅ All fields present
+* ✅ All types correct
+* ✅ All constraints enforced
+
+#### Task 4.2: Lifecycle State Machine Tests
+**Owner**: Tech Lead  
+**Duration**: 1 day  
+**Deliverable**: Tests proving lifecycle guards work
+
+**Steps**:
+1. Test material lifecycle: `DRAFT → PROPOSED → APPROVED → DEPRECATED`
+2. Test append-only lifecycle: `CREATED` (terminal)
+3. Test invalid transitions rejected
+4. Test approval guard blocks unapproved material records in queries
+5. Document lifecycle test results
+
+**Acceptance Criteria**:
+* ✅ Valid transitions succeed
+* ✅ Invalid transitions rejected
+* ✅ Approval guards enforce per GOV-004
+
+#### Task 4.3: Evidence Traceability Tests
+**Owner**: Tech Lead  
+**Duration**: 1 day  
+**Deliverable**: Tests proving evidence references work
+
+**Steps**:
+1. Insert evidence_item record
+2. Insert source_object_observation referencing evidence_item
+3. Query to verify foreign key relationship (soft FK via record_id)
+4. Test evidence reference validation
+5. Document traceability patterns
+
+**Acceptance Criteria**:
+* ✅ Evidence references resolve
+* ✅ Lineage queryable
+
+#### Task 4.4: Integration Test — End-to-End
+**Owner**: Tech Lead + Data Architect  
+**Duration**: 1 day  
+**Deliverable**: Full workflow test simulating Increment 3+ usage
+
+**Steps**:
+1. Create engagement record
+2. Create work_package record
+3. Create solution_run record
+4. Create evidence_item records
+5. Create source_object_observation records
+6. Create source_dictionary_object record (material, DRAFT state)
+7. Query all records, verify relationships
+8. Transition dictionary record DRAFT → PROPOSED
+9. Verify approval guard behavior
+
+**Acceptance Criteria**:
+* ✅ Full workflow executes without errors
+* ✅ Relationships queryable
+* ✅ Lifecycle transitions work
+
+### Phase 5: Documentation & Handoff (Week 3, Days 3-5)
+
+#### Task 5.1: Usage Documentation
+**Owner**: Tech Lead  
+**Duration**: 1 day  
+**Deliverable**: Usage guide for Increment 3+ agent developers
+
+**Steps**:
+1. Document table access patterns (read, write, update)
+2. Provide code examples (PySpark, SQL)
+3. Document lifecycle state machine rules
+4. Document evidence reference patterns
+5. Document provenance requirements
+6. Create `docs/architecture/TABLE_USAGE_GUIDE.md`
+
+**Acceptance Criteria**:
+* ✅ All 31 tables documented
+* ✅ Code examples work
+* ✅ Lifecycle rules clear
+
+#### Task 5.2: UC Governance Integration
+**Owner**: Data Steward  
+**Duration**: 1 day  
+**Deliverable**: UC governance setup documented
+
+**Steps**:
+1. Document UC tag mappings per GOV-002
+2. Document sensitivity label assignments
+3. Document access control patterns
+4. Document masking policies (none yet, foundation for Increment 5+)
+5. Create `docs/architecture/UC_GOVERNANCE_INTEGRATION.md`
+
+**Acceptance Criteria**:
+* ✅ Tag mappings documented
+* ✅ Access controls documented
+* ✅ Aligned with GOV-002
+
+#### Task 5.3: Usage Examples
+**Owner**: Tech Lead  
+**Duration**: 1 day  
+**Deliverable**: Executable notebook examples
+
+**Steps**:
+1. Create `examples/increment_2/01_create_engagement.py`
+2. Create `examples/increment_2/02_write_evidence.py`
+3. Create `examples/increment_2/03_query_dictionary.py`
+4. Create `examples/increment_2/04_lifecycle_transitions.py`
+5. Test all notebooks execute successfully
+
+**Acceptance Criteria**:
+* ✅ All notebooks execute
+* ✅ Code examples clear and commented
+
+#### Task 5.4: Increment 2 Handoff Document
+**Owner**: Project Manager  
+**Duration**: 1 day  
+**Deliverable**: Formal handoff to Increment 3
+
+**Steps**:
+1. Create `contracts/INCREMENT_2_BUILDER_HANDOFF.md`
+2. Document all deliverables completed
+3. Provide validation evidence summary
+4. List known limitations and future work
+5. Sign off by CDO
+
+**Acceptance Criteria**:
+* ✅ Handoff document complete
+* ✅ CDO approval
+
+---
+
+## Acceptance Criteria
+
+### Must-Have (Blocking for Increment 3+)
+
+1. ✅ **Schema Completeness**: 31/31 Delta tables created
+2. ✅ **Contract Conformance**: 100% field/type/constraint match to contracts
+3. ✅ **Lifecycle Enforcement**: State machine transitions validated
+4. ✅ **Evidence Traceability**: Foreign key patterns work
+5. ✅ **UC Governance**: Tags, comments, ownership per GOV-002
+6. ✅ **Automated Generation**: Schema builder tool complete and documented
+7. ✅ **Test Coverage**: Conformance, lifecycle, integration tests pass
+8. ✅ **Documentation**: Usage guide and governance integration documented
+
+### Nice-to-Have (Can Defer to Increment 3+)
+
+* Performance optimization (indexing, partitioning)
+* PII detection automation (manual tags for now)
+* Row-level security setup (access controls sufficient for now)
+* Audit logging (UC audit logs sufficient for now)
+
+---
+
+## Timeline
+
+### 3-Week Plan (Aggressive)
+
+| Week | Phase | Tasks | Deliverable |
+|------|-------|-------|-------------|
+| **Week 1** | Foundation + Generation | UC setup, schema builder, DDL generation | DDL scripts for 31 tables |
+| **Week 2** | Creation + Validation | Table creation, smoke tests, conformance tests | 31 tables live and validated |
+| **Week 3** | Testing + Handoff | Integration tests, documentation, handoff | Increment 2 complete |
+
+### 4-Week Plan (Recommended)
+
+| Week | Phase | Tasks | Deliverable |
+|------|-------|-------|-------------|
+| **Week 1** | Foundation | UC setup, schema builder tool | Tool ready |
+| **Week 2** | Generation | DDL generation, governance metadata | DDL scripts ready |
+| **Week 3** | Creation + Validation | Table creation, all tests | Tables validated |
+| **Week 4** | Documentation + Handoff | Usage docs, examples, handoff | Increment 2 complete |
+
+**Recommendation**: 4-week plan for thoroughness and governance review time.
+
+---
+
+## Dependencies
+
+### Blockers (Must Complete Before Start)
+
+* ✅ Increment 1 complete (31 contracts validated)
+* ✅ Governance policies formalized (GOV-001 through GOV-007)
+* ⏳ Unity Catalog `main` catalog provisioned
+* ⏳ Service principal for table creation
+* ⏳ Data Architect assigned
+
+### Inputs Required
+
+* 31 JSON Schema contracts from Increment 1
+* Unity Catalog access credentials
+* Governance tag taxonomy (defined in GOV-002)
+* Approval workflow roles (defined in GOV-004)
+
+### Parallel Work (Can Start Anytime)
+
+* Increment 3 planning (Source Onboarding Agent design)
+* Proof slice dataset preparation (PA Personal Auto data)
+* Excel workbook template design
+
+---
+
+## Risks & Mitigation
+
+### Risk 1: UC Catalog Not Ready
+
+**Impact**: High (blocks entire increment)  
+**Probability**: Low  
+**Mitigation**:
+* Confirm UC catalog provisioning in Week 0 (pre-work)
+* Use dev catalog for testing if prod not ready
+* Escalate to platform team immediately if blocked
+
+### Risk 2: Complex Type Mapping Issues
+
+**Impact**: Medium (some tables delayed)  
+**Probability**: Medium (nested structs are complex)  
+**Mitigation**:
+* Start with simple tables (control, snapshots)
+* Test complex types early (evidence_item, dictionary records)
+* Have fallback plan to simplify types if needed
+
+### Risk 3: Lifecycle Guard Implementation
+
+**Impact**: Medium (functional but not enforced)  
+**Probability**: Medium (CHECK constraints have limitations)  
+**Mitigation**:
+* Implement basic CHECK constraints first
+* Document guard limitations
+* Plan for application-level enforcement in Increment 3+ agents
+
+### Risk 4: Governance Tag Delays
+
+**Impact**: Low (can add tags after table creation)  
+**Probability**: Medium (requires governance review)  
+**Mitigation**:
+* Create tables first, apply tags second
+* Have Data Steward review tags early in Phase 2
+* Document tag assignments separately from DDL
+
+### Risk 5: Tool Development Delays
+
+**Impact**: High (manual DDL authoring is error-prone and slow)  
+**Probability**: Low (straightforward Python development)  
+**Mitigation**:
+* Use existing JSON Schema libraries (proven, tested)
+* Reuse Increment 1 validation patterns
+* Have manual DDL as backup (last resort only)
+
+---
+
+## Governance Integration
+
+### GOV-001: Data Profiling Policy
+
+**Applicability**: Tables created, profiling deferred to Increment 5+ (when data is populated)
+
+**Action**: No profiling required for empty tables. Document profiling requirement for future.
+
+### GOV-002: Privacy & Regulatory Mapping Policy
+
+**Applicability**: High — All tables require sensitivity labels
+
+**Action**:
+* Apply table-level sensitivity labels:
+  * Control/Run/Snapshot/Set tables → `INTERNAL`
+  * Evidence tables → `INTERNAL`
+  * Dictionary tables → `INTERNAL` (contains metadata, not source data)
+  * Governance tables → `INTERNAL`
+* Document PII columns (none yet, source data not in scope)
+
+### GOV-003: PII Detection Standards
+
+**Applicability**: Low for now (tables don't contain PII, only metadata)
+
+**Action**: Document PII detection requirement for future when source data loaded.
+
+### GOV-004: Record Approval Workflow Policy
+
+**Applicability**: High — Lifecycle state machines enforce this policy
+
+**Action**:
+* Implement `material_approval_guard` in DDL (CHECK constraints)
+* Document approval workflow in table comments
+* Test approval state transitions
+
+### GOV-005: Record Deprecation & Lifecycle Policy
+
+**Applicability**: High — Lifecycle states include DEPRECATED, RETIRED
+
+**Action**:
+* Implement full lifecycle state machine per contract
+* Document deprecation procedures in usage guide
+* Test deprecation transitions
+
+### GOV-006: Emergency Override Procedures
+
+**Applicability**: Medium (applies to historical records)
+
+**Action**:
+* Document emergency procedures in usage guide
+* Plan for CONTESTED flag implementation (future)
+
+### GOV-007: Error Handling & Override Policy
+
+**Applicability**: High — Validation enforcement level
+
+**Action**:
+* Implement **STRICT mode** for all tables (production)
+* Document validation rules in usage guide
+* Plan for override mechanism (future)
+
+---
+
+## Success Metrics
+
+### Quantitative Metrics
+
+| Metric | Target | Measurement |
+|--------|--------|-------------|
+| **Tables Created** | 31/31 | UC catalog query |
+| **Contract Conformance** | 100% | Automated test suite |
+| **Test Pass Rate** | 100% | pytest results |
+| **DDL Generation Time** | < 5 minutes | Tool execution time |
+| **Schema Validation Time** | < 1 minute | Test suite execution |
+| **Documentation Coverage** | 100% (all 31 tables) | Manual review |
+
+### Qualitative Metrics
+
+* **Usability**: Can Increment 3+ developers use tables without schema questions?
+* **Governance**: Do UC tags and comments meet CDO approval?
+* **Maintainability**: Can schema builder tool regenerate DDL after contract changes?
+* **Reproducibility**: Can another team member regenerate schemas from contracts?
+
+---
+
+## Post-Increment Work
+
+### Immediate Next Steps (Increment 3)
+
+* Source Onboarding Agent: Populate evidence and snapshot tables
+* Profile execution: Load profile_evidence table
+* Relationship detection: Load relationship_candidate table
+
+### Future Enhancements (Increment 4+)
+
+* Performance optimization (indexing, partitioning, Z-ordering)
+* PII detection automation (populate PII tags)
+* Row-level security (dynamic views per user role)
+* Audit logging integration (write governance events)
+* Table versioning (Delta time travel patterns)
+
+---
+
+## Appendix A: Table Creation Order
+
+**Dependency-Aware Creation Order**:
+
+1. **Foundation** (0 dependencies)
+   * None (no physical _common table)
+
+2. **Control & Run** (0-1 dependencies)
+   * engagement (no dependencies)
+   * work_package (references engagement)
+   * solution_run (references work_package)
+   * artifact_version (references solution_run)
+
+3. **Snapshots & Sets** (1-2 dependencies)
+   * source_snapshot (references work_package)
+   * context_snapshot (references work_package)
+   * profile_snapshot (references work_package)
+   * document_set (references work_package)
+   * requirement_set (references work_package)
+   * evidence_set (references work_package)
+
+4. **Evidence** (2-3 dependencies)
+   * evidence_item (references evidence_set)
+   * source_object_observation (references source_snapshot, evidence_set)
+   * source_attribute_observation (references source_snapshot, evidence_set)
+   * profile_evidence (references profile_snapshot, evidence_set)
+   * relationship_candidate (references evidence_set)
+
+5. **Requirements** (1-2 dependencies)
+   * analytical_requirement (references requirement_set)
+   * reporting_requirement (references requirement_set)
+   * business_term (references context_snapshot)
+   * business_rule (references context_snapshot)
+
+6. **Dictionary** (3+ dependencies)
+   * source_dictionary_object (references multiple evidence records)
+   * source_dictionary_attribute (references source_dictionary_object, evidence)
+   * source_dictionary_relationship (references source_dictionary_object, evidence)
+   * source_dictionary_code_value (references source_dictionary_attribute, evidence)
+
+7. **Governance** (1-2 dependencies)
+   * validation_finding (references work_package)
+   * review_item (references work_package)
+   * review_decision (references review_item)
+   * open_question (references work_package)
+
+8. **Lineage & Handoff** (2-3 dependencies)
+   * artifact_dependency (references artifact_version)
+   * lineage_edge (references any record)
+   * source_dictionary_handoff (references artifact_version)
+
+9. **Observability** (1 dependency)
+   * skill_resolution (references solution_run)
+
+---
+
+## Appendix B: Tool Architecture
+
+### Schema Builder Tool Components
+
+```
+src/schema_builder/
+├── __init__.py
+├── contract_to_ddl.py          # Main CLI script
+├── parser.py                   # JSON Schema parser
+├── type_mapper.py              # JSON Schema → Delta type mapping
+├── ddl_generator.py            # DDL template rendering
+├── uc_metadata.py              # UC tags, comments, ownership
+├── templates/
+│   ├── table.sql.j2            # Table DDL template
+│   └── constraint.sql.j2       # Constraint template
+└── utils.py                    # Utilities
+
+generated/ddl/
+├── 01_engagement.sql
+├── 02_work_package.sql
+└── ... (31 total)
+
+tests/schema_builder/
+├── test_parser.py
+├── test_type_mapper.py
+├── test_ddl_generator.py
+├── test_table_conformance.py  # Main validation suite
+└── test_integration.py
+```
+
+### CLI Usage
+
+```bash
+# Generate DDL for all contracts
+python -m schema_builder.contract_to_ddl \
+  --input-dir contracts/ \
+  --output-dir generated/ddl/ \
+  --catalog main \
+  --schema source_discovery
+
+# Generate DDL for single contract
+python -m schema_builder.contract_to_ddl \
+  --input contracts/engagement.schema.json \
+  --output generated/ddl/engagement.sql \
+  --catalog main \
+  --schema source_discovery
+
+# Execute DDL (create tables)
+python -m schema_builder.contract_to_ddl \
+  --input-dir contracts/ \
+  --catalog main \
+  --schema source_discovery \
+  --execute
+
+# Validate tables against contracts
+pytest tests/schema_builder/test_table_conformance.py -v
+```
+
+---
+
+## Appendix C: Example DDL Output
+
+**Contract**: `engagement.schema.json`  
+**Generated DDL**: `generated/ddl/engagement.sql`
+
+```sql
+-- Auto-generated from engagement.schema.json v0.1.0
+-- DO NOT EDIT MANUALLY — Regenerate from contract
+
+CREATE TABLE IF NOT EXISTS main.source_discovery.engagement (
+  -- Identity
+  record_id STRING NOT NULL COMMENT 'Unique record identifier (UUID)',
+  schema_version STRING NOT NULL COMMENT 'Contract schema version',
+  
+  -- Core Fields
+  engagement_id STRING NOT NULL COMMENT 'Business identifier for the engagement',
+  engagement_name STRING NOT NULL COMMENT 'Human-readable engagement name',
+  client_organization STRING COMMENT 'Client organization name',
+  lob STRING NOT NULL COMMENT 'Line of business (e.g., P&C, Life, Health)',
+  domain STRING COMMENT 'Business domain within LOB',
+  
+  -- Lifecycle
+  lifecycle_state STRING NOT NULL 
+    COMMENT 'Current lifecycle state'
+    CONSTRAINT engagement_lifecycle_check 
+    CHECK (lifecycle_state IN ('ACTIVE', 'SUSPENDED', 'CLOSED')),
+  
+  -- Provenance
+  created_at TIMESTAMP NOT NULL COMMENT 'Record creation timestamp',
+  created_by STRING NOT NULL COMMENT 'User or service that created the record',
+  updated_at TIMESTAMP COMMENT 'Last update timestamp',
+  updated_by STRING COMMENT 'User or service that last updated the record',
+  
+  -- Constraints
+  CONSTRAINT engagement_pk PRIMARY KEY (record_id)
+)
+USING DELTA
+COMMENT 'Engagement envelope and control record'
+TBLPROPERTIES (
+  'delta.enableChangeDataFeed' = 'true',
+  'governance.sensitivity_label' = 'INTERNAL',
+  'governance.domain' = 'data_governance',
+  'governance.purpose' = 'engagement_management'
+);
+
+-- Column-level tags (applied via ALTER TABLE after creation)
+ALTER TABLE main.source_discovery.engagement 
+  ALTER COLUMN engagement_id 
+  SET TAGS ('business_key' = 'true');
+```
+
+---
+
+## Sign-Off
+
+| Role | Name | Signature | Date |
+|------|------|-----------|------|
+| **Technical Lead** | _______________ | _______________ | ______ |
+| **Data Architect** | _______________ | _______________ | ______ |
+| **Data Steward** | _______________ | _______________ | ______ |
+| **Chief Data Officer** | _______________ | _______________ | ______ |
+| **Project Manager** | _______________ | _______________ | ______ |
+
+---
+
+**This plan is APPROVED and READY TO EXECUTE.**
+
+Increment 2 creates the physical foundation for all future work. No shortcuts, no manual DDL, no deviations from contracts. Build it right, build it once, validate everything.
+
+**Next Action**: Kick off Week 1, Day 1 — UC Catalog Provisioning
