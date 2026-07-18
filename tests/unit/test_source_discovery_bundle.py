@@ -80,3 +80,13 @@ def test_bundle_declares_every_source_discovery_variable_default() -> None:
         "output_schema",
     }
     assert required_variable_names <= set(variables)
+
+
+def test_workflow_bootstraps_synced_source_before_package_import() -> None:
+    workflow = (
+        REPOSITORY_ROOT / "src/workflows/validate_source_discovery_scope.py"
+    ).read_text(encoding="utf-8")
+    bootstrap_call = workflow.index("_add_bundle_source_to_python_path()")
+    package_import = workflow.index("from agentic_data_modeler.control import RuntimeRequest")
+    assert bootstrap_call < package_import
+    assert 'PurePosixPath("/Workspace")' in workflow

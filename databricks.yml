@@ -75,7 +75,6 @@ sync:
   exclude:
     - tests/**
     - docs/**
-    - .github/**
 
 targets:
   dev:

@@ -8,6 +8,25 @@
 
 # COMMAND ----------
 
+import sys
+from pathlib import PurePosixPath
+
+
+def _add_bundle_source_to_python_path() -> None:
+    """Make the synced ``src`` root importable in a Databricks notebook task."""
+
+    context = dbutils.notebook.entry_point.getDbutils().notebook().getContext()
+    notebook_path = PurePosixPath(context.notebookPath().get())
+    source_root = notebook_path.parents[1]
+    if not source_root.as_posix().startswith("/Workspace/"):
+        source_root = PurePosixPath("/Workspace") / source_root.as_posix().lstrip("/")
+    source_root_text = source_root.as_posix()
+    if source_root_text not in sys.path:
+        sys.path.insert(0, source_root_text)
+
+
+_add_bundle_source_to_python_path()
+
 from agentic_data_modeler.control import RuntimeRequest
 
 
