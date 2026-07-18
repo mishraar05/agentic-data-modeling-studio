@@ -54,6 +54,27 @@ variables:
   profiling_policy_version:
     description: Exact semantic version of the approved profiling policy.
     default: REQUIRED_PROFILING_POLICY_VERSION
+  registration_mode:
+    description: Explicit control-plane registration mode.
+    default: REQUIRED_REGISTRATION_MODE
+  client_name:
+    description: Non-secret client label for the engagement record.
+    default: REQUIRED_CLIENT_NAME
+  authorization_ref:
+    description: Durable authorization or decision reference.
+    default: REQUIRED_AUTHORIZATION_REF
+  effective_start_date:
+    description: Engagement authorization effective date in YYYY-MM-DD form.
+    default: REQUIRED_EFFECTIVE_START_DATE
+  workspace_host:
+    description: Exact HTTPS Databricks workspace origin authorized for the engagement.
+    default: REQUIRED_WORKSPACE_HOST
+  execution_principal:
+    description: Exact Databricks user or service-principal identity for the dev run.
+    default: REQUIRED_EXECUTION_PRINCIPAL
+  source_access_granted:
+    description: Explicit source-access authorization flag.
+    default: "false"
   output_catalog:
     description: Unity Catalog catalog for solution-owned artifacts.
     default: REQUIRED_OUTPUT_CATALOG

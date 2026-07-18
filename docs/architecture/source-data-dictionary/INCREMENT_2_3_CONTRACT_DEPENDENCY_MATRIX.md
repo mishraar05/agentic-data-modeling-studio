@@ -63,8 +63,13 @@ The current safe build slice may:
 2. parse and validate a typed source-discovery request;
 3. reject missing, placeholder, malformed, duplicate, unsafe, or cross-boundary scope;
 4. produce a deterministic request fingerprint for idempotency; and
-5. prove those controls with unit and security tests.
+5. register contract-valid `engagement`, `work_package`, and `solution_run`
+   records in explicit `SYNTHETIC_DEV` mode without inventing a new record type;
+6. reject a mismatched workspace, execution principal, authorization boundary,
+   or conflicting existing record; and
+7. prove those controls with unit, security, deployed-run, and idempotency tests.
 
 It must not query source objects, execute profiling, persist a new record shape,
 or advance a work package beyond `VALIDATED` until the applicable human
-decisions and contract gaps above are resolved.
+decisions and contract gaps above are resolved. Synthetic dev registration is
+not production authorization and cannot close or replace decision `D23-02`.

@@ -6,10 +6,18 @@ from .runtime_request import (
     RuntimeRequest,
     RuntimeRequestError,
 )
+from .registration import (
+    RegistrationError,
+    RegistrationMode,
+    RegistrationParameters,
+)
 
 __all__ = [
     "APPROVED_CONTRACT_SET_VERSION",
     "ProfilingMode",
     "RuntimeRequest",
     "RuntimeRequestError",
+    "RegistrationError",
+    "RegistrationMode",
+    "RegistrationParameters",
 ]

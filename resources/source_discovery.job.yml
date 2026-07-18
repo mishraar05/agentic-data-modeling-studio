@@ -36,6 +36,20 @@ resources:
           default: ${var.profiling_policy_id}
         - name: profiling_policy_version
           default: ${var.profiling_policy_version}
+        - name: registration_mode
+          default: ${var.registration_mode}
+        - name: client_name
+          default: ${var.client_name}
+        - name: authorization_ref
+          default: ${var.authorization_ref}
+        - name: effective_start_date
+          default: ${var.effective_start_date}
+        - name: workspace_host
+          default: ${var.workspace_host}
+        - name: execution_principal
+          default: ${var.execution_principal}
+        - name: source_access_granted
+          default: ${var.source_access_granted}
         - name: document_set_id
           default: ""
         - name: requirement_set_id
@@ -72,6 +86,40 @@ resources:
               output_catalog: "{{job.parameters.output_catalog}}"
               output_schema: "{{job.parameters.output_schema}}"
               contract_set_version: "{{job.parameters.contract_set_version}}"
+        - task_key: register_work_package
+          depends_on:
+            - task_key: validate_scope
+          notebook_task:
+            notebook_path: ../src/workflows/register_work_package.py
+            source: WORKSPACE
+            base_parameters:
+              run_id: source_discovery_{{job.run_id}}
+              engagement_id: "{{job.parameters.engagement_id}}"
+              work_package_id: "{{job.parameters.work_package_id}}"
+              lob: "{{job.parameters.lob}}"
+              domain: "{{job.parameters.domain}}"
+              source_catalog: "{{job.parameters.source_catalog}}"
+              source_schema: "{{job.parameters.source_schema}}"
+              source_tables: "{{job.parameters.source_tables}}"
+              source_system_id: "{{job.parameters.source_system_id}}"
+              source_product: "{{job.parameters.source_product}}"
+              source_module: "{{job.parameters.source_module}}"
+              source_version: "{{job.parameters.source_version}}"
+              run_mode: "{{job.parameters.run_mode}}"
+              profiling_policy_id: "{{job.parameters.profiling_policy_id}}"
+              profiling_policy_version: "{{job.parameters.profiling_policy_version}}"
+              document_set_id: "{{job.parameters.document_set_id}}"
+              requirement_set_id: "{{job.parameters.requirement_set_id}}"
+              output_catalog: "{{job.parameters.output_catalog}}"
+              output_schema: "{{job.parameters.output_schema}}"
+              contract_set_version: "{{job.parameters.contract_set_version}}"
+              registration_mode: "{{job.parameters.registration_mode}}"
+              client_name: "{{job.parameters.client_name}}"
+              authorization_ref: "{{job.parameters.authorization_ref}}"
+              effective_start_date: "{{job.parameters.effective_start_date}}"
+              workspace_host: "{{job.parameters.workspace_host}}"
+              execution_principal: "{{job.parameters.execution_principal}}"
+              source_access_granted: "{{job.parameters.source_access_granted}}"
       tags:
         solution: agentic-data-modeling-studio
         artifact_scope: source-data-dictionary

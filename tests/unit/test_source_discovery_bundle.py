@@ -4,7 +4,7 @@ import yaml
 
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
-JOB_PARAMETER_NAMES = {
+RUNTIME_PARAMETER_NAMES = {
     "engagement_id",
     "work_package_id",
     "lob",
@@ -25,6 +25,16 @@ JOB_PARAMETER_NAMES = {
     "output_schema",
     "contract_set_version",
 }
+REGISTRATION_PARAMETER_NAMES = {
+    "registration_mode",
+    "client_name",
+    "authorization_ref",
+    "effective_start_date",
+    "workspace_host",
+    "execution_principal",
+    "source_access_granted",
+}
+JOB_PARAMETER_NAMES = RUNTIME_PARAMETER_NAMES | REGISTRATION_PARAMETER_NAMES
 
 
 def _load_yaml(relative_path: str) -> dict:
@@ -52,6 +62,23 @@ def test_validation_task_receives_every_job_parameter_and_generated_run_id() -> 
     assert task["notebook_task"]["notebook_path"].endswith(
         "src/workflows/validate_source_discovery_scope.py"
     )
+    assert set(base_parameters) == RUNTIME_PARAMETER_NAMES | {"run_id"}
+    assert base_parameters["run_id"] == "source_discovery_{{job.run_id}}"
+    for name in RUNTIME_PARAMETER_NAMES:
+        assert base_parameters[name] == f"{{{{job.parameters.{name}}}}}"
+
+
+def test_registration_task_depends_on_validation_and_receives_all_parameters() -> None:
+    resource = _load_yaml("resources/source_discovery.job.yml")
+    job = resource["resources"]["jobs"]["source_discovery"]
+    task = job["tasks"][1]
+    base_parameters = task["notebook_task"]["base_parameters"]
+
+    assert task["task_key"] == "register_work_package"
+    assert task["depends_on"] == [{"task_key": "validate_scope"}]
+    assert task["notebook_task"]["notebook_path"].endswith(
+        "src/workflows/register_work_package.py"
+    )
     assert set(base_parameters) == JOB_PARAMETER_NAMES | {"run_id"}
     assert base_parameters["run_id"] == "source_discovery_{{job.run_id}}"
     for name in JOB_PARAMETER_NAMES:
@@ -76,6 +103,13 @@ def test_bundle_declares_every_source_discovery_variable_default() -> None:
         "run_mode",
         "profiling_policy_id",
         "profiling_policy_version",
+        "registration_mode",
+        "client_name",
+        "authorization_ref",
+        "effective_start_date",
+        "workspace_host",
+        "execution_principal",
+        "source_access_granted",
         "output_catalog",
         "output_schema",
     }
