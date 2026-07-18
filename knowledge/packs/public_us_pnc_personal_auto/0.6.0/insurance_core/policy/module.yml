@@ -2,8 +2,8 @@ schema_version: "1.0"
 module_id: insurance_core_policy
 module_version: "0.5.0"
 layer: insurance_core
-approval_state: CANDIDATE
-runtime_eligible: false
+approval_state: APPROVED
+runtime_eligible: true
 owner: TBD_POLICY_STEWARD
 scope: {domains: [policy], lobs: [cross_lob, personal_auto]}
 non_scope: [jurisdiction_specific_cancellation_rules, carrier_workflows, rating_algorithm, policy_form_wording]

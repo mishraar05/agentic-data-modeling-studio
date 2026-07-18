@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "urn:agentic-data-modeler:contract:work_package:0.1.0",
-  "$comment": "Work package defining one bounded execution slice by engagement, LOB, domain, source scope, and allowed table list. The solution operates on exactly one authorized work package at a time.",
+  "$comment": "Work package defining one bounded execution slice by engagement, LOB, domain, and source scope. source_tables_allow_list is the deterministic frozen manifest resolved from the authorized schema policy; it need not be manually supplied.",
   "type": "object",
   "allOf": [
     {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/envelope"},
@@ -15,6 +15,7 @@
         "source_catalog": {"type": "string", "minLength": 1},
         "source_schema": {"type": "string", "minLength": 1},
         "source_tables_allow_list": {
+          "description": "Exact sorted execution manifest resolved from SCHEMA_ALL_TABLES, PATTERN_BASED, or EXPLICIT_TABLES scope before source row access.",
           "type": "array",
           "minItems": 1,
           "uniqueItems": true,

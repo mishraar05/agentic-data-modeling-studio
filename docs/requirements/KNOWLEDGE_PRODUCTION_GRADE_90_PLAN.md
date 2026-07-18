@@ -1,7 +1,7 @@
 # Knowledge layer — 90% production-grade acceptance plan
 
 **Goal:** Reach at least 90% scoped content completeness and separately satisfy production trust gates for the US Personal Auto Policy and Claims knowledge layer.  
-**Current candidate:** `public_us_pnc_personal_auto` `v0.6.0`.  
+**Current approved runtime pack:** `public_us_pnc_personal_auto` `v0.6.0`; its retained readiness score remains the baseline for the improvement plan.  
 **Current baseline:** 75% content completeness; 0% trusted-runtime readiness.  
 **Controlling principle:** Scores cannot be increased by folder count, duplicated terms, corrected defects alone, or unreviewed internet content.
 

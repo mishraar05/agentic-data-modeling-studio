@@ -1,0 +1,61 @@
+"""Run the SDD proof slice end-to-end, twice, to show the memory loop.
+
+    python scripts/run_proof_slice.py
+
+Run 1 analyzes synthetic Personal Auto tables and auto-approves. Run 2 shares
+the same episodic memory and reuses run 1's decisions instead of re-asking.
+"""
+
+from __future__ import annotations
+
+import os
+import sys
+import tempfile
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "src"))
+
+from agentic_data_modeler.slice.llm import DeterministicStubLLM
+from agentic_data_modeler.slice.memory import EpisodicMemory
+from agentic_data_modeler.slice.orchestrator import run_sdd_agent
+from agentic_data_modeler.slice.persistence import RecordStore
+from agentic_data_modeler.slice.records import Scope
+from agentic_data_modeler.slice.review import AutoApprovePolicy
+from agentic_data_modeler.slice.synthetic import personal_auto_inventory
+
+
+def _print(label, result):
+    print(f"\n=== {label} ({result.run_id}) ===")
+    print(f"  attributes analyzed : {result.n_attributes}")
+    print(f"  approved            : {result.n_approved}")
+    print(f"  reused from memory  : {result.n_reused_from_memory}")
+    print(f"  deferred/unresolved : {result.n_deferred_unresolved}")
+    for q in result.open_questions:
+        print(f"    open question -> {q}")
+    print(f"  persisted tables    : {result.table_counts}")
+
+
+def main() -> None:
+    out = Path(os.environ.get("SLICE_OUT", Path(tempfile.gettempdir()) / "sdd_slice_runs"))
+    out.mkdir(parents=True, exist_ok=True)
+    memory = EpisodicMemory(out / "episodic_memory.json")
+    llm, policy = DeterministicStubLLM(), AutoApprovePolicy()
+    print(f"review policy: {policy.name}")
+
+    r1 = run_sdd_agent(ROOT, Scope("ENG-DEMO", "personal_auto", "personal_auto_policy_claims", "WP-001", "RUN-1"),
+                       personal_auto_inventory(), memory=memory,
+                       store=RecordStore(out / "store_run1.json"), review_policy=policy, llm=llm)
+    _print("RUN 1 (fresh memory)", r1)
+
+    r2 = run_sdd_agent(ROOT, Scope("ENG-DEMO", "personal_auto", "personal_auto_policy_claims", "WP-001", "RUN-2"),
+                       personal_auto_inventory(), memory=memory,
+                       store=RecordStore(out / "store_run2.json"), review_policy=policy, llm=llm)
+    _print("RUN 2 (same memory — should reuse decisions)", r2)
+
+    print("\nMemory loop proven:" if r2.n_reused_from_memory > 0 else "\nNo reuse detected:",
+          f"run 2 reused {r2.n_reused_from_memory} prior decisions instead of re-asking.")
+
+
+if __name__ == "__main__":
+    main()

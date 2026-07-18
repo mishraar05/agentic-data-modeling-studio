@@ -9,7 +9,7 @@ knowledge/
 |       |-- 0.3.0/                       # preserved superseded candidate
 |       |-- 0.4.0/                       # preserved superseded candidate
 |       |-- 0.5.0/                       # preserved superseded candidate
-|       `-- 0.6.0/                       # current canonical candidate
+|       `-- 0.6.0/                       # current canonical approved runtime pack
 |           |-- manifest.yml
 |           |-- completeness.yml
 |           |-- glossary/

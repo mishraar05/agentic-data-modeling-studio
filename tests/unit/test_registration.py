@@ -1,6 +1,10 @@
 import pytest
 
-from agentic_data_modeler.control import RegistrationError, RegistrationParameters
+from agentic_data_modeler.control import (
+    RegistrationError,
+    RegistrationParameters,
+    registration_rerun_preserves_state,
+)
 
 
 def _valid_parameters() -> dict[str, str]:
@@ -39,3 +43,29 @@ def test_registration_parameters_fail_closed(name: str, value: str, message: str
     parameters[name] = value
     with pytest.raises(RegistrationError, match=message):
         RegistrationParameters.from_parameters(parameters)
+
+
+@pytest.mark.parametrize(
+    "workflow_state",
+    [
+        "VALIDATED",
+        "METADATA_READY",
+        "PROFILE_READY",
+        "EVIDENCE_READY",
+        "CONTEXT_READY",
+        "SDD_READY",
+        "SILVER_READY",
+        "GOLD_READY",
+        "STTM_READY",
+        "PUBLISHED",
+    ],
+)
+def test_registration_rerun_preserves_governed_progress(workflow_state: str) -> None:
+    assert registration_rerun_preserves_state(workflow_state)
+
+
+@pytest.mark.parametrize("workflow_state", ["", "REGISTERED", "FAILED", "UNKNOWN"])
+def test_registration_rerun_rejects_unknown_or_regressive_state(
+    workflow_state: str,
+) -> None:
+    assert not registration_rerun_preserves_state(workflow_state)

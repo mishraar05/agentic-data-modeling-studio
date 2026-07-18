@@ -2,8 +2,8 @@ schema_version: "1.0"
 module_id: extension_platform
 module_version: "0.3.0"
 layer: extension
-approval_state: CANDIDATE
-runtime_eligible: false
+approval_state: APPROVED
+runtime_eligible: true
 owner: TBD_PLATFORM_KNOWLEDGE_OWNER
 scope: {extension_type: platform, content_status: placeholder_contract_only}
 non_scope: [unlicensed_vendor_schema, core_contract_dependency]

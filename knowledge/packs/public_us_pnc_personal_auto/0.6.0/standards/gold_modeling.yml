@@ -1,7 +1,7 @@
 schema_version: "1.0"
 standard_id: gold_modeling_candidate
 version: "0.6.0"
-approval_state: CANDIDATE
+approval_state: APPROVED
 purpose: Requirement-driven dimensional modeling contract for existing and new Personal Auto analytics.
 required_model_contract:
   facts: [business_process, grain_statement, fact_type, dimensions, measures, degenerate_dimensions, source_silver_grains, requirement_coverage]

@@ -27,12 +27,24 @@ variables:
   source_schema:
     description: Unity Catalog schema containing the read-only source objects.
     default: REQUIRED_SOURCE_SCHEMA
+  source_scope_mode:
+    description: Selection policy resolved to a frozen source-table manifest for each run.
+    default: SCHEMA_ALL_TABLES
+  source_table_include_patterns_json:
+    description: JSON glob patterns included by PATTERN_BASED scope; '*' means all eligible tables.
+    default: '["*"]'
+  source_table_exclude_patterns_json:
+    description: JSON glob patterns excluded from schema discovery after inclusion.
+    default: '[]'
+  source_object_types_json:
+    description: JSON source object types eligible for discovery.
+    default: '["TABLE"]'
   source_tables:
     description: Comma-separated allow-list of source tables.
     default: REQUIRED_SOURCE_TABLES
   source_tables_json:
-    description: JSON-array allow-list of source tables for per-run source discovery.
-    default: REQUIRED_SOURCE_TABLES_JSON
+    description: JSON explicit tables for EXPLICIT_TABLES mode; empty when schema discovery resolves the manifest.
+    default: '[]'
   source_system_id:
     description: Stable non-secret identity of the source system.
     default: REQUIRED_SOURCE_SYSTEM_ID
@@ -88,6 +100,7 @@ variables:
 sync:
   include:
     - src/**
+    - config/profiling_policies/**
     - contracts/**
     - prompts/**
     - skills/**

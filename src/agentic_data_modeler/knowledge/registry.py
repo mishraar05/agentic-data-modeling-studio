@@ -59,4 +59,3 @@ def select_approved_pack(
         raise KnowledgeSelectionError("Requested scope is not covered by the approved pack")
 
     return manifest
-

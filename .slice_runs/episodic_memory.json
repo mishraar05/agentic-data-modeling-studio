@@ -1,0 +1,245 @@
+{
+  "decisions": [
+    {
+      "subject_key": "ENG-DEMO::claim::claim_id",
+      "record": {
+        "record_id": "review_decision_67811e035753c6e3c41b09ea270701bb",
+        "schema_version": "0.1.0",
+        "engagement_id": "ENG-DEMO",
+        "lob": "personal_auto",
+        "domain": "personal_auto_policy_claims",
+        "artifact_version": "0.1.0",
+        "lifecycle_state": "RECORDED",
+        "provenance": {
+          "work_package_id": "WP-001",
+          "run_id": "RUN-1"
+        },
+        "created_at": "2026-07-18T17:59:32Z",
+        "updated_at": "2026-07-18T17:59:32Z",
+        "review_item_ref": "review_item_87b8492e844ed2fccb7022518741e6ef",
+        "decision": "APPROVE",
+        "decision_maker": "dev-auto-approver",
+        "decision_timestamp": "2026-07-18T17:59:32Z",
+        "rationale": "Auto-approved in development mode; human review bypassed by policy.",
+        "impact_scope": [
+          "source_dictionary_attribute_67b775a61f3d65b47767a9fa88f5923a"
+        ]
+      },
+      "payload": {
+        "business_name": "Claim Identifier",
+        "business_definition": "Claim identifier on claim."
+      }
+    },
+    {
+      "subject_key": "ENG-DEMO::claim::policy_id",
+      "record": {
+        "record_id": "review_decision_23b3c76b53c388f84aa5f9cb8433d92e",
+        "schema_version": "0.1.0",
+        "engagement_id": "ENG-DEMO",
+        "lob": "personal_auto",
+        "domain": "personal_auto_policy_claims",
+        "artifact_version": "0.1.0",
+        "lifecycle_state": "RECORDED",
+        "provenance": {
+          "work_package_id": "WP-001",
+          "run_id": "RUN-1"
+        },
+        "created_at": "2026-07-18T17:59:32Z",
+        "updated_at": "2026-07-18T17:59:32Z",
+        "review_item_ref": "review_item_50a8188909feb18295f6e174230f94e2",
+        "decision": "APPROVE",
+        "decision_maker": "dev-auto-approver",
+        "decision_timestamp": "2026-07-18T17:59:32Z",
+        "rationale": "Auto-approved in development mode; human review bypassed by policy.",
+        "impact_scope": [
+          "source_dictionary_attribute_732f0f3fd72dc9fba00f137e3f1c3592"
+        ]
+      },
+      "payload": {
+        "business_name": "Policy Identifier",
+        "business_definition": "The insurance contract between insurer and insured."
+      }
+    },
+    {
+      "subject_key": "ENG-DEMO::claim::loss_dt",
+      "record": {
+        "record_id": "review_decision_873fac69363cb83b517856c91efd709b",
+        "schema_version": "0.1.0",
+        "engagement_id": "ENG-DEMO",
+        "lob": "personal_auto",
+        "domain": "personal_auto_policy_claims",
+        "artifact_version": "0.1.0",
+        "lifecycle_state": "RECORDED",
+        "provenance": {
+          "work_package_id": "WP-001",
+          "run_id": "RUN-1"
+        },
+        "created_at": "2026-07-18T17:59:33Z",
+        "updated_at": "2026-07-18T17:59:33Z",
+        "review_item_ref": "review_item_ba1de2010eb6042417bc9a696407177e",
+        "decision": "APPROVE",
+        "decision_maker": "dev-auto-approver",
+        "decision_timestamp": "2026-07-18T17:59:33Z",
+        "rationale": "Auto-approved in development mode; human review bypassed by policy.",
+        "impact_scope": [
+          "source_dictionary_attribute_7bf80458452dc99dc68f67816b4ac9d8"
+        ]
+      },
+      "payload": {
+        "business_name": "Loss Date",
+        "business_definition": "Loss date on claim."
+      }
+    },
+    {
+      "subject_key": "ENG-DEMO::claim::claim_amt",
+      "record": {
+        "record_id": "review_decision_58532c83441447431fab17218ca9c248",
+        "schema_version": "0.1.0",
+        "engagement_id": "ENG-DEMO",
+        "lob": "personal_auto",
+        "domain": "personal_auto_policy_claims",
+        "artifact_version": "0.1.0",
+        "lifecycle_state": "RECORDED",
+        "provenance": {
+          "work_package_id": "WP-001",
+          "run_id": "RUN-1"
+        },
+        "created_at": "2026-07-18T17:59:33Z",
+        "updated_at": "2026-07-18T17:59:33Z",
+        "review_item_ref": "review_item_5a9306ffdb6fa31a84efc008b2e92074",
+        "decision": "APPROVE",
+        "decision_maker": "dev-auto-approver",
+        "decision_timestamp": "2026-07-18T17:59:33Z",
+        "rationale": "Auto-approved in development mode; human review bypassed by policy.",
+        "impact_scope": [
+          "source_dictionary_attribute_e3c7cb1b9117e9c217ee562a3d3f4fd2"
+        ]
+      },
+      "payload": {
+        "business_name": "Claim Amount",
+        "business_definition": "Claim amount on claim."
+      }
+    },
+    {
+      "subject_key": "ENG-DEMO::claim::driver_ssn",
+      "record": {
+        "record_id": "review_decision_de57801026be6363e07d2b12985b4557",
+        "schema_version": "0.1.0",
+        "engagement_id": "ENG-DEMO",
+        "lob": "personal_auto",
+        "domain": "personal_auto_policy_claims",
+        "artifact_version": "0.1.0",
+        "lifecycle_state": "RECORDED",
+        "provenance": {
+          "work_package_id": "WP-001",
+          "run_id": "RUN-1"
+        },
+        "created_at": "2026-07-18T17:59:34Z",
+        "updated_at": "2026-07-18T17:59:34Z",
+        "review_item_ref": "review_item_63f319b60ee24d8fe3368609f56721a9",
+        "decision": "APPROVE",
+        "decision_maker": "dev-auto-approver",
+        "decision_timestamp": "2026-07-18T17:59:34Z",
+        "rationale": "Auto-approved in development mode; human review bypassed by policy.",
+        "impact_scope": [
+          "source_dictionary_attribute_a374e547f10bff85a4097adb2eac385f"
+        ]
+      },
+      "payload": {
+        "business_name": "Driver Social Security Number",
+        "business_definition": "Driver social security number on claim."
+      }
+    },
+    {
+      "subject_key": "ENG-DEMO::driver::driver_id",
+      "record": {
+        "record_id": "review_decision_b12db43fd1e029aa80d91eccadc5e940",
+        "schema_version": "0.1.0",
+        "engagement_id": "ENG-DEMO",
+        "lob": "personal_auto",
+        "domain": "personal_auto_policy_claims",
+        "artifact_version": "0.1.0",
+        "lifecycle_state": "RECORDED",
+        "provenance": {
+          "work_package_id": "WP-001",
+          "run_id": "RUN-1"
+        },
+        "created_at": "2026-07-18T17:59:35Z",
+        "updated_at": "2026-07-18T17:59:35Z",
+        "review_item_ref": "review_item_a0def479cc673b017adf0b1961f4c5ed",
+        "decision": "APPROVE",
+        "decision_maker": "dev-auto-approver",
+        "decision_timestamp": "2026-07-18T17:59:35Z",
+        "rationale": "Auto-approved in development mode; human review bypassed by policy.",
+        "impact_scope": [
+          "source_dictionary_attribute_5010800e76a0d41792b6f40ddcf606d9"
+        ]
+      },
+      "payload": {
+        "business_name": "Driver Identifier",
+        "business_definition": "Driver identifier on driver."
+      }
+    },
+    {
+      "subject_key": "ENG-DEMO::driver::first_name",
+      "record": {
+        "record_id": "review_decision_73137dbb3b4c5c964a3b96ee23c91bc2",
+        "schema_version": "0.1.0",
+        "engagement_id": "ENG-DEMO",
+        "lob": "personal_auto",
+        "domain": "personal_auto_policy_claims",
+        "artifact_version": "0.1.0",
+        "lifecycle_state": "RECORDED",
+        "provenance": {
+          "work_package_id": "WP-001",
+          "run_id": "RUN-1"
+        },
+        "created_at": "2026-07-18T17:59:36Z",
+        "updated_at": "2026-07-18T17:59:36Z",
+        "review_item_ref": "review_item_7003dcd66d04c1584eb2710ed0fbc9ac",
+        "decision": "APPROVE",
+        "decision_maker": "dev-auto-approver",
+        "decision_timestamp": "2026-07-18T17:59:36Z",
+        "rationale": "Auto-approved in development mode; human review bypassed by policy.",
+        "impact_scope": [
+          "source_dictionary_attribute_76e1528f18b7b851f8ae107ae1d845df"
+        ]
+      },
+      "payload": {
+        "business_name": "First Name",
+        "business_definition": "First name on driver."
+      }
+    },
+    {
+      "subject_key": "ENG-DEMO::driver::last_name",
+      "record": {
+        "record_id": "review_decision_63fe8f76e6fa86571c26fb3d5100b2ed",
+        "schema_version": "0.1.0",
+        "engagement_id": "ENG-DEMO",
+        "lob": "personal_auto",
+        "domain": "personal_auto_policy_claims",
+        "artifact_version": "0.1.0",
+        "lifecycle_state": "RECORDED",
+        "provenance": {
+          "work_package_id": "WP-001",
+          "run_id": "RUN-1"
+        },
+        "created_at": "2026-07-18T17:59:39Z",
+        "updated_at": "2026-07-18T17:59:39Z",
+        "review_item_ref": "review_item_ca2513bf8672494ba68a86e7fbdfc21b",
+        "decision": "APPROVE",
+        "decision_maker": "dev-auto-approver",
+        "decision_timestamp": "2026-07-18T17:59:39Z",
+        "rationale": "Auto-approved in development mode; human review bypassed by policy.",
+        "impact_scope": [
+          "source_dictionary_attribute_f5b31447035569df43390a0ff4ba110e"
+        ]
+      },
+      "payload": {
+        "business_name": "Last Name",
+        "business_definition": "Last name on driver."
+      }
+    }
+  ],
+  "open_questions": []
+}

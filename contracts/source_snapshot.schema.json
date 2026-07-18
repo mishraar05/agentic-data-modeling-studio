@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "urn:agentic-data-modeler:contract:source_snapshot:0.1.0",
-  "$comment": "Immutable snapshot manifest of source metadata inventory for one work package execution. References the exact allow-listed source catalog, schema, table, column, key, and constraint metadata captured at run time.",
+  "$comment": "Immutable snapshot of source metadata for the exact frozen manifest resolved from an authorized catalog/schema scope policy at run time.",
   "type": "object",
   "allOf": [
     {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/envelope"},

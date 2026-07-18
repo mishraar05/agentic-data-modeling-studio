@@ -1,7 +1,7 @@
 schema_version: "1.0"
 standard_id: silver_modeling_candidate
 version: "0.6.0"
-approval_state: CANDIDATE
+approval_state: APPROVED
 purpose: Source-aligned and reusable ODS modeling contract for evidence-backed Personal Auto Policy and Claims modernization.
 required_entity_contract:
   - business_name

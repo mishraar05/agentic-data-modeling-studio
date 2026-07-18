@@ -134,13 +134,17 @@ flowchart LR
 
 | Phase | Execution type | Inputs | Authoritative outputs | Gate |
 |---|---|---|---|---|
-| 0. Register and authorize | Deterministic + human authorization | Identity, intended purpose, LOB/domain, source/output boundary, profiling policy | `engagement`, `work_package`, authorization and scope findings | No placeholders; allow-list, purpose, identities and policies approved |
-| 1. Snapshot metadata | Deterministic | Authorized catalogs/schemas/objects | Object/attribute observations, constraints, indexes, views and source snapshot ID | 100% allow-listed inventory captured or explicitly failed |
+| 0. Resolve, register and authorize | Deterministic + human authorization | Identity, intended purpose, LOB/domain, authorized catalog/schema, source-scope and profiling policies | Resolved frozen table manifest, `engagement`, `work_package`, authorization and scope findings | No placeholders; every eligible table is included or governed exclusion is recorded; purpose, identities and policies approved |
+| 1. Snapshot metadata | Deterministic | Frozen source manifest | Object/attribute observations, constraints, indexes, views and source snapshot ID | 100% frozen-manifest inventory captured or explicitly failed |
 | 2. Controlled profiling | Deterministic | Source snapshot and profiling/minimization policy | Profile snapshot, null/distinct/range/pattern statistics, bounded value distributions and relationship signals | Sampling, query budget, privacy suppression and raw-value rules pass |
 | 3. Normalize supplied evidence | Deterministic extraction + bounded LLM extraction | Dictionaries, reports, SQL/lineage knowledge and requirements supplied for the slice | Evidence items, document claims, requirements and rules with source/location citations | Every extracted claim preserves provenance and evidence class |
 | 4. Assemble context | Deterministic | Scope, evidence, approved knowledge, prior decisions and task contract | Immutable context snapshot and bounded context envelope | Pack is approved/runtime-eligible; no unauthorized, stale or cross-engagement context |
 | 5. Reconstruct dictionary | Source Data Analyst capability | Per-object evidence bundles and governed context | Draft object/attribute definitions, relationship candidates, code interpretations, privacy candidates, questions and findings | Inventory coverage 100%; every inference cited; unresolved meaning visible |
 | 6. Review, approve and publish | Critic + human + deterministic state transition | Contract-valid draft, findings, impact analysis and reviewer decisions | Approved dictionary version, decision/gap register, generated dictionary workbook/view and handoff manifest | Keys, privacy, material relationships and material inferences reviewed; no blocking finding |
+
+### 6.2 Source-scope resolution principle
+
+The normal dictionary run does not require a person to enumerate tables. It authorizes one catalog/schema boundary, discovers all metadata-visible eligible tables, applies governed object-type and exclusion rules, and freezes the sorted result before metadata capture or profiling. That frozen manifest is the coverage denominator for the entire run. `EXPLICIT_TABLES` remains available for bounded proof slices and targeted reruns; `PATTERN_BASED` is available when the authorized schema intentionally contains unrelated table families. See [ADR-007](../../decisions/ADR-007-schema-scoped-source-discovery.md).
 
 ## 7. Approved handoff contract
 

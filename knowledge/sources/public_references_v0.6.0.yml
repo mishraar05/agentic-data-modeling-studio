@@ -1,8 +1,8 @@
 schema_version: "1.0"
 registry_id: public_us_pnc_sources
 registry_version: "0.6.0"
-approval_state: CANDIDATE
-runtime_eligible: false
+approval_state: APPROVED
+runtime_eligible: true
 verified_at: "2026-07-15"
 sources:
   - {source_id: solution_requirements_charter, publisher: Agentic Data Modeling Studio, url: "docs/requirements/REQUIREMENTS_CHARTER.md", source_class: internal_governing_requirement, usage_basis: governing_project_document}

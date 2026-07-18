@@ -34,7 +34,7 @@ def _known_sources() -> set[str]:
     return {item["source_id"] for item in _load_yaml(SOURCE_REGISTRY)["sources"]}
 
 
-def test_canonical_candidate_pack_is_structurally_valid() -> None:
+def test_canonical_approved_pack_is_structurally_valid() -> None:
     manifest = validate_repository_pack(REPOSITORY_ROOT, MANIFEST)
     assert manifest["pack_id"] == "public_us_pnc_personal_auto"
     assert manifest["pack_version"] == "0.6.0"
@@ -42,16 +42,26 @@ def test_canonical_candidate_pack_is_structurally_valid() -> None:
     assert len(manifest["assets"]) == 10
 
 
-def test_candidate_pack_fails_closed_at_runtime() -> None:
-    with pytest.raises(KnowledgeSelectionError, match="does not authorize"):
-        select_approved_pack(
-            REPOSITORY_ROOT,
-            pack_id="public_us_pnc_personal_auto",
-            pack_version="0.6.0",
-            geography="US_general",
-            lob="personal_auto",
-            domains={"policy", "claims"},
-        )
+def test_approved_pack_is_runtime_selectable_by_exact_scope() -> None:
+    manifest = select_approved_pack(
+        REPOSITORY_ROOT,
+        pack_id="public_us_pnc_personal_auto",
+        pack_version="0.6.0",
+        geography="US_general",
+        lob="personal_auto",
+        domains={"policy", "claims"},
+    )
+
+    assert manifest["approval_state"] == "APPROVED"
+    assert manifest["runtime_eligible"] is True
+    assert all(
+        _load_yaml(REPOSITORY_ROOT / item["path"])["approval_state"] == "APPROVED"
+        for item in manifest["modules"]
+    )
+    assert all(
+        _load_yaml(REPOSITORY_ROOT / item["path"])["runtime_eligible"] is True
+        for item in manifest["modules"]
+    )
 
 
 def test_missing_version_does_not_fallback() -> None:

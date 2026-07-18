@@ -1,7 +1,7 @@
 schema_version: "1.0"
 reference_id: fibo_external_reference
 version: "0.6.0"
-approval_state: CANDIDATE
+approval_state: APPROVED
 source_reference: edmc_fibo
 license: MIT
 ontology_creation_deliverable: false

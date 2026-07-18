@@ -2,8 +2,8 @@ schema_version: "1.0"
 module_id: insurance_core_party
 module_version: "0.6.0"
 layer: insurance_core
-approval_state: CANDIDATE
-runtime_eligible: false
+approval_state: APPROVED
+runtime_eligible: true
 owner: TBD_PARTY_STEWARD
 scope: {domains: [party], lobs: [cross_lob, personal_auto]}
 non_scope: [client_mastering_rules, jurisdiction_identity_rules, automated_identity_resolution, protected_attribute_inference]

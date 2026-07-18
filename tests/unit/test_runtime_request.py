@@ -7,6 +7,7 @@ from agentic_data_modeler.control import (
     ProfilingMode,
     RuntimeRequest,
     RuntimeRequestError,
+    SourceScopeMode,
 )
 
 
@@ -19,6 +20,10 @@ def _valid_parameters() -> dict[str, str]:
         "domain": "Policy",
         "source_catalog": "guidewire_dev",
         "source_schema": "pc_source",
+        "source_scope_mode": "EXPLICIT_TABLES",
+        "source_table_include_patterns": "[]",
+        "source_table_exclude_patterns": "[]",
+        "source_object_types": '["TABLE"]',
         "source_tables": json.dumps(["pc_policy", "pc_policyperiod"]),
         "source_system_id": "guidewire_policycenter",
         "source_product": "PolicyCenter",
@@ -38,6 +43,7 @@ def _valid_parameters() -> dict[str, str]:
 def test_valid_request_is_typed_and_fingerprinted() -> None:
     request = RuntimeRequest.from_parameters(_valid_parameters())
     assert request.profiling_mode is ProfilingMode.METADATA_ONLY
+    assert request.source_scope_mode is SourceScopeMode.EXPLICIT_TABLES
     assert request.source_tables == ("pc_policy", "pc_policyperiod")
     assert len(request.fingerprint()) == 64
 
@@ -92,6 +98,24 @@ def test_source_and_output_schema_must_be_distinct_case_insensitively() -> None:
     parameters["output_catalog"] = "GUIDEWIRE_DEV"
     parameters["output_schema"] = "PC_SOURCE"
     with pytest.raises(RuntimeRequestError, match="must be distinct"):
+        RuntimeRequest.from_parameters(parameters)
+
+
+def test_schema_all_scope_accepts_empty_explicit_table_input() -> None:
+    parameters = _valid_parameters()
+    parameters["source_scope_mode"] = "SCHEMA_ALL_TABLES"
+    parameters["source_table_include_patterns"] = '["*"]'
+    parameters["source_table_exclude_patterns"] = '["*_backup"]'
+    parameters["source_tables"] = "[]"
+    request = RuntimeRequest.from_parameters(parameters)
+    assert request.source_tables == ()
+    assert request.source_table_include_patterns == ("*",)
+
+
+def test_explicit_scope_rejects_pattern_configuration() -> None:
+    parameters = _valid_parameters()
+    parameters["source_table_include_patterns"] = '["pc_*"]'
+    with pytest.raises(RuntimeRequestError, match="does not accept"):
         RuntimeRequest.from_parameters(parameters)
 
 

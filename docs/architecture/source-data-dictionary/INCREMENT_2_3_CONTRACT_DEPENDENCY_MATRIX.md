@@ -26,7 +26,7 @@ tool-specific conversion remain downstream.
 | Work package | Authoritative output | Contract and version | Ownership decision |
 |---|---|---|---|
 | `I23-01` runtime request | Engagement authorization boundary | `engagement` `0.1.0` | `engagement.authorization_ref`, source access, profiling policy, and output boundary are authoritative. |
-| `I23-01` runtime request | Bounded source scope and workflow state | `work_package` `0.1.0` | Owns engagement reference, LOB/domain through the common envelope, source allow-list, target boundary, and workflow state. |
+| `I23-01` runtime request | Bounded source scope and workflow state | `work_package` `0.1.0` | Owns engagement reference, LOB/domain through the common envelope, authorized catalog/schema policy, resolved frozen source manifest, target boundary, and workflow state. |
 | `I23-01` execution | Bounded run record | `solution_run` `0.1.0` | Owns work-package reference, run type, timestamps, status, error, and cost. |
 | `I23-02` metadata | Metadata snapshot manifest | `source_snapshot` `0.1.0` | Owns captured counts, query reference, time, and fingerprint. |
 | `I23-02` metadata | Object observations | `source_object_observation` `0.1.0` | Owns one observed source object and captured constraint observations. |
@@ -68,6 +68,11 @@ The current safe build slice may:
 6. reject a mismatched workspace, execution principal, authorization boundary,
    or conflicting existing record; and
 7. prove those controls with unit, security, deployed-run, and idempotency tests.
+
+The Increment-2 metadata slice additionally may read only authorized Unity
+Catalog information-schema views, persist contract-valid source snapshots and
+metadata observations, and advance the registered work package from
+`VALIDATED` to `METADATA_READY` after 100% frozen-manifest and column reconciliation.
 
 It must not query source objects, execute profiling, persist a new record shape,
 or advance a work package beyond `VALIDATED` until the applicable human

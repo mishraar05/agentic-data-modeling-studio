@@ -2,8 +2,8 @@ schema_version: "1.0"
 module_id: personal_auto_claims_lifecycle
 module_version: "0.6.0"
 layer: personal_auto
-approval_state: CANDIDATE
-runtime_eligible: false
+approval_state: APPROVED
+runtime_eligible: true
 owner: TBD_PERSONAL_AUTO_CLAIMS_STEWARD
 scope: {lob: personal_auto, domains: [claims]}
 non_scope: [state_specific_claim_deadlines_outside_jurisdiction_extension, carrier_claim_workflow, automated_fault_coverage_fraud_or_total_loss_decision]

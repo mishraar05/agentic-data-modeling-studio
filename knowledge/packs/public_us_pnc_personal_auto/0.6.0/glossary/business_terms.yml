@@ -1,8 +1,8 @@
 schema_version: "1.0"
 glossary_id: public_us_pnc_personal_auto_business_glossary
 version: "0.6.0"
-approval_state: CANDIDATE
-runtime_eligible: false
+approval_state: APPROVED
+runtime_eligible: true
 owner: TBD_GLOSSARY_STEWARD
 rules:
   - Definitions are reusable candidate context and never override approved enterprise terminology policy wording or jurisdiction law.

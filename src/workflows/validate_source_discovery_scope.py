@@ -38,6 +38,10 @@ PARAMETERS = (
     "domain",
     "source_catalog",
     "source_schema",
+    "source_scope_mode",
+    "source_table_include_patterns",
+    "source_table_exclude_patterns",
+    "source_object_types",
     "source_tables",
     "source_system_id",
     "source_product",
@@ -66,6 +70,7 @@ print(f"engagement_id={request.engagement_id}")
 print(f"work_package_id={request.work_package_id}")
 print(f"lob={request.lob}")
 print(f"domain={request.domain}")
-print(f"source_table_count={len(request.source_tables)}")
+print(f"source_scope_mode={request.source_scope_mode.value}")
+print(f"requested_explicit_table_count={len(request.source_tables)}")
 print(f"run_mode={request.profiling_mode.value}")
 print(f"request_fingerprint={request.fingerprint()}")

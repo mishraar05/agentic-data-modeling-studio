@@ -1,7 +1,7 @@
 schema_version: "1.0"
 standard_id: sttm_modeling_candidate
 version: "0.6.0"
-approval_state: CANDIDATE
+approval_state: APPROVED
 purpose: Attribute-level Source-to-Silver and Silver-to-Gold mapping contract with evidence and reconciliation.
 required_mapping_fields:
   identity: [engagement_id, work_package_id, mapping_package_id, mapping_id, mapping_version, lifecycle_state]

@@ -71,6 +71,7 @@ The product choices shown in the Databricks “Create new Agent” screen are co
 | **Databricks Apps (Streamlit initially)** | Model/STTM review, comparison, decisions, gaps, evidence, and exports | Primary human review interface |
 | **MLflow for GenAI** | Trace, evaluate, compare, monitor, and collect expert feedback | Mandatory harness component |
 | **Unity Catalog and Delta** | Govern evidence and persist versioned artifacts and decisions | Authoritative data/control plane |
+| **Databricks Labs DQX** | Programmatic source profiling and later execution of approved data-quality rules behind a versioned adapter | Profiling engine; solution-owned scope, privacy, persistence and approval controls remain authoritative |
 | **AI Search** | Retrieve only approved unstructured evidence with engagement and scope filters | Optional evidence service; never unfiltered memory |
 
 The custom agent should follow the Databricks-recommended MLflow `ResponsesAgent` interface so the implementation can use custom orchestration while retaining tracing, evaluation, deployment, and monitoring integration. Product previews or beta services must sit behind an adapter and cannot become an irreplaceable core dependency.
@@ -137,7 +138,7 @@ The durable-memory principle above resolves into three named stores, mapped to t
 | Store | Memory type | Holds | Scope | Lifecycle |
 |---|---|---|---|---|
 | Governed knowledge layer (§4.1) | **Semantic** | General domain meaning: glossary, code sets, LOB/domain modules, standards, approved reference models | Cross-engagement, reusable | Versioned pack; `CANDIDATE` → `APPROVED`; immutable versions |
-| Engagement decision & run stores | **Episodic** | Events bound to engagement/run/time: decision records (e.g. the `D23-01` allow-list), `review_decision`, `open_question`, `context_snapshot`, `solution_run`, `work_package`, `artifact_version` | Engagement- and scope-isolated | Append-only / versioned; never auto-promoted |
+| Engagement decision & run stores | **Episodic** | Events bound to engagement/run/time: authorized schema-scope policy, resolved frozen source manifest, `review_decision`, `open_question`, `context_snapshot`, `solution_run`, `work_package`, `artifact_version` | Engagement- and scope-isolated | Append-only / versioned; never auto-promoted |
 | Skills (`SKILL.md`, §7) | **Procedural** | How to perform a bounded, evaluable reasoning task | Reusable playbook | Versioned; gated on unseen evaluation cases |
 
 Deterministic scope/authorization gates (`00_validate_scope.py`, tool-permission middleware, approval-state enforcement) are execution, not memory.
@@ -161,7 +162,7 @@ Guardrails are enforced in the harness and data plane, not merely written in pro
 
 ### During an agent call
 
-- allow-list read-only source tools and solution-owned artifact-write tools;
+- constrain read-only source tools to the authorized catalog/schema and the resolved frozen source manifest, and writes to solution-owned artifact stores;
 - separate source reads from artifact writes;
 - constrain tool arguments to the engagement and task scope;
 - enforce time, cost, token, tool-call, and recursion limits;

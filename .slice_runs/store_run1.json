@@ -1,0 +1,1547 @@
+{
+  "context_snapshot": [
+    {
+      "record_id": "context_snapshot_98b8af535c262176f81500e2379d54c5",
+      "schema_version": "0.1.0",
+      "engagement_id": "ENG-DEMO",
+      "lob": "personal_auto",
+      "domain": "personal_auto_policy_claims",
+      "artifact_version": "0.1.0",
+      "lifecycle_state": "COMMITTED",
+      "provenance": {
+        "work_package_id": "WP-001",
+        "run_id": "RUN-1"
+      },
+      "created_at": "2026-07-18T17:59:28Z",
+      "updated_at": "2026-07-18T17:59:28Z",
+      "work_package_ref": "WP-001",
+      "evidence_set_ref": "source_snapshot_de67501ca5bfabf92d2665c3a0124646",
+      "snapshot_timestamp": "2026-07-18T17:59:28Z",
+      "knowledge_pack_id": "public_us_pnc_personal_auto",
+      "knowledge_pack_version": "0.6.0",
+      "selected_modules": [
+        "extension_enterprise",
+        "extension_jurisdiction",
+        "extension_platform",
+        "extension_product",
+        "insurance_core_billing",
+        "insurance_core_claims",
+        "insurance_core_common_analytics",
+        "insurance_core_party",
+        "insurance_core_policy",
+        "insurance_core_product_and_coverage",
+        "personal_auto_claims_lifecycle",
+        "personal_auto_coverages",
+        "personal_auto_driver_and_household",
+        "personal_auto_kpis",
+        "personal_auto_policy_lifecycle",
+        "personal_auto_risk_and_vehicle"
+      ],
+      "context_effective_date": "2026-07-18",
+      "context_size_bytes": 1695,
+      "context_fingerprint": "92567e5bec67c57b57f30c6984da03cc3b6a3b87ab62b74884fee84ec5dd574f",
+      "budget_compliance": true
+    }
+  ],
+  "source_object_observation": [
+    {
+      "record_id": "source_object_observation_3e9c12fa2c101ea0a953a69a7c382c5d",
+      "schema_version": "0.1.0",
+      "engagement_id": "ENG-DEMO",
+      "lob": "personal_auto",
+      "domain": "personal_auto_policy_claims",
+      "artifact_version": "0.1.0",
+      "lifecycle_state": "COMMITTED",
+      "provenance": {
+        "work_package_id": "WP-001",
+        "run_id": "RUN-1",
+        "source_snapshot_id": "source_snapshot_de67501ca5bfabf92d2665c3a0124646"
+      },
+      "created_at": "2026-07-18T17:59:31Z",
+      "updated_at": "2026-07-18T17:59:31Z",
+      "source_snapshot_ref": "source_snapshot_de67501ca5bfabf92d2665c3a0124646",
+      "evidence_item_ref": "evidence_item_3e9c12fa2c101ea0a953a69a7c382c5d",
+      "catalog_name": "insurance_raw",
+      "schema_name": "gw_pc",
+      "object_name": "claim",
+      "object_type": "TABLE",
+      "attribute_count": 6
+    },
+    {
+      "record_id": "source_object_observation_3b6e28b8ee6e6214f708bc8fd3f54b20",
+      "schema_version": "0.1.0",
+      "engagement_id": "ENG-DEMO",
+      "lob": "personal_auto",
+      "domain": "personal_auto_policy_claims",
+      "artifact_version": "0.1.0",
+      "lifecycle_state": "COMMITTED",
+      "provenance": {
+        "work_package_id": "WP-001",
+        "run_id": "RUN-1",
+        "source_snapshot_id": "source_snapshot_de67501ca5bfabf92d2665c3a0124646"
+      },
+      "created_at": "2026-07-18T17:59:31Z",
+      "updated_at": "2026-07-18T17:59:31Z",
+      "source_snapshot_ref": "source_snapshot_de67501ca5bfabf92d2665c3a0124646",
+      "evidence_item_ref": "evidence_item_3b6e28b8ee6e6214f708bc8fd3f54b20",
+      "catalog_name": "insurance_raw",
+      "schema_name": "gw_pc",
+      "object_name": "driver",
+      "object_type": "TABLE",
+      "attribute_count": 5
+    },
+    {
+      "record_id": "source_object_observation_77962119d43d70929102b52745a88b77",
+      "schema_version": "0.1.0",
+      "engagement_id": "ENG-DEMO",
+      "lob": "personal_auto",
+      "domain": "personal_auto_policy_claims",
+      "artifact_version": "0.1.0",
+      "lifecycle_state": "COMMITTED",
+      "provenance": {
+        "work_package_id": "WP-001",
+        "run_id": "RUN-1",
+        "source_snapshot_id": "source_snapshot_de67501ca5bfabf92d2665c3a0124646"
+      },
+      "created_at": "2026-07-18T17:59:31Z",
+      "updated_at": "2026-07-18T17:59:31Z",
+      "source_snapshot_ref": "source_snapshot_de67501ca5bfabf92d2665c3a0124646",
+      "evidence_item_ref": "evidence_item_77962119d43d70929102b52745a88b77",
+      "catalog_name": "insurance_raw",
+      "schema_name": "gw_pc",
+      "object_name": "policy",
+      "object_type": "TABLE",
+      "attribute_count": 6
+    }
+  ],
+  "source_attribute_observation": [
+    {
+      "record_id": "source_attribute_observation_67b775a61f3d65b47767a9fa88f5923a",
+      "schema_version": "0.1.0",
+      "engagement_id": "ENG-DEMO",
+      "lob": "personal_auto",
+      "domain": "personal_auto_policy_claims",
+      "artifact_version": "0.1.0",
+      "lifecycle_state": "COMMITTED",
+      "provenance": {
+        "work_package_id": "WP-001",
+        "run_id": "RUN-1",
+        "source_snapshot_id": "source_snapshot_de67501ca5bfabf92d2665c3a0124646"
+      },
+      "created_at": "2026-07-18T17:59:31Z",
+      "updated_at": "2026-07-18T17:59:31Z",
+      "source_snapshot_ref": "source_snapshot_de67501ca5bfabf92d2665c3a0124646",
+      "evidence_item_ref": "evidence_item_3e9c12fa2c101ea0a953a69a7c382c5d",
+      "object_name": "claim",
+      "attribute_name": "claim_id",
+      "ordinal_position": 1,
+      "data_type": "STRING",
+      "nullable": false,
+      "constraint_role": "PRIMARY_KEY"
+    },
+    {
+      "record_id": "source_attribute_observation_732f0f3fd72dc9fba00f137e3f1c3592",
+      "schema_version": "0.1.0",
+      "engagement_id": "ENG-DEMO",
+      "lob": "personal_auto",
+      "domain": "personal_auto_policy_claims",
+      "artifact_version": "0.1.0",
+      "lifecycle_state": "COMMITTED",
+      "provenance": {
+        "work_package_id": "WP-001",
+        "run_id": "RUN-1",
+        "source_snapshot_id": "source_snapshot_de67501ca5bfabf92d2665c3a0124646"
+      },
+      "created_at": "2026-07-18T17:59:31Z",
+      "updated_at": "2026-07-18T17:59:31Z",
+      "source_snapshot_ref": "source_snapshot_de67501ca5bfabf92d2665c3a0124646",
+      "evidence_item_ref": "evidence_item_3e9c12fa2c101ea0a953a69a7c382c5d",
+      "object_name": "claim",
+      "attribute_name": "policy_id",
+      "ordinal_position": 2,
+      "data_type": "STRING",
+      "nullable": false,
+      "constraint_role": "FOREIGN_KEY"
+    },
+    {
+      "record_id": "source_attribute_observation_7bf80458452dc99dc68f67816b4ac9d8",
+      "schema_version": "0.1.0",
+      "engagement_id": "ENG-DEMO",
+      "lob": "personal_auto",
+      "domain": "personal_auto_policy_claims",
+      "artifact_version": "0.1.0",
+      "lifecycle_state": "COMMITTED",
+      "provenance": {
+        "work_package_id": "WP-001",
+        "run_id": "RUN-1",
+        "source_snapshot_id": "source_snapshot_de67501ca5bfabf92d2665c3a0124646"
+      },
+      "created_at": "2026-07-18T17:59:31Z",
+      "updated_at": "2026-07-18T17:59:31Z",
+      "source_snapshot_ref": "source_snapshot_de67501ca5bfabf92d2665c3a0124646",
+      "evidence_item_ref": "evidence_item_3e9c12fa2c101ea0a953a69a7c382c5d",
+      "object_name": "claim",
+      "attribute_name": "loss_dt",
+      "ordinal_position": 3,
+      "data_type": "DATE",
+      "nullable": true,
+      "constraint_role": "NONE"
+    },
+    {
+      "record_id": "source_attribute_observation_e3c7cb1b9117e9c217ee562a3d3f4fd2",
+      "schema_version": "0.1.0",
+      "engagement_id": "ENG-DEMO",
+      "lob": "personal_auto",
+      "domain": "personal_auto_policy_claims",
+      "artifact_version": "0.1.0",
+      "lifecycle_state": "COMMITTED",
+      "provenance": {
+        "work_package_id": "WP-001",
+        "run_id": "RUN-1",
+        "source_snapshot_id": "source_snapshot_de67501ca5bfabf92d2665c3a0124646"
+      },
+      "created_at": "2026-07-18T17:59:31Z",
+      "updated_at": "2026-07-18T17:59:31Z",
+      "source_snapshot_ref": "source_snapshot_de67501ca5bfabf92d2665c3a0124646",
+      "evidence_item_ref": "evidence_item_3e9c12fa2c101ea0a953a69a7c382c5d",
+      "object_name": "claim",
+      "attribute_name": "claim_amt",
+      "ordinal_position": 4,
+      "data_type": "DECIMAL",
+      "nullable": true,
+      "constraint_role": "NONE"
+    },
+    {
+      "record_id": "source_attribute_observation_a374e547f10bff85a4097adb2eac385f",
+      "schema_version": "0.1.0",
+      "engagement_id": "ENG-DEMO",
+      "lob": "personal_auto",
+      "domain": "personal_auto_policy_claims",
+      "artifact_version": "0.1.0",
+      "lifecycle_state": "COMMITTED",
+      "provenance": {
+        "work_package_id": "WP-001",
+        "run_id": "RUN-1",
+        "source_snapshot_id": "source_snapshot_de67501ca5bfabf92d2665c3a0124646"
+      },
+      "created_at": "2026-07-18T17:59:31Z",
+      "updated_at": "2026-07-18T17:59:31Z",
+      "source_snapshot_ref": "source_snapshot_de67501ca5bfabf92d2665c3a0124646",
+      "evidence_item_ref": "evidence_item_3e9c12fa2c101ea0a953a69a7c382c5d",
+      "object_name": "claim",
+      "attribute_name": "driver_ssn",
+      "ordinal_position": 5,
+      "data_type": "STRING",
+      "nullable": true,
+      "constraint_role": "NONE"
+    },
+    {
+      "record_id": "source_attribute_observation_7b8393ce7ad8adc79f12cec77ef6797e",
+      "schema_version": "0.1.0",
+      "engagement_id": "ENG-DEMO",
+      "lob": "personal_auto",
+      "domain": "personal_auto_policy_claims",
+      "artifact_version": "0.1.0",
+      "lifecycle_state": "COMMITTED",
+      "provenance": {
+        "work_package_id": "WP-001",
+        "run_id": "RUN-1",
+        "source_snapshot_id": "source_snapshot_de67501ca5bfabf92d2665c3a0124646"
+      },
+      "created_at": "2026-07-18T17:59:31Z",
+      "updated_at": "2026-07-18T17:59:31Z",
+      "source_snapshot_ref": "source_snapshot_de67501ca5bfabf92d2665c3a0124646",
+      "evidence_item_ref": "evidence_item_3e9c12fa2c101ea0a953a69a7c382c5d",
+      "object_name": "claim",
+      "attribute_name": "col7",
+      "ordinal_position": 6,
+      "data_type": "STRING",
+      "nullable": true,
+      "constraint_role": "NONE"
+    },
+    {
+      "record_id": "source_attribute_observation_5010800e76a0d41792b6f40ddcf606d9",
+      "schema_version": "0.1.0",
+      "engagement_id": "ENG-DEMO",
+      "lob": "personal_auto",
+      "domain": "personal_auto_policy_claims",
+      "artifact_version": "0.1.0",
+      "lifecycle_state": "COMMITTED",
+      "provenance": {
+        "work_package_id": "WP-001",
+        "run_id": "RUN-1",
+        "source_snapshot_id": "source_snapshot_de67501ca5bfabf92d2665c3a0124646"
+      },
+      "created_at": "2026-07-18T17:59:31Z",
+      "updated_at": "2026-07-18T17:59:31Z",
+      "source_snapshot_ref": "source_snapshot_de67501ca5bfabf92d2665c3a0124646",
+      "evidence_item_ref": "evidence_item_3b6e28b8ee6e6214f708bc8fd3f54b20",
+      "object_name": "driver",
+      "attribute_name": "driver_id",
+      "ordinal_position": 1,
+      "data_type": "STRING",
+      "nullable": false,
+      "constraint_role": "PRIMARY_KEY"
+    },
+    {
+      "record_id": "source_attribute_observation_76e1528f18b7b851f8ae107ae1d845df",
+      "schema_version": "0.1.0",
+      "engagement_id": "ENG-DEMO",
+      "lob": "personal_auto",
+      "domain": "personal_auto_policy_claims",
+      "artifact_version": "0.1.0",
+      "lifecycle_state": "COMMITTED",
+      "provenance": {
+        "work_package_id": "WP-001",
+        "run_id": "RUN-1",
+        "source_snapshot_id": "source_snapshot_de67501ca5bfabf92d2665c3a0124646"
+      },
+      "created_at": "2026-07-18T17:59:31Z",
+      "updated_at": "2026-07-18T17:59:31Z",
+      "source_snapshot_ref": "source_snapshot_de67501ca5bfabf92d2665c3a0124646",
+      "evidence_item_ref": "evidence_item_3b6e28b8ee6e6214f708bc8fd3f54b20",
+      "object_name": "driver",
+      "attribute_name": "first_name",
+      "ordinal_position": 2,
+      "data_type": "STRING",
+      "nullable": true,
+      "constraint_role": "NONE"
+    },
+    {
+      "record_id": "source_attribute_observation_f5b31447035569df43390a0ff4ba110e",
+      "schema_version": "0.1.0",
+      "engagement_id": "ENG-DEMO",
+      "lob": "personal_auto",
+      "domain": "personal_auto_policy_claims",
+      "artifact_version": "0.1.0",
+      "lifecycle_state": "COMMITTED",
+      "provenance": {
+        "work_package_id": "WP-001",
+        "run_id": "RUN-1",
+        "source_snapshot_id": "source_snapshot_de67501ca5bfabf92d2665c3a0124646"
+      },
+      "created_at": "2026-07-18T17:59:31Z",
+      "updated_at": "2026-07-18T17:59:31Z",
+      "source_snapshot_ref": "source_snapshot_de67501ca5bfabf92d2665c3a0124646",
+      "evidence_item_ref": "evidence_item_3b6e28b8ee6e6214f708bc8fd3f54b20",
+      "object_name": "driver",
+      "attribute_name": "last_name",
+      "ordinal_position": 3,
+      "data_type": "STRING",
+      "nullable": true,
+      "constraint_role": "NONE"
+    },
+    {
+      "record_id": "source_attribute_observation_4ad1110e10d6642b765698b868c8f1eb",
+      "schema_version": "0.1.0",
+      "engagement_id": "ENG-DEMO",
+      "lob": "personal_auto",
+      "domain": "personal_auto_policy_claims",
+      "artifact_version": "0.1.0",
+      "lifecycle_state": "COMMITTED",
+      "provenance": {
+        "work_package_id": "WP-001",
+        "run_id": "RUN-1",
+        "source_snapshot_id": "source_snapshot_de67501ca5bfabf92d2665c3a0124646"
+      },
+      "created_at": "2026-07-18T17:59:31Z",
+      "updated_at": "2026-07-18T17:59:31Z",
+      "source_snapshot_ref": "source_snapshot_de67501ca5bfabf92d2665c3a0124646",
+      "evidence_item_ref": "evidence_item_3b6e28b8ee6e6214f708bc8fd3f54b20",
+      "object_name": "driver",
+      "attribute_name": "dob",
+      "ordinal_position": 4,
+      "data_type": "DATE",
+      "nullable": true,
+      "constraint_role": "NONE"
+    },
+    {
+      "record_id": "source_attribute_observation_ff91faf4f4c53a1a17c3c179c596c2a6",
+      "schema_version": "0.1.0",
+      "engagement_id": "ENG-DEMO",
+      "lob": "personal_auto",
+      "domain": "personal_auto_policy_claims",
+      "artifact_version": "0.1.0",
+      "lifecycle_state": "COMMITTED",
+      "provenance": {
+        "work_package_id": "WP-001",
+        "run_id": "RUN-1",
+        "source_snapshot_id": "source_snapshot_de67501ca5bfabf92d2665c3a0124646"
+      },
+      "created_at": "2026-07-18T17:59:31Z",
+      "updated_at": "2026-07-18T17:59:31Z",
+      "source_snapshot_ref": "source_snapshot_de67501ca5bfabf92d2665c3a0124646",
+      "evidence_item_ref": "evidence_item_3b6e28b8ee6e6214f708bc8fd3f54b20",
+      "object_name": "driver",
+      "attribute_name": "license_num",
+      "ordinal_position": 5,
+      "data_type": "STRING",
+      "nullable": true,
+      "constraint_role": "NONE"
+    },
+    {
+      "record_id": "source_attribute_observation_38dfe45fac6ccbcf5962063f7d10a3bb",
+      "schema_version": "0.1.0",
+      "engagement_id": "ENG-DEMO",
+      "lob": "personal_auto",
+      "domain": "personal_auto_policy_claims",
+      "artifact_version": "0.1.0",
+      "lifecycle_state": "COMMITTED",
+      "provenance": {
+        "work_package_id": "WP-001",
+        "run_id": "RUN-1",
+        "source_snapshot_id": "source_snapshot_de67501ca5bfabf92d2665c3a0124646"
+      },
+      "created_at": "2026-07-18T17:59:31Z",
+      "updated_at": "2026-07-18T17:59:31Z",
+      "source_snapshot_ref": "source_snapshot_de67501ca5bfabf92d2665c3a0124646",
+      "evidence_item_ref": "evidence_item_77962119d43d70929102b52745a88b77",
+      "object_name": "policy",
+      "attribute_name": "policy_id",
+      "ordinal_position": 1,
+      "data_type": "STRING",
+      "nullable": false,
+      "constraint_role": "PRIMARY_KEY"
+    },
+    {
+      "record_id": "source_attribute_observation_fb9f5c03ffe5b23bfe02591d04947b13",
+      "schema_version": "0.1.0",
+      "engagement_id": "ENG-DEMO",
+      "lob": "personal_auto",
+      "domain": "personal_auto_policy_claims",
+      "artifact_version": "0.1.0",
+      "lifecycle_state": "COMMITTED",
+      "provenance": {
+        "work_package_id": "WP-001",
+        "run_id": "RUN-1",
+        "source_snapshot_id": "source_snapshot_de67501ca5bfabf92d2665c3a0124646"
+      },
+      "created_at": "2026-07-18T17:59:31Z",
+      "updated_at": "2026-07-18T17:59:31Z",
+      "source_snapshot_ref": "source_snapshot_de67501ca5bfabf92d2665c3a0124646",
+      "evidence_item_ref": "evidence_item_77962119d43d70929102b52745a88b77",
+      "object_name": "policy",
+      "attribute_name": "policyholder_id",
+      "ordinal_position": 2,
+      "data_type": "STRING",
+      "nullable": false,
+      "constraint_role": "FOREIGN_KEY"
+    },
+    {
+      "record_id": "source_attribute_observation_7bb75edac677c78f87432ee6a90e1d5d",
+      "schema_version": "0.1.0",
+      "engagement_id": "ENG-DEMO",
+      "lob": "personal_auto",
+      "domain": "personal_auto_policy_claims",
+      "artifact_version": "0.1.0",
+      "lifecycle_state": "COMMITTED",
+      "provenance": {
+        "work_package_id": "WP-001",
+        "run_id": "RUN-1",
+        "source_snapshot_id": "source_snapshot_de67501ca5bfabf92d2665c3a0124646"
+      },
+      "created_at": "2026-07-18T17:59:31Z",
+      "updated_at": "2026-07-18T17:59:31Z",
+      "source_snapshot_ref": "source_snapshot_de67501ca5bfabf92d2665c3a0124646",
+      "evidence_item_ref": "evidence_item_77962119d43d70929102b52745a88b77",
+      "object_name": "policy",
+      "attribute_name": "effective_dt",
+      "ordinal_position": 3,
+      "data_type": "DATE",
+      "nullable": true,
+      "constraint_role": "NONE"
+    },
+    {
+      "record_id": "source_attribute_observation_4bb3f7afd59db373a0001a5e9cec88f6",
+      "schema_version": "0.1.0",
+      "engagement_id": "ENG-DEMO",
+      "lob": "personal_auto",
+      "domain": "personal_auto_policy_claims",
+      "artifact_version": "0.1.0",
+      "lifecycle_state": "COMMITTED",
+      "provenance": {
+        "work_package_id": "WP-001",
+        "run_id": "RUN-1",
+        "source_snapshot_id": "source_snapshot_de67501ca5bfabf92d2665c3a0124646"
+      },
+      "created_at": "2026-07-18T17:59:31Z",
+      "updated_at": "2026-07-18T17:59:31Z",
+      "source_snapshot_ref": "source_snapshot_de67501ca5bfabf92d2665c3a0124646",
+      "evidence_item_ref": "evidence_item_77962119d43d70929102b52745a88b77",
+      "object_name": "policy",
+      "attribute_name": "expiration_dt",
+      "ordinal_position": 4,
+      "data_type": "DATE",
+      "nullable": true,
+      "constraint_role": "NONE"
+    },
+    {
+      "record_id": "source_attribute_observation_f14032e893cb179446dd0a4f0cf7dfc4",
+      "schema_version": "0.1.0",
+      "engagement_id": "ENG-DEMO",
+      "lob": "personal_auto",
+      "domain": "personal_auto_policy_claims",
+      "artifact_version": "0.1.0",
+      "lifecycle_state": "COMMITTED",
+      "provenance": {
+        "work_package_id": "WP-001",
+        "run_id": "RUN-1",
+        "source_snapshot_id": "source_snapshot_de67501ca5bfabf92d2665c3a0124646"
+      },
+      "created_at": "2026-07-18T17:59:31Z",
+      "updated_at": "2026-07-18T17:59:31Z",
+      "source_snapshot_ref": "source_snapshot_de67501ca5bfabf92d2665c3a0124646",
+      "evidence_item_ref": "evidence_item_77962119d43d70929102b52745a88b77",
+      "object_name": "policy",
+      "attribute_name": "premium_amt",
+      "ordinal_position": 5,
+      "data_type": "DECIMAL",
+      "nullable": true,
+      "constraint_role": "NONE"
+    },
+    {
+      "record_id": "source_attribute_observation_74447899a65203319c8d5de695e9dd82",
+      "schema_version": "0.1.0",
+      "engagement_id": "ENG-DEMO",
+      "lob": "personal_auto",
+      "domain": "personal_auto_policy_claims",
+      "artifact_version": "0.1.0",
+      "lifecycle_state": "COMMITTED",
+      "provenance": {
+        "work_package_id": "WP-001",
+        "run_id": "RUN-1",
+        "source_snapshot_id": "source_snapshot_de67501ca5bfabf92d2665c3a0124646"
+      },
+      "created_at": "2026-07-18T17:59:31Z",
+      "updated_at": "2026-07-18T17:59:31Z",
+      "source_snapshot_ref": "source_snapshot_de67501ca5bfabf92d2665c3a0124646",
+      "evidence_item_ref": "evidence_item_77962119d43d70929102b52745a88b77",
+      "object_name": "policy",
+      "attribute_name": "status_cd",
+      "ordinal_position": 6,
+      "data_type": "STRING",
+      "nullable": true,
+      "constraint_role": "NONE"
+    }
+  ],
+  "open_question": [
+    {
+      "record_id": "open_question_c9d22f31f963cb3136808388e87ff5e4",
+      "schema_version": "0.1.0",
+      "engagement_id": "ENG-DEMO",
+      "lob": "personal_auto",
+      "domain": "personal_auto_policy_claims",
+      "artifact_version": "0.1.0",
+      "lifecycle_state": "OPEN",
+      "provenance": {
+        "work_package_id": "WP-001",
+        "run_id": "RUN-1"
+      },
+      "created_at": "2026-07-18T17:59:32Z",
+      "updated_at": "2026-07-18T17:59:32Z",
+      "work_package_ref": "WP-001",
+      "question_text": "What is the business meaning of claim.col7? The column name is opaque.",
+      "question_type": "AMBIGUOUS_MEANING",
+      "context_snapshot_ref": "context_snapshot_98b8af535c262176f81500e2379d54c5"
+    }
+  ],
+  "review_item": [
+    {
+      "record_id": "review_item_87b8492e844ed2fccb7022518741e6ef",
+      "schema_version": "0.1.0",
+      "engagement_id": "ENG-DEMO",
+      "lob": "personal_auto",
+      "domain": "personal_auto_policy_claims",
+      "artifact_version": "0.1.0",
+      "lifecycle_state": "OPEN",
+      "provenance": {
+        "work_package_id": "WP-001",
+        "run_id": "RUN-1"
+      },
+      "created_at": "2026-07-18T17:59:32Z",
+      "updated_at": "2026-07-18T17:59:32Z",
+      "artifact_version_ref": "source_dictionary_attribute_67b775a61f3d65b47767a9fa88f5923a",
+      "review_question": "Approve business meaning for claim.claim_id?"
+    },
+    {
+      "record_id": "review_item_50a8188909feb18295f6e174230f94e2",
+      "schema_version": "0.1.0",
+      "engagement_id": "ENG-DEMO",
+      "lob": "personal_auto",
+      "domain": "personal_auto_policy_claims",
+      "artifact_version": "0.1.0",
+      "lifecycle_state": "OPEN",
+      "provenance": {
+        "work_package_id": "WP-001",
+        "run_id": "RUN-1"
+      },
+      "created_at": "2026-07-18T17:59:32Z",
+      "updated_at": "2026-07-18T17:59:32Z",
+      "artifact_version_ref": "source_dictionary_attribute_732f0f3fd72dc9fba00f137e3f1c3592",
+      "review_question": "Approve business meaning for claim.policy_id?"
+    },
+    {
+      "record_id": "review_item_ba1de2010eb6042417bc9a696407177e",
+      "schema_version": "0.1.0",
+      "engagement_id": "ENG-DEMO",
+      "lob": "personal_auto",
+      "domain": "personal_auto_policy_claims",
+      "artifact_version": "0.1.0",
+      "lifecycle_state": "OPEN",
+      "provenance": {
+        "work_package_id": "WP-001",
+        "run_id": "RUN-1"
+      },
+      "created_at": "2026-07-18T17:59:33Z",
+      "updated_at": "2026-07-18T17:59:33Z",
+      "artifact_version_ref": "source_dictionary_attribute_7bf80458452dc99dc68f67816b4ac9d8",
+      "review_question": "Approve business meaning for claim.loss_dt?"
+    },
+    {
+      "record_id": "review_item_5a9306ffdb6fa31a84efc008b2e92074",
+      "schema_version": "0.1.0",
+      "engagement_id": "ENG-DEMO",
+      "lob": "personal_auto",
+      "domain": "personal_auto_policy_claims",
+      "artifact_version": "0.1.0",
+      "lifecycle_state": "OPEN",
+      "provenance": {
+        "work_package_id": "WP-001",
+        "run_id": "RUN-1"
+      },
+      "created_at": "2026-07-18T17:59:33Z",
+      "updated_at": "2026-07-18T17:59:33Z",
+      "artifact_version_ref": "source_dictionary_attribute_e3c7cb1b9117e9c217ee562a3d3f4fd2",
+      "review_question": "Approve business meaning for claim.claim_amt?"
+    },
+    {
+      "record_id": "review_item_63f319b60ee24d8fe3368609f56721a9",
+      "schema_version": "0.1.0",
+      "engagement_id": "ENG-DEMO",
+      "lob": "personal_auto",
+      "domain": "personal_auto_policy_claims",
+      "artifact_version": "0.1.0",
+      "lifecycle_state": "OPEN",
+      "provenance": {
+        "work_package_id": "WP-001",
+        "run_id": "RUN-1"
+      },
+      "created_at": "2026-07-18T17:59:34Z",
+      "updated_at": "2026-07-18T17:59:34Z",
+      "artifact_version_ref": "source_dictionary_attribute_a374e547f10bff85a4097adb2eac385f",
+      "review_question": "Approve business meaning for claim.driver_ssn?"
+    },
+    {
+      "record_id": "review_item_a6b58c0cbac78952a918491fb05c5faa",
+      "schema_version": "0.1.0",
+      "engagement_id": "ENG-DEMO",
+      "lob": "personal_auto",
+      "domain": "personal_auto_policy_claims",
+      "artifact_version": "0.1.0",
+      "lifecycle_state": "OPEN",
+      "provenance": {
+        "work_package_id": "WP-001",
+        "run_id": "RUN-1"
+      },
+      "created_at": "2026-07-18T17:59:34Z",
+      "updated_at": "2026-07-18T17:59:34Z",
+      "artifact_version_ref": "source_dictionary_attribute_7b8393ce7ad8adc79f12cec77ef6797e",
+      "review_question": "Approve business meaning for claim.col7?"
+    },
+    {
+      "record_id": "review_item_a0def479cc673b017adf0b1961f4c5ed",
+      "schema_version": "0.1.0",
+      "engagement_id": "ENG-DEMO",
+      "lob": "personal_auto",
+      "domain": "personal_auto_policy_claims",
+      "artifact_version": "0.1.0",
+      "lifecycle_state": "OPEN",
+      "provenance": {
+        "work_package_id": "WP-001",
+        "run_id": "RUN-1"
+      },
+      "created_at": "2026-07-18T17:59:34Z",
+      "updated_at": "2026-07-18T17:59:34Z",
+      "artifact_version_ref": "source_dictionary_attribute_5010800e76a0d41792b6f40ddcf606d9",
+      "review_question": "Approve business meaning for driver.driver_id?"
+    },
+    {
+      "record_id": "review_item_7003dcd66d04c1584eb2710ed0fbc9ac",
+      "schema_version": "0.1.0",
+      "engagement_id": "ENG-DEMO",
+      "lob": "personal_auto",
+      "domain": "personal_auto_policy_claims",
+      "artifact_version": "0.1.0",
+      "lifecycle_state": "OPEN",
+      "provenance": {
+        "work_package_id": "WP-001",
+        "run_id": "RUN-1"
+      },
+      "created_at": "2026-07-18T17:59:36Z",
+      "updated_at": "2026-07-18T17:59:36Z",
+      "artifact_version_ref": "source_dictionary_attribute_76e1528f18b7b851f8ae107ae1d845df",
+      "review_question": "Approve business meaning for driver.first_name?"
+    },
+    {
+      "record_id": "review_item_ca2513bf8672494ba68a86e7fbdfc21b",
+      "schema_version": "0.1.0",
+      "engagement_id": "ENG-DEMO",
+      "lob": "personal_auto",
+      "domain": "personal_auto_policy_claims",
+      "artifact_version": "0.1.0",
+      "lifecycle_state": "OPEN",
+      "provenance": {
+        "work_package_id": "WP-001",
+        "run_id": "RUN-1"
+      },
+      "created_at": "2026-07-18T17:59:38Z",
+      "updated_at": "2026-07-18T17:59:38Z",
+      "artifact_version_ref": "source_dictionary_attribute_f5b31447035569df43390a0ff4ba110e",
+      "review_question": "Approve business meaning for driver.last_name?"
+    },
+    {
+      "record_id": "review_item_4e9f6100ab6383a815d8c0fc6463046a",
+      "schema_version": "0.1.0",
+      "engagement_id": "ENG-DEMO",
+      "lob": "personal_auto",
+      "domain": "personal_auto_policy_claims",
+      "artifact_version": "0.1.0",
+      "lifecycle_state": "OPEN",
+      "provenance": {
+        "work_package_id": "WP-001",
+        "run_id": "RUN-1"
+      },
+      "created_at": "2026-07-18T17:59:40Z",
+      "updated_at": "2026-07-18T17:59:40Z",
+      "artifact_version_ref": "source_dictionary_attribute_4ad1110e10d6642b765698b868c8f1eb",
+      "review_question": "Approve business meaning for driver.dob?"
+    }
+  ],
+  "review_decision": [
+    {
+      "record_id": "review_decision_67811e035753c6e3c41b09ea270701bb",
+      "schema_version": "0.1.0",
+      "engagement_id": "ENG-DEMO",
+      "lob": "personal_auto",
+      "domain": "personal_auto_policy_claims",
+      "artifact_version": "0.1.0",
+      "lifecycle_state": "RECORDED",
+      "provenance": {
+        "work_package_id": "WP-001",
+        "run_id": "RUN-1"
+      },
+      "created_at": "2026-07-18T17:59:32Z",
+      "updated_at": "2026-07-18T17:59:32Z",
+      "review_item_ref": "review_item_87b8492e844ed2fccb7022518741e6ef",
+      "decision": "APPROVE",
+      "decision_maker": "dev-auto-approver",
+      "decision_timestamp": "2026-07-18T17:59:32Z",
+      "rationale": "Auto-approved in development mode; human review bypassed by policy.",
+      "impact_scope": [
+        "source_dictionary_attribute_67b775a61f3d65b47767a9fa88f5923a"
+      ]
+    },
+    {
+      "record_id": "review_decision_23b3c76b53c388f84aa5f9cb8433d92e",
+      "schema_version": "0.1.0",
+      "engagement_id": "ENG-DEMO",
+      "lob": "personal_auto",
+      "domain": "personal_auto_policy_claims",
+      "artifact_version": "0.1.0",
+      "lifecycle_state": "RECORDED",
+      "provenance": {
+        "work_package_id": "WP-001",
+        "run_id": "RUN-1"
+      },
+      "created_at": "2026-07-18T17:59:32Z",
+      "updated_at": "2026-07-18T17:59:32Z",
+      "review_item_ref": "review_item_50a8188909feb18295f6e174230f94e2",
+      "decision": "APPROVE",
+      "decision_maker": "dev-auto-approver",
+      "decision_timestamp": "2026-07-18T17:59:32Z",
+      "rationale": "Auto-approved in development mode; human review bypassed by policy.",
+      "impact_scope": [
+        "source_dictionary_attribute_732f0f3fd72dc9fba00f137e3f1c3592"
+      ]
+    },
+    {
+      "record_id": "review_decision_873fac69363cb83b517856c91efd709b",
+      "schema_version": "0.1.0",
+      "engagement_id": "ENG-DEMO",
+      "lob": "personal_auto",
+      "domain": "personal_auto_policy_claims",
+      "artifact_version": "0.1.0",
+      "lifecycle_state": "RECORDED",
+      "provenance": {
+        "work_package_id": "WP-001",
+        "run_id": "RUN-1"
+      },
+      "created_at": "2026-07-18T17:59:33Z",
+      "updated_at": "2026-07-18T17:59:33Z",
+      "review_item_ref": "review_item_ba1de2010eb6042417bc9a696407177e",
+      "decision": "APPROVE",
+      "decision_maker": "dev-auto-approver",
+      "decision_timestamp": "2026-07-18T17:59:33Z",
+      "rationale": "Auto-approved in development mode; human review bypassed by policy.",
+      "impact_scope": [
+        "source_dictionary_attribute_7bf80458452dc99dc68f67816b4ac9d8"
+      ]
+    },
+    {
+      "record_id": "review_decision_58532c83441447431fab17218ca9c248",
+      "schema_version": "0.1.0",
+      "engagement_id": "ENG-DEMO",
+      "lob": "personal_auto",
+      "domain": "personal_auto_policy_claims",
+      "artifact_version": "0.1.0",
+      "lifecycle_state": "RECORDED",
+      "provenance": {
+        "work_package_id": "WP-001",
+        "run_id": "RUN-1"
+      },
+      "created_at": "2026-07-18T17:59:33Z",
+      "updated_at": "2026-07-18T17:59:33Z",
+      "review_item_ref": "review_item_5a9306ffdb6fa31a84efc008b2e92074",
+      "decision": "APPROVE",
+      "decision_maker": "dev-auto-approver",
+      "decision_timestamp": "2026-07-18T17:59:33Z",
+      "rationale": "Auto-approved in development mode; human review bypassed by policy.",
+      "impact_scope": [
+        "source_dictionary_attribute_e3c7cb1b9117e9c217ee562a3d3f4fd2"
+      ]
+    },
+    {
+      "record_id": "review_decision_de57801026be6363e07d2b12985b4557",
+      "schema_version": "0.1.0",
+      "engagement_id": "ENG-DEMO",
+      "lob": "personal_auto",
+      "domain": "personal_auto_policy_claims",
+      "artifact_version": "0.1.0",
+      "lifecycle_state": "RECORDED",
+      "provenance": {
+        "work_package_id": "WP-001",
+        "run_id": "RUN-1"
+      },
+      "created_at": "2026-07-18T17:59:34Z",
+      "updated_at": "2026-07-18T17:59:34Z",
+      "review_item_ref": "review_item_63f319b60ee24d8fe3368609f56721a9",
+      "decision": "APPROVE",
+      "decision_maker": "dev-auto-approver",
+      "decision_timestamp": "2026-07-18T17:59:34Z",
+      "rationale": "Auto-approved in development mode; human review bypassed by policy.",
+      "impact_scope": [
+        "source_dictionary_attribute_a374e547f10bff85a4097adb2eac385f"
+      ]
+    },
+    {
+      "record_id": "review_decision_036c040de3193b4bb62d8d0cdc235ad4",
+      "schema_version": "0.1.0",
+      "engagement_id": "ENG-DEMO",
+      "lob": "personal_auto",
+      "domain": "personal_auto_policy_claims",
+      "artifact_version": "0.1.0",
+      "lifecycle_state": "RECORDED",
+      "provenance": {
+        "work_package_id": "WP-001",
+        "run_id": "RUN-1"
+      },
+      "created_at": "2026-07-18T17:59:34Z",
+      "updated_at": "2026-07-18T17:59:34Z",
+      "review_item_ref": "review_item_a6b58c0cbac78952a918491fb05c5faa",
+      "decision": "DEFER",
+      "decision_maker": "system",
+      "decision_timestamp": "2026-07-18T17:59:34Z",
+      "rationale": "Deferred pending answer to the open question."
+    },
+    {
+      "record_id": "review_decision_b12db43fd1e029aa80d91eccadc5e940",
+      "schema_version": "0.1.0",
+      "engagement_id": "ENG-DEMO",
+      "lob": "personal_auto",
+      "domain": "personal_auto_policy_claims",
+      "artifact_version": "0.1.0",
+      "lifecycle_state": "RECORDED",
+      "provenance": {
+        "work_package_id": "WP-001",
+        "run_id": "RUN-1"
+      },
+      "created_at": "2026-07-18T17:59:35Z",
+      "updated_at": "2026-07-18T17:59:35Z",
+      "review_item_ref": "review_item_a0def479cc673b017adf0b1961f4c5ed",
+      "decision": "APPROVE",
+      "decision_maker": "dev-auto-approver",
+      "decision_timestamp": "2026-07-18T17:59:35Z",
+      "rationale": "Auto-approved in development mode; human review bypassed by policy.",
+      "impact_scope": [
+        "source_dictionary_attribute_5010800e76a0d41792b6f40ddcf606d9"
+      ]
+    },
+    {
+      "record_id": "review_decision_73137dbb3b4c5c964a3b96ee23c91bc2",
+      "schema_version": "0.1.0",
+      "engagement_id": "ENG-DEMO",
+      "lob": "personal_auto",
+      "domain": "personal_auto_policy_claims",
+      "artifact_version": "0.1.0",
+      "lifecycle_state": "RECORDED",
+      "provenance": {
+        "work_package_id": "WP-001",
+        "run_id": "RUN-1"
+      },
+      "created_at": "2026-07-18T17:59:36Z",
+      "updated_at": "2026-07-18T17:59:36Z",
+      "review_item_ref": "review_item_7003dcd66d04c1584eb2710ed0fbc9ac",
+      "decision": "APPROVE",
+      "decision_maker": "dev-auto-approver",
+      "decision_timestamp": "2026-07-18T17:59:36Z",
+      "rationale": "Auto-approved in development mode; human review bypassed by policy.",
+      "impact_scope": [
+        "source_dictionary_attribute_76e1528f18b7b851f8ae107ae1d845df"
+      ]
+    },
+    {
+      "record_id": "review_decision_63fe8f76e6fa86571c26fb3d5100b2ed",
+      "schema_version": "0.1.0",
+      "engagement_id": "ENG-DEMO",
+      "lob": "personal_auto",
+      "domain": "personal_auto_policy_claims",
+      "artifact_version": "0.1.0",
+      "lifecycle_state": "RECORDED",
+      "provenance": {
+        "work_package_id": "WP-001",
+        "run_id": "RUN-1"
+      },
+      "created_at": "2026-07-18T17:59:39Z",
+      "updated_at": "2026-07-18T17:59:39Z",
+      "review_item_ref": "review_item_ca2513bf8672494ba68a86e7fbdfc21b",
+      "decision": "APPROVE",
+      "decision_maker": "dev-auto-approver",
+      "decision_timestamp": "2026-07-18T17:59:39Z",
+      "rationale": "Auto-approved in development mode; human review bypassed by policy.",
+      "impact_scope": [
+        "source_dictionary_attribute_f5b31447035569df43390a0ff4ba110e"
+      ]
+    },
+    {
+      "record_id": "review_decision_73b23a3b96a503c67ca5bced58f4e67c",
+      "schema_version": "0.1.0",
+      "engagement_id": "ENG-DEMO",
+      "lob": "personal_auto",
+      "domain": "personal_auto_policy_claims",
+      "artifact_version": "0.1.0",
+      "lifecycle_state": "RECORDED",
+      "provenance": {
+        "work_package_id": "WP-001",
+        "run_id": "RUN-1"
+      },
+      "created_at": "2026-07-18T17:59:41Z",
+      "updated_at": "2026-07-18T17:59:41Z",
+      "review_item_ref": "review_item_4e9f6100ab6383a815d8c0fc6463046a",
+      "decision": "APPROVE",
+      "decision_maker": "dev-auto-approver",
+      "decision_timestamp": "2026-07-18T17:59:41Z",
+      "rationale": "Auto-approved in development mode; human review bypassed by policy.",
+      "impact_scope": [
+        "source_dictionary_attribute_4ad1110e10d6642b765698b868c8f1eb"
+      ]
+    }
+  ],
+  "source_dictionary_attribute": [
+    {
+      "record_id": "source_dictionary_attribute_67b775a61f3d65b47767a9fa88f5923a",
+      "schema_version": "0.1.0",
+      "engagement_id": "ENG-DEMO",
+      "lob": "personal_auto",
+      "domain": "personal_auto_policy_claims",
+      "artifact_version": "0.1.0",
+      "lifecycle_state": "APPROVED",
+      "provenance": {
+        "work_package_id": "WP-001",
+        "run_id": "RUN-1",
+        "context_snapshot_id": "context_snapshot_98b8af535c262176f81500e2379d54c5"
+      },
+      "created_at": "2026-07-18T17:59:32Z",
+      "updated_at": "2026-07-18T17:59:32Z",
+      "context_snapshot_ref": "context_snapshot_98b8af535c262176f81500e2379d54c5",
+      "source_attribute_observation_ref": "source_attribute_observation_67b775a61f3d65b47767a9fa88f5923a",
+      "source_object_name": "claim",
+      "source_attribute_name": "claim_id",
+      "ordinal_position": 1,
+      "physical_type": {
+        "value": "STRING",
+        "value_type": "TEXT",
+        "evidence_refs": [
+          "source_attribute_observation_67b775a61f3d65b47767a9fa88f5923a"
+        ]
+      },
+      "physical_nullable": {
+        "value": false,
+        "value_type": "BOOLEAN",
+        "evidence_refs": [
+          "source_attribute_observation_67b775a61f3d65b47767a9fa88f5923a"
+        ]
+      },
+      "business_name": {
+        "evidence_state": "INFERRED",
+        "value_type": "TEXT",
+        "value": "Claim Identifier",
+        "evidence_refs": [
+          "source_attribute_observation_67b775a61f3d65b47767a9fa88f5923a"
+        ],
+        "confidence": {
+          "evidence_type": "SINGLE_LLM_INFERENCE",
+          "evidence_count": 1,
+          "critic_agreement": "NOT_ASSESSED"
+        }
+      },
+      "business_definition": {
+        "evidence_state": "INFERRED",
+        "value_type": "TEXT",
+        "value": "Claim identifier on claim.",
+        "evidence_refs": [
+          "source_attribute_observation_67b775a61f3d65b47767a9fa88f5923a"
+        ],
+        "confidence": {
+          "evidence_type": "SINGLE_LLM_INFERENCE",
+          "evidence_count": 1,
+          "critic_agreement": "NOT_ASSESSED"
+        }
+      },
+      "review_decision_ref": "review_decision_67811e035753c6e3c41b09ea270701bb"
+    },
+    {
+      "record_id": "source_dictionary_attribute_732f0f3fd72dc9fba00f137e3f1c3592",
+      "schema_version": "0.1.0",
+      "engagement_id": "ENG-DEMO",
+      "lob": "personal_auto",
+      "domain": "personal_auto_policy_claims",
+      "artifact_version": "0.1.0",
+      "lifecycle_state": "APPROVED",
+      "provenance": {
+        "work_package_id": "WP-001",
+        "run_id": "RUN-1",
+        "context_snapshot_id": "context_snapshot_98b8af535c262176f81500e2379d54c5"
+      },
+      "created_at": "2026-07-18T17:59:32Z",
+      "updated_at": "2026-07-18T17:59:33Z",
+      "context_snapshot_ref": "context_snapshot_98b8af535c262176f81500e2379d54c5",
+      "source_attribute_observation_ref": "source_attribute_observation_732f0f3fd72dc9fba00f137e3f1c3592",
+      "source_object_name": "claim",
+      "source_attribute_name": "policy_id",
+      "ordinal_position": 2,
+      "physical_type": {
+        "value": "STRING",
+        "value_type": "TEXT",
+        "evidence_refs": [
+          "source_attribute_observation_732f0f3fd72dc9fba00f137e3f1c3592"
+        ]
+      },
+      "physical_nullable": {
+        "value": false,
+        "value_type": "BOOLEAN",
+        "evidence_refs": [
+          "source_attribute_observation_732f0f3fd72dc9fba00f137e3f1c3592"
+        ]
+      },
+      "business_name": {
+        "evidence_state": "INFERRED",
+        "value_type": "TEXT",
+        "value": "Policy Identifier",
+        "evidence_refs": [
+          "source_attribute_observation_732f0f3fd72dc9fba00f137e3f1c3592"
+        ],
+        "confidence": {
+          "evidence_type": "GLOSSARY_MATCH",
+          "evidence_count": 2,
+          "critic_agreement": "NOT_ASSESSED"
+        }
+      },
+      "business_definition": {
+        "evidence_state": "INFERRED",
+        "value_type": "TEXT",
+        "value": "The insurance contract between insurer and insured.",
+        "evidence_refs": [
+          "source_attribute_observation_732f0f3fd72dc9fba00f137e3f1c3592"
+        ],
+        "confidence": {
+          "evidence_type": "GLOSSARY_MATCH",
+          "evidence_count": 2,
+          "critic_agreement": "NOT_ASSESSED"
+        }
+      },
+      "review_decision_ref": "review_decision_23b3c76b53c388f84aa5f9cb8433d92e"
+    },
+    {
+      "record_id": "source_dictionary_attribute_7bf80458452dc99dc68f67816b4ac9d8",
+      "schema_version": "0.1.0",
+      "engagement_id": "ENG-DEMO",
+      "lob": "personal_auto",
+      "domain": "personal_auto_policy_claims",
+      "artifact_version": "0.1.0",
+      "lifecycle_state": "APPROVED",
+      "provenance": {
+        "work_package_id": "WP-001",
+        "run_id": "RUN-1",
+        "context_snapshot_id": "context_snapshot_98b8af535c262176f81500e2379d54c5"
+      },
+      "created_at": "2026-07-18T17:59:32Z",
+      "updated_at": "2026-07-18T17:59:33Z",
+      "context_snapshot_ref": "context_snapshot_98b8af535c262176f81500e2379d54c5",
+      "source_attribute_observation_ref": "source_attribute_observation_7bf80458452dc99dc68f67816b4ac9d8",
+      "source_object_name": "claim",
+      "source_attribute_name": "loss_dt",
+      "ordinal_position": 3,
+      "physical_type": {
+        "value": "DATE",
+        "value_type": "TEXT",
+        "evidence_refs": [
+          "source_attribute_observation_7bf80458452dc99dc68f67816b4ac9d8"
+        ]
+      },
+      "physical_nullable": {
+        "value": true,
+        "value_type": "BOOLEAN",
+        "evidence_refs": [
+          "source_attribute_observation_7bf80458452dc99dc68f67816b4ac9d8"
+        ]
+      },
+      "business_name": {
+        "evidence_state": "INFERRED",
+        "value_type": "TEXT",
+        "value": "Loss Date",
+        "evidence_refs": [
+          "source_attribute_observation_7bf80458452dc99dc68f67816b4ac9d8"
+        ],
+        "confidence": {
+          "evidence_type": "SINGLE_LLM_INFERENCE",
+          "evidence_count": 1,
+          "critic_agreement": "NOT_ASSESSED"
+        }
+      },
+      "business_definition": {
+        "evidence_state": "INFERRED",
+        "value_type": "TEXT",
+        "value": "Loss date on claim.",
+        "evidence_refs": [
+          "source_attribute_observation_7bf80458452dc99dc68f67816b4ac9d8"
+        ],
+        "confidence": {
+          "evidence_type": "SINGLE_LLM_INFERENCE",
+          "evidence_count": 1,
+          "critic_agreement": "NOT_ASSESSED"
+        }
+      },
+      "review_decision_ref": "review_decision_873fac69363cb83b517856c91efd709b"
+    },
+    {
+      "record_id": "source_dictionary_attribute_e3c7cb1b9117e9c217ee562a3d3f4fd2",
+      "schema_version": "0.1.0",
+      "engagement_id": "ENG-DEMO",
+      "lob": "personal_auto",
+      "domain": "personal_auto_policy_claims",
+      "artifact_version": "0.1.0",
+      "lifecycle_state": "APPROVED",
+      "provenance": {
+        "work_package_id": "WP-001",
+        "run_id": "RUN-1",
+        "context_snapshot_id": "context_snapshot_98b8af535c262176f81500e2379d54c5"
+      },
+      "created_at": "2026-07-18T17:59:32Z",
+      "updated_at": "2026-07-18T17:59:33Z",
+      "context_snapshot_ref": "context_snapshot_98b8af535c262176f81500e2379d54c5",
+      "source_attribute_observation_ref": "source_attribute_observation_e3c7cb1b9117e9c217ee562a3d3f4fd2",
+      "source_object_name": "claim",
+      "source_attribute_name": "claim_amt",
+      "ordinal_position": 4,
+      "physical_type": {
+        "value": "DECIMAL",
+        "value_type": "TEXT",
+        "evidence_refs": [
+          "source_attribute_observation_e3c7cb1b9117e9c217ee562a3d3f4fd2"
+        ]
+      },
+      "physical_nullable": {
+        "value": true,
+        "value_type": "BOOLEAN",
+        "evidence_refs": [
+          "source_attribute_observation_e3c7cb1b9117e9c217ee562a3d3f4fd2"
+        ]
+      },
+      "business_name": {
+        "evidence_state": "INFERRED",
+        "value_type": "TEXT",
+        "value": "Claim Amount",
+        "evidence_refs": [
+          "source_attribute_observation_e3c7cb1b9117e9c217ee562a3d3f4fd2"
+        ],
+        "confidence": {
+          "evidence_type": "SINGLE_LLM_INFERENCE",
+          "evidence_count": 1,
+          "critic_agreement": "NOT_ASSESSED"
+        }
+      },
+      "business_definition": {
+        "evidence_state": "INFERRED",
+        "value_type": "TEXT",
+        "value": "Claim amount on claim.",
+        "evidence_refs": [
+          "source_attribute_observation_e3c7cb1b9117e9c217ee562a3d3f4fd2"
+        ],
+        "confidence": {
+          "evidence_type": "SINGLE_LLM_INFERENCE",
+          "evidence_count": 1,
+          "critic_agreement": "NOT_ASSESSED"
+        }
+      },
+      "review_decision_ref": "review_decision_58532c83441447431fab17218ca9c248"
+    },
+    {
+      "record_id": "source_dictionary_attribute_a374e547f10bff85a4097adb2eac385f",
+      "schema_version": "0.1.0",
+      "engagement_id": "ENG-DEMO",
+      "lob": "personal_auto",
+      "domain": "personal_auto_policy_claims",
+      "artifact_version": "0.1.0",
+      "lifecycle_state": "APPROVED",
+      "provenance": {
+        "work_package_id": "WP-001",
+        "run_id": "RUN-1",
+        "context_snapshot_id": "context_snapshot_98b8af535c262176f81500e2379d54c5"
+      },
+      "created_at": "2026-07-18T17:59:32Z",
+      "updated_at": "2026-07-18T17:59:34Z",
+      "context_snapshot_ref": "context_snapshot_98b8af535c262176f81500e2379d54c5",
+      "source_attribute_observation_ref": "source_attribute_observation_a374e547f10bff85a4097adb2eac385f",
+      "source_object_name": "claim",
+      "source_attribute_name": "driver_ssn",
+      "ordinal_position": 5,
+      "physical_type": {
+        "value": "STRING",
+        "value_type": "TEXT",
+        "evidence_refs": [
+          "source_attribute_observation_a374e547f10bff85a4097adb2eac385f"
+        ]
+      },
+      "physical_nullable": {
+        "value": true,
+        "value_type": "BOOLEAN",
+        "evidence_refs": [
+          "source_attribute_observation_a374e547f10bff85a4097adb2eac385f"
+        ]
+      },
+      "business_name": {
+        "evidence_state": "INFERRED",
+        "value_type": "TEXT",
+        "value": "Driver Social Security Number",
+        "evidence_refs": [
+          "source_attribute_observation_a374e547f10bff85a4097adb2eac385f"
+        ],
+        "confidence": {
+          "evidence_type": "SINGLE_LLM_INFERENCE",
+          "evidence_count": 1,
+          "critic_agreement": "NOT_ASSESSED"
+        }
+      },
+      "business_definition": {
+        "evidence_state": "INFERRED",
+        "value_type": "TEXT",
+        "value": "Driver social security number on claim.",
+        "evidence_refs": [
+          "source_attribute_observation_a374e547f10bff85a4097adb2eac385f"
+        ],
+        "confidence": {
+          "evidence_type": "SINGLE_LLM_INFERENCE",
+          "evidence_count": 1,
+          "critic_agreement": "NOT_ASSESSED"
+        }
+      },
+      "notes": "Candidate privacy-sensitive; requires steward confirmation.",
+      "review_decision_ref": "review_decision_de57801026be6363e07d2b12985b4557"
+    },
+    {
+      "record_id": "source_dictionary_attribute_7b8393ce7ad8adc79f12cec77ef6797e",
+      "schema_version": "0.1.0",
+      "engagement_id": "ENG-DEMO",
+      "lob": "personal_auto",
+      "domain": "personal_auto_policy_claims",
+      "artifact_version": "0.1.0",
+      "lifecycle_state": "DRAFT",
+      "provenance": {
+        "work_package_id": "WP-001",
+        "run_id": "RUN-1",
+        "context_snapshot_id": "context_snapshot_98b8af535c262176f81500e2379d54c5"
+      },
+      "created_at": "2026-07-18T17:59:32Z",
+      "updated_at": "2026-07-18T17:59:32Z",
+      "context_snapshot_ref": "context_snapshot_98b8af535c262176f81500e2379d54c5",
+      "source_attribute_observation_ref": "source_attribute_observation_7b8393ce7ad8adc79f12cec77ef6797e",
+      "source_object_name": "claim",
+      "source_attribute_name": "col7",
+      "ordinal_position": 6,
+      "physical_type": {
+        "value": "STRING",
+        "value_type": "TEXT",
+        "evidence_refs": [
+          "source_attribute_observation_7b8393ce7ad8adc79f12cec77ef6797e"
+        ]
+      },
+      "physical_nullable": {
+        "value": true,
+        "value_type": "BOOLEAN",
+        "evidence_refs": [
+          "source_attribute_observation_7b8393ce7ad8adc79f12cec77ef6797e"
+        ]
+      },
+      "business_name": {
+        "evidence_state": "UNRESOLVED",
+        "open_question_ref": "open_question_c9d22f31f963cb3136808388e87ff5e4"
+      },
+      "business_definition": {
+        "evidence_state": "UNRESOLVED",
+        "open_question_ref": "open_question_c9d22f31f963cb3136808388e87ff5e4"
+      },
+      "open_question_refs": [
+        "open_question_c9d22f31f963cb3136808388e87ff5e4"
+      ]
+    },
+    {
+      "record_id": "source_dictionary_attribute_5010800e76a0d41792b6f40ddcf606d9",
+      "schema_version": "0.1.0",
+      "engagement_id": "ENG-DEMO",
+      "lob": "personal_auto",
+      "domain": "personal_auto_policy_claims",
+      "artifact_version": "0.1.0",
+      "lifecycle_state": "APPROVED",
+      "provenance": {
+        "work_package_id": "WP-001",
+        "run_id": "RUN-1",
+        "context_snapshot_id": "context_snapshot_98b8af535c262176f81500e2379d54c5"
+      },
+      "created_at": "2026-07-18T17:59:32Z",
+      "updated_at": "2026-07-18T17:59:35Z",
+      "context_snapshot_ref": "context_snapshot_98b8af535c262176f81500e2379d54c5",
+      "source_attribute_observation_ref": "source_attribute_observation_5010800e76a0d41792b6f40ddcf606d9",
+      "source_object_name": "driver",
+      "source_attribute_name": "driver_id",
+      "ordinal_position": 1,
+      "physical_type": {
+        "value": "STRING",
+        "value_type": "TEXT",
+        "evidence_refs": [
+          "source_attribute_observation_5010800e76a0d41792b6f40ddcf606d9"
+        ]
+      },
+      "physical_nullable": {
+        "value": false,
+        "value_type": "BOOLEAN",
+        "evidence_refs": [
+          "source_attribute_observation_5010800e76a0d41792b6f40ddcf606d9"
+        ]
+      },
+      "business_name": {
+        "evidence_state": "INFERRED",
+        "value_type": "TEXT",
+        "value": "Driver Identifier",
+        "evidence_refs": [
+          "source_attribute_observation_5010800e76a0d41792b6f40ddcf606d9"
+        ],
+        "confidence": {
+          "evidence_type": "SINGLE_LLM_INFERENCE",
+          "evidence_count": 1,
+          "critic_agreement": "NOT_ASSESSED"
+        }
+      },
+      "business_definition": {
+        "evidence_state": "INFERRED",
+        "value_type": "TEXT",
+        "value": "Driver identifier on driver.",
+        "evidence_refs": [
+          "source_attribute_observation_5010800e76a0d41792b6f40ddcf606d9"
+        ],
+        "confidence": {
+          "evidence_type": "SINGLE_LLM_INFERENCE",
+          "evidence_count": 1,
+          "critic_agreement": "NOT_ASSESSED"
+        }
+      },
+      "review_decision_ref": "review_decision_b12db43fd1e029aa80d91eccadc5e940"
+    },
+    {
+      "record_id": "source_dictionary_attribute_76e1528f18b7b851f8ae107ae1d845df",
+      "schema_version": "0.1.0",
+      "engagement_id": "ENG-DEMO",
+      "lob": "personal_auto",
+      "domain": "personal_auto_policy_claims",
+      "artifact_version": "0.1.0",
+      "lifecycle_state": "APPROVED",
+      "provenance": {
+        "work_package_id": "WP-001",
+        "run_id": "RUN-1",
+        "context_snapshot_id": "context_snapshot_98b8af535c262176f81500e2379d54c5"
+      },
+      "created_at": "2026-07-18T17:59:32Z",
+      "updated_at": "2026-07-18T17:59:37Z",
+      "context_snapshot_ref": "context_snapshot_98b8af535c262176f81500e2379d54c5",
+      "source_attribute_observation_ref": "source_attribute_observation_76e1528f18b7b851f8ae107ae1d845df",
+      "source_object_name": "driver",
+      "source_attribute_name": "first_name",
+      "ordinal_position": 2,
+      "physical_type": {
+        "value": "STRING",
+        "value_type": "TEXT",
+        "evidence_refs": [
+          "source_attribute_observation_76e1528f18b7b851f8ae107ae1d845df"
+        ]
+      },
+      "physical_nullable": {
+        "value": true,
+        "value_type": "BOOLEAN",
+        "evidence_refs": [
+          "source_attribute_observation_76e1528f18b7b851f8ae107ae1d845df"
+        ]
+      },
+      "business_name": {
+        "evidence_state": "INFERRED",
+        "value_type": "TEXT",
+        "value": "First Name",
+        "evidence_refs": [
+          "source_attribute_observation_76e1528f18b7b851f8ae107ae1d845df"
+        ],
+        "confidence": {
+          "evidence_type": "SINGLE_LLM_INFERENCE",
+          "evidence_count": 1,
+          "critic_agreement": "NOT_ASSESSED"
+        }
+      },
+      "business_definition": {
+        "evidence_state": "INFERRED",
+        "value_type": "TEXT",
+        "value": "First name on driver.",
+        "evidence_refs": [
+          "source_attribute_observation_76e1528f18b7b851f8ae107ae1d845df"
+        ],
+        "confidence": {
+          "evidence_type": "SINGLE_LLM_INFERENCE",
+          "evidence_count": 1,
+          "critic_agreement": "NOT_ASSESSED"
+        }
+      },
+      "notes": "Candidate privacy-sensitive; requires steward confirmation.",
+      "review_decision_ref": "review_decision_73137dbb3b4c5c964a3b96ee23c91bc2"
+    },
+    {
+      "record_id": "source_dictionary_attribute_f5b31447035569df43390a0ff4ba110e",
+      "schema_version": "0.1.0",
+      "engagement_id": "ENG-DEMO",
+      "lob": "personal_auto",
+      "domain": "personal_auto_policy_claims",
+      "artifact_version": "0.1.0",
+      "lifecycle_state": "APPROVED",
+      "provenance": {
+        "work_package_id": "WP-001",
+        "run_id": "RUN-1",
+        "context_snapshot_id": "context_snapshot_98b8af535c262176f81500e2379d54c5"
+      },
+      "created_at": "2026-07-18T17:59:32Z",
+      "updated_at": "2026-07-18T17:59:39Z",
+      "context_snapshot_ref": "context_snapshot_98b8af535c262176f81500e2379d54c5",
+      "source_attribute_observation_ref": "source_attribute_observation_f5b31447035569df43390a0ff4ba110e",
+      "source_object_name": "driver",
+      "source_attribute_name": "last_name",
+      "ordinal_position": 3,
+      "physical_type": {
+        "value": "STRING",
+        "value_type": "TEXT",
+        "evidence_refs": [
+          "source_attribute_observation_f5b31447035569df43390a0ff4ba110e"
+        ]
+      },
+      "physical_nullable": {
+        "value": true,
+        "value_type": "BOOLEAN",
+        "evidence_refs": [
+          "source_attribute_observation_f5b31447035569df43390a0ff4ba110e"
+        ]
+      },
+      "business_name": {
+        "evidence_state": "INFERRED",
+        "value_type": "TEXT",
+        "value": "Last Name",
+        "evidence_refs": [
+          "source_attribute_observation_f5b31447035569df43390a0ff4ba110e"
+        ],
+        "confidence": {
+          "evidence_type": "SINGLE_LLM_INFERENCE",
+          "evidence_count": 1,
+          "critic_agreement": "NOT_ASSESSED"
+        }
+      },
+      "business_definition": {
+        "evidence_state": "INFERRED",
+        "value_type": "TEXT",
+        "value": "Last name on driver.",
+        "evidence_refs": [
+          "source_attribute_observation_f5b31447035569df43390a0ff4ba110e"
+        ],
+        "confidence": {
+          "evidence_type": "SINGLE_LLM_INFERENCE",
+          "evidence_count": 1,
+          "critic_agreement": "NOT_ASSESSED"
+        }
+      },
+      "notes": "Candidate privacy-sensitive; requires steward confirmation.",
+      "review_decision_ref": "review_decision_63fe8f76e6fa86571c26fb3d5100b2ed"
+    },
+    {
+      "record_id": "source_dictionary_attribute_4ad1110e10d6642b765698b868c8f1eb",
+      "schema_version": "0.1.0",
+      "engagement_id": "ENG-DEMO",
+      "lob": "personal_auto",
+      "domain": "personal_auto_policy_claims",
+      "artifact_version": "0.1.0",
+      "lifecycle_state": "APPROVED",
+      "provenance": {
+        "work_package_id": "WP-001",
+        "run_id": "RUN-1",
+        "context_snapshot_id": "context_snapshot_98b8af535c262176f81500e2379d54c5"
+      },
+      "created_at": "2026-07-18T17:59:32Z",
+      "updated_at": "2026-07-18T17:59:42Z",
+      "context_snapshot_ref": "context_snapshot_98b8af535c262176f81500e2379d54c5",
+      "source_attribute_observation_ref": "source_attribute_observation_4ad1110e10d6642b765698b868c8f1eb",
+      "source_object_name": "driver",
+      "source_attribute_name": "dob",
+      "ordinal_position": 4,
+      "physical_type": {
+        "value": "DATE",
+        "value_type": "TEXT",
+        "evidence_refs": [
+          "source_attribute_observation_4ad1110e10d6642b765698b868c8f1eb"
+        ]
+      },
+      "physical_nullable": {
+        "value": true,
+        "value_type": "BOOLEAN",
+        "evidence_refs": [
+          "source_attribute_observation_4ad1110e10d6642b765698b868c8f1eb"
+        ]
+      },
+      "business_name": {
+        "evidence_state": "INFERRED",
+        "value_type": "TEXT",
+        "value": "Date Of Birth",
+        "evidence_refs": [
+          "source_attribute_observation_4ad1110e10d6642b765698b868c8f1eb"
+        ],
+        "confidence": {
+          "evidence_type": "SINGLE_LLM_INFERENCE",
+          "evidence_count": 1,
+          "critic_agreement": "NOT_ASSESSED"
+        }
+      },
+      "business_definition": {
+        "evidence_state": "INFERRED",
+        "value_type": "TEXT",
+        "value": "Date of birth on driver.",
+        "evidence_refs": [
+          "source_attribute_observation_4ad

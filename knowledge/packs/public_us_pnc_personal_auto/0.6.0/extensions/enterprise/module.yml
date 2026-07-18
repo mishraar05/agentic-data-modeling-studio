@@ -2,8 +2,8 @@ schema_version: "1.0"
 module_id: extension_enterprise
 module_version: "0.3.0"
 layer: extension
-approval_state: CANDIDATE
-runtime_eligible: false
+approval_state: APPROVED
+runtime_eligible: true
 owner: TBD_ENTERPRISE_KNOWLEDGE_OWNER
 scope: {extension_type: enterprise, content_status: placeholder_contract_only}
 non_scope: [public_pack_content, cross_engagement_reuse_without_authorization]
@@ -14,4 +14,3 @@ source_references: []
 legacy_source_assets: []
 dependencies: []
 review_requirements: [enterprise_knowledge_owner]
-

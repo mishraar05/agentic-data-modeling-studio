@@ -20,7 +20,15 @@ resources:
           default: ${var.source_catalog}
         - name: source_schema
           default: ${var.source_schema}
-        - name: source_tables
+        - name: source_scope_mode
+          default: ${var.source_scope_mode}
+        - name: source_table_include_patterns
+          default: ${var.source_table_include_patterns_json}
+        - name: source_table_exclude_patterns
+          default: ${var.source_table_exclude_patterns_json}
+        - name: source_object_types
+          default: ${var.source_object_types_json}
+        - name: explicit_source_tables
           default: ${var.source_tables_json}
         - name: source_system_id
           default: ${var.source_system_id}
@@ -73,7 +81,11 @@ resources:
               domain: "{{job.parameters.domain}}"
               source_catalog: "{{job.parameters.source_catalog}}"
               source_schema: "{{job.parameters.source_schema}}"
-              source_tables: "{{job.parameters.source_tables}}"
+              source_scope_mode: "{{job.parameters.source_scope_mode}}"
+              source_table_include_patterns: "{{job.parameters.source_table_include_patterns}}"
+              source_table_exclude_patterns: "{{job.parameters.source_table_exclude_patterns}}"
+              source_object_types: "{{job.parameters.source_object_types}}"
+              source_tables: "{{job.parameters.explicit_source_tables}}"
               source_system_id: "{{job.parameters.source_system_id}}"
               source_product: "{{job.parameters.source_product}}"
               source_module: "{{job.parameters.source_module}}"
@@ -86,11 +98,11 @@ resources:
               output_catalog: "{{job.parameters.output_catalog}}"
               output_schema: "{{job.parameters.output_schema}}"
               contract_set_version: "{{job.parameters.contract_set_version}}"
-        - task_key: register_work_package
+        - task_key: discover_source_scope
           depends_on:
             - task_key: validate_scope
           notebook_task:
-            notebook_path: ../src/workflows/register_work_package.py
+            notebook_path: ../src/workflows/discover_source_scope.py
             source: WORKSPACE
             base_parameters:
               run_id: source_discovery_{{job.run_id}}
@@ -100,7 +112,11 @@ resources:
               domain: "{{job.parameters.domain}}"
               source_catalog: "{{job.parameters.source_catalog}}"
               source_schema: "{{job.parameters.source_schema}}"
-              source_tables: "{{job.parameters.source_tables}}"
+              source_scope_mode: "{{job.parameters.source_scope_mode}}"
+              source_table_include_patterns: "{{job.parameters.source_table_include_patterns}}"
+              source_table_exclude_patterns: "{{job.parameters.source_table_exclude_patterns}}"
+              source_object_types: "{{job.parameters.source_object_types}}"
+              source_tables: "{{job.parameters.explicit_source_tables}}"
               source_system_id: "{{job.parameters.source_system_id}}"
               source_product: "{{job.parameters.source_product}}"
               source_module: "{{job.parameters.source_module}}"
@@ -120,6 +136,166 @@ resources:
               workspace_host: "{{job.parameters.workspace_host}}"
               execution_principal: "{{job.parameters.execution_principal}}"
               source_access_granted: "{{job.parameters.source_access_granted}}"
+        - task_key: register_work_package
+          depends_on:
+            - task_key: discover_source_scope
+          notebook_task:
+            notebook_path: ../src/workflows/register_work_package.py
+            source: WORKSPACE
+            base_parameters:
+              run_id: source_discovery_{{job.run_id}}
+              engagement_id: "{{job.parameters.engagement_id}}"
+              work_package_id: "{{job.parameters.work_package_id}}"
+              lob: "{{job.parameters.lob}}"
+              domain: "{{job.parameters.domain}}"
+              source_catalog: "{{job.parameters.source_catalog}}"
+              source_schema: "{{job.parameters.source_schema}}"
+              source_scope_mode: "{{job.parameters.source_scope_mode}}"
+              source_table_include_patterns: "{{job.parameters.source_table_include_patterns}}"
+              source_table_exclude_patterns: "{{job.parameters.source_table_exclude_patterns}}"
+              source_object_types: "{{job.parameters.source_object_types}}"
+              source_tables: "{{tasks.discover_source_scope.values.source_tables}}"
+              source_system_id: "{{job.parameters.source_system_id}}"
+              source_product: "{{job.parameters.source_product}}"
+              source_module: "{{job.parameters.source_module}}"
+              source_version: "{{job.parameters.source_version}}"
+              run_mode: "{{job.parameters.run_mode}}"
+              profiling_policy_id: "{{job.parameters.profiling_policy_id}}"
+              profiling_policy_version: "{{job.parameters.profiling_policy_version}}"
+              document_set_id: "{{job.parameters.document_set_id}}"
+              requirement_set_id: "{{job.parameters.requirement_set_id}}"
+              output_catalog: "{{job.parameters.output_catalog}}"
+              output_schema: "{{job.parameters.output_schema}}"
+              contract_set_version: "{{job.parameters.contract_set_version}}"
+              registration_mode: "{{job.parameters.registration_mode}}"
+              client_name: "{{job.parameters.client_name}}"
+              authorization_ref: "{{job.parameters.authorization_ref}}"
+              effective_start_date: "{{job.parameters.effective_start_date}}"
+              workspace_host: "{{job.parameters.workspace_host}}"
+              execution_principal: "{{job.parameters.execution_principal}}"
+              source_access_granted: "{{job.parameters.source_access_granted}}"
+        - task_key: snapshot_source_metadata
+          depends_on:
+            - task_key: register_work_package
+          notebook_task:
+            notebook_path: ../src/workflows/snapshot_source_metadata.py
+            source: WORKSPACE
+            base_parameters:
+              run_id: source_discovery_{{job.run_id}}
+              engagement_id: "{{job.parameters.engagement_id}}"
+              work_package_id: "{{job.parameters.work_package_id}}"
+              lob: "{{job.parameters.lob}}"
+              domain: "{{job.parameters.domain}}"
+              source_catalog: "{{job.parameters.source_catalog}}"
+              source_schema: "{{job.parameters.source_schema}}"
+              source_scope_mode: "{{job.parameters.source_scope_mode}}"
+              source_table_include_patterns: "{{job.parameters.source_table_include_patterns}}"
+              source_table_exclude_patterns: "{{job.parameters.source_table_exclude_patterns}}"
+              source_object_types: "{{job.parameters.source_object_types}}"
+              source_tables: "{{tasks.discover_source_scope.values.source_tables}}"
+              source_system_id: "{{job.parameters.source_system_id}}"
+              source_product: "{{job.parameters.source_product}}"
+              source_module: "{{job.parameters.source_module}}"
+              source_version: "{{job.parameters.source_version}}"
+              run_mode: "{{job.parameters.run_mode}}"
+              profiling_policy_id: "{{job.parameters.profiling_policy_id}}"
+              profiling_policy_version: "{{job.parameters.profiling_policy_version}}"
+              document_set_id: "{{job.parameters.document_set_id}}"
+              requirement_set_id: "{{job.parameters.requirement_set_id}}"
+              output_catalog: "{{job.parameters.output_catalog}}"
+              output_schema: "{{job.parameters.output_schema}}"
+              contract_set_version: "{{job.parameters.contract_set_version}}"
+              registration_mode: "{{job.parameters.registration_mode}}"
+              client_name: "{{job.parameters.client_name}}"
+              authorization_ref: "{{job.parameters.authorization_ref}}"
+              effective_start_date: "{{job.parameters.effective_start_date}}"
+              workspace_host: "{{job.parameters.workspace_host}}"
+              execution_principal: "{{job.parameters.execution_principal}}"
+              source_access_granted: "{{job.parameters.source_access_granted}}"
+        - task_key: profile_source
+          depends_on:
+            - task_key: snapshot_source_metadata
+          timeout_seconds: 900
+          environment_key: dqx
+          notebook_task:
+            notebook_path: ../src/workflows/profile_source.py
+            source: WORKSPACE
+            base_parameters:
+              run_id: source_discovery_{{job.run_id}}
+              engagement_id: "{{job.parameters.engagement_id}}"
+              work_package_id: "{{job.parameters.work_package_id}}"
+              lob: "{{job.parameters.lob}}"
+              domain: "{{job.parameters.domain}}"
+              source_catalog: "{{job.parameters.source_catalog}}"
+              source_schema: "{{job.parameters.source_schema}}"
+              source_scope_mode: "{{job.parameters.source_scope_mode}}"
+              source_table_include_patterns: "{{job.parameters.source_table_include_patterns}}"
+              source_table_exclude_patterns: "{{job.parameters.source_table_exclude_patterns}}"
+              source_object_types: "{{job.parameters.source_object_types}}"
+              source_tables: "{{tasks.discover_source_scope.values.source_tables}}"
+              source_system_id: "{{job.parameters.source_system_id}}"
+              source_product: "{{job.parameters.source_product}}"
+              source_module: "{{job.parameters.source_module}}"
+              source_version: "{{job.parameters.source_version}}"
+              run_mode: "{{job.parameters.run_mode}}"
+              profiling_policy_id: "{{job.parameters.profiling_policy_id}}"
+              profiling_policy_version: "{{job.parameters.profiling_policy_version}}"
+              document_set_id: "{{job.parameters.document_set_id}}"
+              requirement_set_id: "{{job.parameters.requirement_set_id}}"
+              output_catalog: "{{job.parameters.output_catalog}}"
+              output_schema: "{{job.parameters.output_schema}}"
+              contract_set_version: "{{job.parameters.contract_set_version}}"
+              registration_mode: "{{job.parameters.registration_mode}}"
+              client_name: "{{job.parameters.client_name}}"
+              authorization_ref: "{{job.parameters.authorization_ref}}"
+              effective_start_date: "{{job.parameters.effective_start_date}}"
+              workspace_host: "{{job.parameters.workspace_host}}"
+              execution_principal: "{{job.parameters.execution_principal}}"
+              source_access_granted: "{{job.parameters.source_access_granted}}"
+        - task_key: assemble_source_evidence
+          depends_on:
+            - task_key: profile_source
+          notebook_task:
+            notebook_path: ../src/workflows/assemble_source_evidence.py
+            source: WORKSPACE
+            base_parameters:
+              run_id: source_discovery_{{job.run_id}}
+              engagement_id: "{{job.parameters.engagement_id}}"
+              work_package_id: "{{job.parameters.work_package_id}}"
+              lob: "{{job.parameters.lob}}"
+              domain: "{{job.parameters.domain}}"
+              source_catalog: "{{job.parameters.source_catalog}}"
+              source_schema: "{{job.parameters.source_schema}}"
+              source_scope_mode: "{{job.parameters.source_scope_mode}}"
+              source_table_include_patterns: "{{job.parameters.source_table_include_patterns}}"
+              source_table_exclude_patterns: "{{job.parameters.source_table_exclude_patterns}}"
+              source_object_types: "{{job.parameters.source_object_types}}"
+              source_tables: "{{tasks.discover_source_scope.values.source_tables}}"
+              source_system_id: "{{job.parameters.source_system_id}}"
+              source_product: "{{job.parameters.source_product}}"
+              source_module: "{{job.parameters.source_module}}"
+              source_version: "{{job.parameters.source_version}}"
+              run_mode: "{{job.parameters.run_mode}}"
+              profiling_policy_id: "{{job.parameters.profiling_policy_id}}"
+              profiling_policy_version: "{{job.parameters.profiling_policy_version}}"
+              document_set_id: "{{job.parameters.document_set_id}}"
+              requirement_set_id: "{{job.parameters.requirement_set_id}}"
+              output_catalog: "{{job.parameters.output_catalog}}"
+              output_schema: "{{job.parameters.output_schema}}"
+              contract_set_version: "{{job.parameters.contract_set_version}}"
+              registration_mode: "{{job.parameters.registration_mode}}"
+              client_name: "{{job.parameters.client_name}}"
+              authorization_ref: "{{job.parameters.authorization_ref}}"
+              effective_start_date: "{{job.parameters.effective_start_date}}"
+              workspace_host: "{{job.parameters.workspace_host}}"
+              execution_principal: "{{job.parameters.execution_principal}}"
+              source_access_granted: "{{job.parameters.source_access_granted}}"
+      environments:
+        - environment_key: dqx
+          spec:
+            environment_version: "2"
+            dependencies:
+              - databricks-labs-dqx==0.15.0
       tags:
         solution: agentic-data-modeling-studio
         artifact_scope: source-data-dictionary

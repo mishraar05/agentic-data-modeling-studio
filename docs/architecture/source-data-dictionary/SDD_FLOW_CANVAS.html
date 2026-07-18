@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SDD Agent — Flow Canvas</title>
+<style>
+  :root{
+    --bg:#17181c; --node:#262a31; --node2:#20242b; --bd:#363b44;
+    --ink:#e5e7eb; --muted:#98a1ae;
+    --flow:#22c55e; --attach:#525b68;
+    --code:#3b82f6; --agent:#22c55e; --llm:#a855f7; --gate:#ef4444;
+    --human:#f59e0b; --store:#38bdf8; --output:#14b8a6; --trigger:#7c8592;
+    --model:#a855f7; --mem:#10b981; --tool:#3b82f6;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:#0f1013;color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;padding:20px}
+  h1{font-size:20px;margin:0 0 2px}
+  .sub{color:var(--muted);font-size:13px;margin:0 0 14px}
+  .legend{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:14px;font-size:12px;color:var(--muted)}
+  .lg{display:inline-flex;align-items:center;gap:6px}
+  .sw{width:22px;height:0;border-top:3px solid var(--flow);border-radius:2px}
+  .sw.d{border-top:3px dashed var(--attach)}
+  .dot{width:10px;height:10px;border-radius:3px;display:inline-block}
+  .scrollwrap{overflow-x:auto;border:1px solid #23262d;border-radius:14px;background:
+    radial-gradient(circle, rgba(255,255,255,.045) 1px, transparent 1px) 0 0/22px 22px, var(--bg)}
+  #canvas{position:relative;width:1520px;height:580px}
+  svg#wires{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+  .node{position:absolute;background:linear-gradient(180deg,var(--node),var(--node2));
+    border:1px solid var(--bd);border-radius:12px;padding:10px 12px;display:flex;gap:10px;align-items:center;
+    box-shadow:0 6px 18px rgba(0,0,0,.35);transition:border-color .15s,transform .15s}
+  .node:hover{transform:translateY(-2px)}
+  .tile{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;
+    font-size:18px;flex:0 0 auto;background:#2f343d}
+  .txt .ti{font-weight:700;font-size:13px;line-height:1.15}
+  .txt .st{font-size:10.5px;color:var(--muted);margin-top:2px}
+  .chip{position:absolute;top:-9px;right:10px;font-size:8.5px;font-weight:800;letter-spacing:.06em;
+    padding:2px 7px;border-radius:6px;color:#0f1013}
+  .chk{position:absolute;bottom:-8px;right:-8px;width:18px;height:18px;border-radius:50%;
+    background:var(--flow);color:#0f1013;font-size:11px;font-weight:900;display:flex;align-items:center;justify-content:center;
+    border:2px solid var(--bg)}
+  .node.sub{padding:7px 10px;box-shadow:0 4px 10px rgba(0,0,0,.3);background:#1d2128;border-style:dashed}
+  .node.sub .tile{width:26px;height:26px;font-size:14px;border-radius:7px}
+  .node.sub .ti{font-size:11.5px}
+  .node.sub .st{font-size:9.5px}
+  .node.memgroup{flex-direction:column;align-items:stretch;gap:6px;padding:9px 10px;background:#1c2028;border-color:#3a4150}
+  .mem-head{display:flex;align-items:center;gap:7px;font-weight:700;font-size:12px}
+  .mem-head .tile{width:24px;height:24px;font-size:13px;border-radius:6px}
+  .mem-head .gtag{margin-left:auto;font-size:8.5px;color:var(--muted);border:1px solid #333a44;padding:1px 6px;border-radius:5px;font-weight:600}
+  .mrow{border-left:3px solid var(--bd);background:#23272f;border-radius:6px;padding:5px 9px;position:relative}
+  .mrow b{display:block;font-size:11px;line-height:1.2}
+  .mrow span{font-size:9px;color:var(--muted)}
+  .mrow i{position:absolute;top:6px;right:8px;font-style:normal;font-size:7.5px;font-weight:800;letter-spacing:.05em}
+  .mrow.sem{border-left-color:#10b981} .mrow.sem i{color:#10b981}
+  .mrow.epi{border-left-color:#38bdf8} .mrow.epi i{color:#38bdf8}
+  .mrow.proc{border-left-color:#a855f7} .mrow.proc i{color:#a855f7}
+  .elabel{position:absolute;font-size:10px;color:#c7cdd6;background:#1b1e24;border:1px solid #2c313a;
+    padding:2px 8px;border-radius:6px;transform:translate(-50%,-50%);white-space:nowrap}
+  .foot{color:var(--muted);font-size:11.5px;margin-top:12px}
+  .status{margin-top:10px;background:#2a2411;border:1px solid #524316;border-radius:10px;
+    padding:10px 14px;font-size:12px;color:#e9d8a6}
+</style>
+</head>
+<body>
+  <h1>Source Data Dictionary (SDD) Agent — flow</h1>
+  <p class="sub">One agent, run as a phased pipeline. Solid green wires = the flow of work. Dashed wires = the model, memory and tools attached to a step. Scroll sideways if needed.</p>
+  <div class="legend">
+    <span class="lg"><span class="sw"></span> flow of work</span>
+    <span class="lg"><span class="sw d"></span> attached model / memory / tools</span>
+    <span class="lg"><span class="dot" style="background:var(--code)"></span> deterministic code</span>
+    <span class="lg"><span class="dot" style="background:var(--agent)"></span> AI agent</span>
+    <span class="lg"><span class="dot" style="background:var(--llm)"></span> LLM</span>
+    <span class="lg"><span class="dot" style="background:var(--gate)"></span> fail-closed gate</span>
+    <span class="lg"><span class="dot" style="background:var(--human)"></span> human</span>
+  </div>
+
+  <div class="scrollwrap">
+    <div id="canvas">
+      <svg id="wires"></svg>
+    </div>
+  </div>
+
+  <div class="status"><b>Note:</b> source observation and evidence assembly are running, and an approved runtime pack now exists. The AI-agent path still requires engagement authorization, governed context assembly, semantic generation, critique, human review and publication.</div>
+  <p class="foot">Agentic Data Modeling Studio · derived from SOURCE_DATA_DICTIONARY_AGENT_DESIGN.md, AGENT_SOLUTION_ARCHITECTURE.md, ADR-004 (memory), SKILL_MAP.md</p>
+
+<script>
+const NODES = [
+  {id:'trigger', x:30,  y:70,  w:150, h:74, kind:'trigger', chip:'SCOPE',   icon:'▶',  ti:'Work package',      st:'Phase 0 · scope locked'},
+  {id:'evidence',x:250, y:70,  w:160, h:74, kind:'code',    chip:'CODE',    icon:'🗄️', ti:'Evidence Ingestion', st:'Phase 1–2 · facts only'},
+  {id:'analyst', x:480, y:62,  w:190, h:90, kind:'agent',   chip:'AI AGENT',icon:'🤖', ti:'Source Data Analyst',st:'Phase 3–4 · propose meaning'},
+  {id:'critic',  x:820, y:70,  w:160, h:74, kind:'llm',     chip:'LLM',     icon:'🔎', ti:'Critic & Gap Check', st:'Phase 5 · challenge'},
+  {id:'valid',   x:1070,y:70,  w:170, h:74, kind:'gate',    chip:'GATE',    icon:'🛡️', ti:'Contract Validation',st:'Phase 7 · fail-closed'},
+
+  // attachments (dashed, below their parent)
+  {id:'ev_tool', x:225, y:250, w:165, h:52, kind:'tool',  chip:'',icon:'🛠️', ti:'Metadata + Profiling', st:'read-only tools', sub:true},
+  {id:'model',   x:410, y:250, w:150, h:52, kind:'model', chip:'',icon:'🧠', ti:'LLM Chat Model',       st:'reasoning',       sub:true},
+  {id:'memory',  x:575, y:242, w:300, h:142, kind:'mem', group:true, icon:'📚', ti:'Memory', st:'3 stores',
+     inner:[
+       {k:'sem', t:'Knowledge Pack',       d:'glossary · code sets · standards', tag:'SEMANTIC'},
+       {k:'epi', t:'Engagement Decisions', d:'prior approvals · open questions',  tag:'EPISODIC'},
+       {k:'proc',t:'Skills',               d:'SA1 · SA2 · SA3 playbooks',          tag:'PROCEDURAL'}
+     ]},
+  {id:'cmodel',  x:905, y:250, w:170, h:52, kind:'model', chip:'',icon:'🧠', ti:'2nd LLM (independent)',st:'different model/context', sub:true},
+
+  // bottom row
+  {id:'review',  x:250, y:440, w:190, h:84, kind:'human', chip:'HUMAN', icon:'👤', ti:'Human Review',        st:'Phase 8 · approval gate'},
+  {id:'persist', x:700, y:445, w:180, h:78, kind:'store', chip:'DELTA', icon:'🧱', ti:'Persist — Delta',     st:'Phase 9 · authoritative'},
+  {id:'outputs', x:1150,y:445, w:250, h:78, kind:'output',chip:'OUTPUT',icon:'📊', ti:'Excel + Databricks App', st:'consumption · regenerated'},
+];
+
+const EDGES = [
+  {from:'trigger', to:'evidence', fs:'r', ts:'l', label:'work package'},
+  {from:'evidence',to:'analyst',  fs:'r', ts:'l', label:'evidence'},
+  {from:'analyst', to:'critic',   fs:'r', ts:'l', label:'draft SDD'},
+  {from:'critic',  to:'valid',    fs:'r', ts:'l', label:'findings'},
+  {from:'valid',   to:'review',   fs:'b', ts:'t', label:'validated draft', c1:[1155,410], c2:[345,410]},
+  {from:'review',  to:'persist',  fs:'r', ts:'l', label:'approved'},
+  {from:'persist', to:'outputs',  fs:'r', ts:'l', label:'regenerate'},
+  // attachments
+  {from:'evidence',to:'ev_tool', fs:'b', ts:'t', attach:true},
+  {from:'analyst', to:'model',   fs:'b', ts:'t', attach:true},
+  {from:'analyst', to:'memory',  fs:'b', ts:'t', attach:true},
+  {from:'critic',  to:'cmodel',  fs:'b', ts:'t', attach:true},
+];
+
+const ACCENT = {trigger:'--trigger',code:'--code',agent:'--agent',llm:'--llm',gate:'--gate',
+  human:'--human',store:'--store',output:'--output',tool:'--tool',model:'--model',mem:'--mem'};
+
+const byId = {};
+NODES.forEach(n=>{ n.cx=n.x+n.w/2; n.cy=n.y+n.h/2; byId[n.id]=n; });
+
+function anchor(n,s){
+  if(s==='l')return{x:n.x,y:n.cy};
+  if(s==='r')return{x:n.x+n.w,y:n.cy};
+  if(s==='t')return{x:n.cx,y:n.y};
+  return{x:n.cx,y:n.y+n.h}; // b
+}
+function ctrl(p,s,k){
+  if(s==='l')return{x:p.x-k,y:p.y};
+  if(s==='r')return{x:p.x+k,y:p.y};
+  if(s==='t')return{x:p.x,y:p.y-k};
+  return{x:p.x,y:p.y+k};
+}
+
+const canvas=document.getElementById('canvas');
+const svg=document.getElementById('wires');
+const css=getComputedStyle(document.documentElement);
+
+// draw edges
+EDGES.forEach(e=>{
+  const a=byId[e.from], b=byId[e.to];
+  const s=anchor(a,e.fs), t=anchor(b,e.ts);
+  const k=Math.min(160,Math.max(46,Math.hypot(t.x-s.x,t.y-s.y)*0.4));
+  const c1=e.c1?{x:e.c1[0],y:e.c1[1]}:ctrl(s,e.fs,k);
+  const c2=e.c2?{x:e.c2[0],y:e.c2[1]}:ctrl(t,e.ts,k);
+  const path=document.createElementNS('http://www.w3.org/2000/svg','path');
+  path.setAttribute('d',`M ${s.x} ${s.y} C ${c1.x} ${c1.y}, ${c2.x} ${c2.y}, ${t.x} ${t.y}`);
+  path.setAttribute('fill','none');
+  if(e.attach){
+    path.setAttribute('stroke',css.getPropertyValue('--attach'));
+    path.setAttribute('stroke-width','2');
+    path.setAttribute('stroke-dasharray','5 5');
+  }else{
+    path.setAttribute('stroke',css.getPropertyValue('--flow'));
+    path.setAttribute('stroke-width','2.5');
+    path.setAttribute('opacity','.9');
+  }
+  svg.appendChild(path);
+  // port dot at source
+  const port=document.createElementNS('http://www.w3.org/2000/svg','circle');
+  port.setAttribute('cx',s.x); port.setAttribute('cy',s.y); port.setAttribute('r', e.attach?'3':'4');
+  port.setAttribute('fill', e.attach?css.getPropertyValue('--attach'):css.getPropertyValue('--flow'));
+  svg.appendChild(port);
+  // arrow head at target for flow edges
+  if(!e.attach){
+    const ah=document.createElementNS('http://www.w3.org/2000/svg','circle');
+    ah.setAttribute('cx',t.x); ah.setAttribute('cy',t.y); ah.setAttribute('r','4');
+    ah.setAttribute('fill',css.getPropertyValue('--flow'));
+    svg.appendChild(ah);
+  }
+  // label
+  if(e.label){
+    const mx=(s.x+t.x)/2, my=(s.y+t.y)/2 - (e.fs==='r'?14:0);
+    const l=document.createElement('div'); l.className='elabel'; l.textContent=e.label;
+    l.style.left=mx+'px'; l.style.top=my+'px'; canvas.appendChild(l);
+  }
+});
+
+// draw nodes
+NODES.forEach(n=>{
+  const el=document.createElement('div');
+  el.style.left=n.x+'px'; el.style.top=n.y+'px'; el.style.width=n.w+'px'; el.style.minHeight=n.h+'px';
+  const ac=css.getPropertyValue(ACCENT[n.kind]).trim();
+  if(n.group){
+    el.className='node memgroup';
+    el.innerHTML=`<div class="mem-head"><span class="tile" style="box-shadow:inset 0 0 0 1.5px ${ac}55;">${n.icon}</span>${n.ti}<span class="gtag">${n.st}</span></div>`+
+      n.inner.map(r=>`<div class="mrow ${r.k}"><b>${r.t}</b><span>${r.d}</span><i>${r.tag}</i></div>`).join('');
+    el.addEventListener('mouseenter',()=>el.style.borderColor=ac);
+    el.addEventListener('mouseleave',()=>el.style.borderColor='');
+    canvas.appendChild(el);
+    return;
+  }
+  el.className='node'+(n.sub?' sub':'');
+  el.innerHTML=`
+    <div class="tile" style="box-shadow:inset 0 0 0 1.5px ${ac}55;">${n.icon}</div>
+    <div class="txt"><div class="ti">${n.ti}</div><div class="st">${n.st}</div></div>
+    ${n.chip?`<div class="chip" style="background:${ac}">${n.chip}</div>`:''}
+    ${n.sub?'':'<div class="chk">✓</div>'}`;
+  el.addEventListener('mouseenter',()=>el.style.borderColor=ac);
+  el.addEventListener('mouseleave',()=>el.style.borderColor='');
+  canvas.appendChild(el);
+});
+</script>
+</body>
+</html>

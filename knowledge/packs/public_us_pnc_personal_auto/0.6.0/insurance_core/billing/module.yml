@@ -2,8 +2,8 @@ schema_version: "1.0"
 module_id: insurance_core_billing
 module_version: "0.6.0"
 layer: insurance_core
-approval_state: CANDIDATE
-runtime_eligible: false
+approval_state: APPROVED
+runtime_eligible: true
 owner: TBD_BILLING_STEWARD
 scope: {domains: [billing], lobs: [cross_lob, personal_auto]}
 non_scope: [carrier_collection_workflow, general_ledger_design, statutory_accounting_policy, payment_card_data]

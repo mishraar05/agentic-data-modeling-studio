@@ -2,8 +2,8 @@ schema_version: "1.0"
 module_id: insurance_core_claims
 module_version: "0.5.0"
 layer: insurance_core
-approval_state: CANDIDATE
-runtime_eligible: false
+approval_state: APPROVED
+runtime_eligible: true
 owner: TBD_CLAIMS_STEWARD
 scope: {domains: [claims], lobs: [cross_lob, personal_auto]}
 non_scope: [carrier_claim_workflow, jurisdiction_settlement_deadlines, legal_liability_determination]

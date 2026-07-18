@@ -34,7 +34,7 @@ The assembler must fail closed unless all are true:
 7. the output contract, tool policy and budget versions exist; and
 8. there is no unresolved blocking conflict among required inputs.
 
-The current project has no runtime-eligible pack. Genie Code may build and test all negative gates now, but no project candidate pack may be promoted or copied into a positive runtime path. Positive integration testing requires a separately authorized synthetic fixture or a human-approved project pack.
+Pack `public_us_pnc_personal_auto@0.6.0` is now human-approved and runtime-eligible under `D23-07`. Positive integration remains blocked until `D23-08` records the required authorization, applicability and effective-date policy; no runtime task may infer those dimensions from pack approval alone.
 
 ## 3. Durable task graph
 

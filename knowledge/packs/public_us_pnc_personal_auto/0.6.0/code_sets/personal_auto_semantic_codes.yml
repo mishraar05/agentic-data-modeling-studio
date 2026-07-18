@@ -1,8 +1,8 @@
 schema_version: "1.0"
 catalog_id: public_us_pnc_personal_auto_semantic_code_sets
 version: "0.6.0"
-approval_state: CANDIDATE
-runtime_eligible: false
+approval_state: APPROVED
+runtime_eligible: true
 rules:
   - These values classify reusable semantic concepts; they are not carrier source-code mappings.
   - A source value maps only with evidence confidence effective version and reviewer state.

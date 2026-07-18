@@ -11,6 +11,10 @@ RUNTIME_PARAMETER_NAMES = {
     "domain",
     "source_catalog",
     "source_schema",
+    "source_scope_mode",
+    "source_table_include_patterns",
+    "source_table_exclude_patterns",
+    "source_object_types",
     "source_tables",
     "source_system_id",
     "source_product",
@@ -34,7 +38,11 @@ REGISTRATION_PARAMETER_NAMES = {
     "execution_principal",
     "source_access_granted",
 }
-JOB_PARAMETER_NAMES = RUNTIME_PARAMETER_NAMES | REGISTRATION_PARAMETER_NAMES
+JOB_PARAMETER_NAMES = (
+    (RUNTIME_PARAMETER_NAMES - {"source_tables"})
+    | {"explicit_source_tables"}
+    | REGISTRATION_PARAMETER_NAMES
+)
 
 
 def _load_yaml(relative_path: str) -> dict:
@@ -64,25 +72,124 @@ def test_validation_task_receives_every_job_parameter_and_generated_run_id() -> 
     )
     assert set(base_parameters) == RUNTIME_PARAMETER_NAMES | {"run_id"}
     assert base_parameters["run_id"] == "source_discovery_{{job.run_id}}"
-    for name in RUNTIME_PARAMETER_NAMES:
+    for name in RUNTIME_PARAMETER_NAMES - {"source_tables"}:
         assert base_parameters[name] == f"{{{{job.parameters.{name}}}}}"
+    assert base_parameters["source_tables"] == (
+        "{{job.parameters.explicit_source_tables}}"
+    )
 
 
-def test_registration_task_depends_on_validation_and_receives_all_parameters() -> None:
+def test_discovery_task_depends_on_validation_and_receives_all_parameters() -> None:
     resource = _load_yaml("resources/source_discovery.job.yml")
     job = resource["resources"]["jobs"]["source_discovery"]
     task = job["tasks"][1]
     base_parameters = task["notebook_task"]["base_parameters"]
 
-    assert task["task_key"] == "register_work_package"
+    assert task["task_key"] == "discover_source_scope"
     assert task["depends_on"] == [{"task_key": "validate_scope"}]
     assert task["notebook_task"]["notebook_path"].endswith(
-        "src/workflows/register_work_package.py"
+        "src/workflows/discover_source_scope.py"
     )
-    assert set(base_parameters) == JOB_PARAMETER_NAMES | {"run_id"}
+    assert set(base_parameters) == (
+        (JOB_PARAMETER_NAMES - {"explicit_source_tables"})
+        | {"source_tables", "run_id"}
+    )
     assert base_parameters["run_id"] == "source_discovery_{{job.run_id}}"
-    for name in JOB_PARAMETER_NAMES:
+    for name in JOB_PARAMETER_NAMES - {"explicit_source_tables"}:
         assert base_parameters[name] == f"{{{{job.parameters.{name}}}}}"
+    assert base_parameters["source_tables"] == (
+        "{{job.parameters.explicit_source_tables}}"
+    )
+
+
+def test_registration_task_depends_on_discovery_and_uses_frozen_manifest() -> None:
+    resource = _load_yaml("resources/source_discovery.job.yml")
+    job = resource["resources"]["jobs"]["source_discovery"]
+    task = job["tasks"][2]
+    base_parameters = task["notebook_task"]["base_parameters"]
+
+    assert task["task_key"] == "register_work_package"
+    assert task["depends_on"] == [{"task_key": "discover_source_scope"}]
+    assert set(base_parameters) == (
+        (JOB_PARAMETER_NAMES - {"explicit_source_tables"})
+        | {"source_tables", "run_id"}
+    )
+    assert base_parameters["source_tables"] == (
+        "{{tasks.discover_source_scope.values.source_tables}}"
+    )
+
+
+def test_metadata_task_depends_on_registration_and_receives_all_parameters() -> None:
+    resource = _load_yaml("resources/source_discovery.job.yml")
+    job = resource["resources"]["jobs"]["source_discovery"]
+    task = job["tasks"][3]
+    base_parameters = task["notebook_task"]["base_parameters"]
+
+    assert task["task_key"] == "snapshot_source_metadata"
+    assert task["depends_on"] == [{"task_key": "register_work_package"}]
+    assert task["notebook_task"]["notebook_path"].endswith(
+        "src/workflows/snapshot_source_metadata.py"
+    )
+    assert set(base_parameters) == (
+        (JOB_PARAMETER_NAMES - {"explicit_source_tables"})
+        | {"source_tables", "run_id"}
+    )
+    for name in JOB_PARAMETER_NAMES - {"explicit_source_tables"}:
+        assert base_parameters[name] == f"{{{{job.parameters.{name}}}}}"
+    assert base_parameters["source_tables"] == "{{tasks.discover_source_scope.values.source_tables}}"
+
+
+def test_profile_task_depends_on_metadata_and_receives_all_parameters() -> None:
+    resource = _load_yaml("resources/source_discovery.job.yml")
+    job = resource["resources"]["jobs"]["source_discovery"]
+    task = job["tasks"][4]
+    base_parameters = task["notebook_task"]["base_parameters"]
+
+    assert task["task_key"] == "profile_source"
+    assert task["depends_on"] == [{"task_key": "snapshot_source_metadata"}]
+    assert task["timeout_seconds"] == 900
+    assert task["environment_key"] == "dqx"
+    assert job["environments"] == [
+        {
+            "environment_key": "dqx",
+            "spec": {
+                "environment_version": "2",
+                "dependencies": ["databricks-labs-dqx==0.15.0"],
+            },
+        }
+    ]
+    assert task["notebook_task"]["notebook_path"].endswith(
+        "src/workflows/profile_source.py"
+    )
+    assert set(base_parameters) == (
+        (JOB_PARAMETER_NAMES - {"explicit_source_tables"})
+        | {"source_tables", "run_id"}
+    )
+    for name in JOB_PARAMETER_NAMES - {"explicit_source_tables"}:
+        assert base_parameters[name] == f"{{{{job.parameters.{name}}}}}"
+    assert base_parameters["source_tables"] == "{{tasks.discover_source_scope.values.source_tables}}"
+
+
+def test_evidence_task_depends_on_profile_and_uses_frozen_manifest() -> None:
+    resource = _load_yaml("resources/source_discovery.job.yml")
+    job = resource["resources"]["jobs"]["source_discovery"]
+    task = job["tasks"][5]
+    base_parameters = task["notebook_task"]["base_parameters"]
+
+    assert task["task_key"] == "assemble_source_evidence"
+    assert task["depends_on"] == [{"task_key": "profile_source"}]
+    assert task["notebook_task"]["notebook_path"].endswith(
+        "src/workflows/assemble_source_evidence.py"
+    )
+    assert set(base_parameters) == (
+        (JOB_PARAMETER_NAMES - {"explicit_source_tables"})
+        | {"source_tables", "run_id"}
+    )
+    for name in JOB_PARAMETER_NAMES - {"explicit_source_tables"}:
+        assert base_parameters[name] == f"{{{{job.parameters.{name}}}}}"
+    assert base_parameters["source_tables"] == (
+        "{{tasks.discover_source_scope.values.source_tables}}"
+    )
 
 
 def test_bundle_declares_every_source_discovery_variable_default() -> None:
@@ -95,6 +202,10 @@ def test_bundle_declares_every_source_discovery_variable_default() -> None:
         "domain",
         "source_catalog",
         "source_schema",
+        "source_scope_mode",
+        "source_table_include_patterns_json",
+        "source_table_exclude_patterns_json",
+        "source_object_types_json",
         "source_tables_json",
         "source_system_id",
         "source_product",

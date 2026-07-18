@@ -2,8 +2,8 @@ schema_version: "1.0"
 module_id: extension_product
 module_version: "0.3.0"
 layer: extension
-approval_state: CANDIDATE
-runtime_eligible: false
+approval_state: APPROVED
+runtime_eligible: true
 owner: TBD_PRODUCT_KNOWLEDGE_OWNER
 scope: {extension_type: product, content_status: placeholder_contract_only}
 non_scope: [unlicensed_forms, inferred_carrier_configuration]
@@ -14,4 +14,3 @@ source_references: []
 legacy_source_assets: []
 dependencies: [insurance_core_product_and_coverage]
 review_requirements: [product_owner, legal_licensing_reviewer]
-

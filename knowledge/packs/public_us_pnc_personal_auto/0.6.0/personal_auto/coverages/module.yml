@@ -2,8 +2,8 @@ schema_version: "1.0"
 module_id: personal_auto_coverages
 module_version: "0.5.0"
 layer: personal_auto
-approval_state: CANDIDATE
-runtime_eligible: false
+approval_state: APPROVED
+runtime_eligible: true
 owner: TBD_PERSONAL_AUTO_PRODUCT_STEWARD
 scope: {lob: personal_auto, domains: [product, coverage]}
 non_scope: [state_mandates, policy_form_wording, carrier_offerings, legal_coverage_determination]

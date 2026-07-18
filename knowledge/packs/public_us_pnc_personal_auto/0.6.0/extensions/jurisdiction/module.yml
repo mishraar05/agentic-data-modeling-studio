@@ -2,8 +2,8 @@ schema_version: "1.0"
 module_id: extension_jurisdiction
 module_version: "0.4.0"
 layer: extension
-approval_state: CANDIDATE
-runtime_eligible: false
+approval_state: APPROVED
+runtime_eligible: true
 owner: TBD_JURISDICTION_STEWARD
 scope:
   extension_type: jurisdiction

@@ -3,9 +3,9 @@ selection_policy: exact_version_fail_closed
 packs:
   - pack_id: public_us_pnc_personal_auto
     pack_version: "0.6.0"
-    lifecycle: CANONICAL_CANDIDATE
-    approval_state: CANDIDATE
-    runtime_eligible: false
+    lifecycle: CANONICAL_APPROVED
+    approval_state: APPROVED
+    runtime_eligible: true
     manifest: knowledge/packs/public_us_pnc_personal_auto/0.6.0/manifest.yml
   - pack_id: public_us_pnc_personal_auto
     pack_version: "0.5.0"

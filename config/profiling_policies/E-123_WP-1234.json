@@ -1,0 +1,23 @@
+{
+  "engagement_id": "E-123",
+  "work_package_id": "WP-1234",
+  "authorization_ref": "SYNTHETIC-D23-02-E123-v1",
+  "policy_id": "GOV-001",
+  "policy_version": "1.0.0",
+  "profiling_mode": "RESTRICTED",
+  "accepted_decision_refs": ["D23-03", "D23-04", "D23-05"],
+  "allowed_metrics": ["ROW_COUNT", "NULL_COUNT", "DISTINCT_COUNT"],
+  "max_tables": 7,
+  "max_attributes": 62,
+  "max_queries": 7,
+  "per_query_timeout_seconds": 120,
+  "total_timeout_seconds": 900,
+  "max_concurrency": 1,
+  "evidence_retention_days": 30,
+  "retain_raw_values": false,
+  "retain_query_text": false,
+  "profiler_engine": "DQX",
+  "profiler_engine_version": "0.15.0",
+  "allow_transient_rich_statistics": true,
+  "persist_generated_rules": false
+}

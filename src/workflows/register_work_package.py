@@ -28,7 +28,11 @@ def _add_bundle_source_to_python_path() -> None:
 
 _add_bundle_source_to_python_path()
 
-from agentic_data_modeler.control import RegistrationParameters, RuntimeRequest
+from agentic_data_modeler.control import (
+    RegistrationParameters,
+    RuntimeRequest,
+    registration_rerun_preserves_state,
+)
 
 
 RUNTIME_PARAMETERS = (
@@ -39,6 +43,10 @@ RUNTIME_PARAMETERS = (
     "domain",
     "source_catalog",
     "source_schema",
+    "source_scope_mode",
+    "source_table_include_patterns",
+    "source_table_exclude_patterns",
+    "source_object_types",
     "source_tables",
     "source_system_id",
     "source_product",
@@ -138,10 +146,16 @@ def _insert_idempotently(
             f"found {len(rows)}"
         )
     persisted = rows[0].asDict(recursive=True)
+    def _comparison_value(field: str, value):
+        if field == "source_tables_allow_list" and value is not None:
+            return tuple(value)
+        return value
+
     conflicts = [
         field
         for field in comparison_fields
-        if persisted.get(field) != record.get(field)
+        if _comparison_value(field, persisted.get(field))
+        != _comparison_value(field, record.get(field))
     ]
     if conflicts:
         raise ValueError(
@@ -214,7 +228,12 @@ work_package_record = {
     "output_catalog": request.output_catalog,
     "output_schema": request.output_schema,
     "authorization_validated_at": now,
-    "notes": registration.note,
+    "notes": (
+        f"{registration.note}; source_scope_mode={request.source_scope_mode.value}; "
+        f"include_patterns={list(request.source_table_include_patterns)}; "
+        f"exclude_patterns={list(request.source_table_exclude_patterns)}; "
+        f"object_types={list(request.source_object_types)}"
+    ),
 }
 work_package_status = _insert_idempotently(
     "work_package",
@@ -224,7 +243,6 @@ work_package_status = _insert_idempotently(
         "lob",
         "domain",
         "engagement_ref",
-        "workflow_state",
         "source_catalog",
         "source_schema",
         "source_tables_allow_list",
@@ -235,6 +253,18 @@ work_package_status = _insert_idempotently(
         "output_schema",
     ),
 )
+persisted_workflow_state = (
+    spark.table(_qualified("work_package"))
+    .where(F.col("record_id") == request.work_package_id)
+    .select("workflow_state")
+    .first()
+    .workflow_state
+)
+if not registration_rerun_preserves_state(persisted_workflow_state):
+    raise ValueError(
+        "Existing work_package has an invalid or regressive workflow state: "
+        f"{persisted_workflow_state!r}"
+    )
 
 solution_run_record = {
     "record_id": request.run_id,
