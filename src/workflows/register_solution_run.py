@@ -8,6 +8,7 @@
 # COMMAND ----------
 
 import json
+import os
 import sys
 from pathlib import Path, PurePosixPath
 from urllib.parse import urlparse
@@ -29,7 +30,11 @@ from agentic_data_modeler.config.job_params import resolve_job_params
 from agentic_data_modeler.control import RuntimeRequest
 
 # Load grouped parameters from metadata files
-REPO_ROOT = Path("/Workspace/Users/cleancoding109@gmail.com/agentic-data-modeling-studio")
+REPO_ROOT = Path(
+    os.environ.get("BUNDLE_ROOT")
+    or dbutils.notebook.entry_point.getDbutils().notebook().getContext()
+        .notebookPath().get().rsplit("/src/", 1)[0]
+)
 for w in ('run_id', 'source_tables', 'work_package_id'):
     dbutils.widgets.text(w, "")
 

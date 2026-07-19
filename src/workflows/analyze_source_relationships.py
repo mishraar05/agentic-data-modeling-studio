@@ -8,6 +8,7 @@
 # COMMAND ----------
 
 import json
+import os
 import sys
 from pathlib import Path, PurePosixPath
 from urllib.parse import urlparse
@@ -25,11 +26,16 @@ def _add_bundle_source_to_python_path() -> None:
 
 _add_bundle_source_to_python_path()
 
+from agentic_data_modeler.analyst.model import DatabricksFoundationModel
 from agentic_data_modeler.config.job_params import resolve_job_params
 from agentic_data_modeler.control import RuntimeRequest
 
 # Load grouped parameters from metadata files
-REPO_ROOT = Path("/Workspace/Users/cleancoding109@gmail.com/agentic-data-modeling-studio")
+REPO_ROOT = Path(
+    os.environ.get("BUNDLE_ROOT")
+    or dbutils.notebook.entry_point.getDbutils().notebook().getContext()
+        .notebookPath().get().rsplit("/src/", 1)[0]
+)
 for w in ('run_id', 'context_snapshot_id', 'source_snapshot_id', 'evidence_set_id'):
     dbutils.widgets.text(w, "")
 
@@ -45,6 +51,18 @@ if actual_workspace.casefold() != urlparse(expected_host).netloc.casefold():
     raise ValueError("Workspace differs from the authorized identity")
 if params["identity"]["source_access_granted"].lower() != "true":
     raise ValueError("Source metadata discovery is not authorized")
+
+# Extract endpoints from metadata and enforce independence (PROTECTED guard)
+producer_endpoint = params["models"]["producer_endpoint"]
+critic_endpoint   = params["models"]["critic_endpoint"]
+if producer_endpoint == critic_endpoint:
+    raise ValueError("Critic endpoint must differ from the producer endpoint (independence).")
+
+# Initialize models
+producer = DatabricksFoundationModel(producer_endpoint)
+critic   = DatabricksFoundationModel(critic_endpoint) if critic_endpoint else None
+
+print(f"✅ Models initialized: Producer={producer_endpoint}, Critic={critic_endpoint}")
 
 # Build RuntimeRequest from grouped params
 request_params = {
@@ -73,3 +91,5 @@ request_params = {
 }
 request = RuntimeRequest.from_parameters(request_params)
 
+# TODO: Wire relationship analysis logic here using producer & critic models
+print("⚠️  Relationship analysis logic not yet implemented")

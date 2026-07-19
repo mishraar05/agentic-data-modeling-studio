@@ -15,7 +15,7 @@ resources:
             notebook_path: ../src/workflows/validate_source_discovery_scope.py
             source: WORKSPACE
             base_parameters:
-              run_id: validate_scope_{{job.run_id}}
+              run_id: source_discovery_{{job.run_id}}
         - task_key: discover_source_scope
           depends_on:
             - task_key: validate_scope
@@ -23,7 +23,7 @@ resources:
             notebook_path: ../src/workflows/discover_source_scope.py
             source: WORKSPACE
             base_parameters:
-              run_id: discover_source_scope_{{job.run_id}}
+              run_id: source_discovery_{{job.run_id}}
         - task_key: register_solution_run
           depends_on:
             - task_key: discover_source_scope
@@ -31,7 +31,7 @@ resources:
             notebook_path: ../src/workflows/register_solution_run.py
             source: WORKSPACE
             base_parameters:
-              run_id: register_solution_run_{{job.run_id}}
+              run_id: source_discovery_{{job.run_id}}
               source_tables: "{{tasks.discover_source_scope.values.source_tables}}"
               work_package_id: "{{job.parameters.work_package_id}}"
         - task_key: snapshot_source_metadata
@@ -41,7 +41,7 @@ resources:
             notebook_path: ../src/workflows/snapshot_source_metadata.py
             source: WORKSPACE
             base_parameters:
-              run_id: snapshot_source_metadata_{{job.run_id}}
+              run_id: source_discovery_{{job.run_id}}
               source_tables: "{{tasks.discover_source_scope.values.source_tables}}"
         - task_key: profile_source
           depends_on:
@@ -52,7 +52,7 @@ resources:
             notebook_path: ../src/workflows/profile_source.py
             source: WORKSPACE
             base_parameters:
-              run_id: profile_source_{{job.run_id}}
+              run_id: source_discovery_{{job.run_id}}
               source_tables: "{{tasks.discover_source_scope.values.source_tables}}"
               source_snapshot_id: "{{tasks.snapshot_source_metadata.values.source_snapshot_id}}"
         - task_key: assemble_source_evidence
@@ -62,7 +62,7 @@ resources:
             notebook_path: ../src/workflows/assemble_source_evidence.py
             source: WORKSPACE
             base_parameters:
-              run_id: assemble_source_evidence_{{job.run_id}}
+              run_id: source_discovery_{{job.run_id}}
               source_tables: "{{tasks.discover_source_scope.values.source_tables}}"
               source_snapshot_id: "{{tasks.snapshot_source_metadata.values.source_snapshot_id}}"
         - task_key: assemble_context
@@ -72,7 +72,18 @@ resources:
             notebook_path: ../src/workflows/assemble_context.py
             source: WORKSPACE
             base_parameters:
-              run_id: assemble_context_{{job.run_id}}
+              run_id: source_discovery_{{job.run_id}}
+        - task_key: analyze_source_dictionary
+          depends_on:
+            - task_key: assemble_context
+          environment_key: agent
+          notebook_task:
+            notebook_path: ../src/workflows/analyze_source_dictionary.py
+            source: WORKSPACE
+            base_parameters:
+              run_id: source_discovery_{{job.run_id}}
+              context_snapshot_id: "{{tasks.assemble_context.values.context_snapshot_id}}"
+              source_snapshot_id: "{{tasks.assemble_context.values.source_snapshot_id}}"
         - task_key: analyze_source_relationships
           depends_on:
             - task_key: assemble_context
@@ -81,10 +92,20 @@ resources:
             notebook_path: ../src/workflows/analyze_source_relationships.py
             source: WORKSPACE
             base_parameters:
-              run_id: analyze_source_relationships_{{job.run_id}}
+              run_id: source_discovery_{{job.run_id}}
               context_snapshot_id: "{{tasks.assemble_context.values.context_snapshot_id}}"
               source_snapshot_id: "{{tasks.assemble_context.values.source_snapshot_id}}"
               evidence_set_id: "{{tasks.assemble_context.values.evidence_set_id}}"
+        - task_key: export_source_dictionary
+          depends_on:
+            - task_key: analyze_source_dictionary
+            - task_key: analyze_source_relationships
+          environment_key: agent
+          notebook_task:
+            notebook_path: ../src/workflows/export_source_dictionary.py
+            source: WORKSPACE
+            base_parameters:
+              run_id: source_discovery_{{job.run_id}}
       environments:
         - environment_key: dqx
           spec:
