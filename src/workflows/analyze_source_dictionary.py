@@ -13,6 +13,7 @@
 
 # COMMAND ----------
 
+# DBTITLE 1,Load configuration and analyze source
 import sys
 from pathlib import PurePosixPath
 
@@ -30,22 +31,67 @@ def _add_bundle_source_to_python_path() -> None:
 
 _add_bundle_source_to_python_path()
 
+# Add config module to path
+if "/Workspace/Users/cleancoding109@gmail.com" not in sys.path:
+    sys.path.append("/Workspace/Users/cleancoding109@gmail.com")
+
 from agentic_data_modeler.analyst import analyze_source
 from agentic_data_modeler.analyst.model import DatabricksFoundationModel
 from agentic_data_modeler.knowledge.registry import select_approved_pack
 from agentic_data_modeler.slice.context import _load_glossary
 from agentic_data_modeler.slice.records import Scope
+from config.load_config import JobConfig
 
-PARAMS = (
-    "run_id", "lob", "domain",
-    "source_catalog", "source_schema", "output_catalog", "output_schema",
-    "context_snapshot_id", "source_snapshot_id",
-    "pack_id", "pack_version", "geography", "pack_domains",
-    "producer_endpoint", "critic_endpoint",
-)
-for p in PARAMS:
-    dbutils.widgets.text(p, "")
-args = {p: dbutils.widgets.get(p).strip() for p in PARAMS}
+# Create widgets: config file + derived parameters
+dbutils.widgets.text("config_file", "/Workspace/Users/cleancoding109@gmail.com/config/env-config.yml")
+dbutils.widgets.text("run_id", "")
+dbutils.widgets.text("context_snapshot_id", "")
+dbutils.widgets.text("source_snapshot_id", "")
+
+# Load and validate configuration
+config_path = dbutils.widgets.get("config_file")
+print(f"Loading configuration from: {config_path}")
+
+config = JobConfig.from_file(config_path)
+
+# Validate before proceeding
+issues = config.validate()
+if issues:
+    error_msg = "Configuration validation failed:\n" + "\n".join(f"  • {issue}" for issue in issues)
+    raise ValueError(error_msg)
+
+print(f"✅ Config loaded: {config.source_catalog}.{config.source_schema}")
+print(f"   Pack: {config.pack_id}@{config.pack_version}")
+print(f"   Producer: {config.producer_endpoint}")
+print(f"   Critic: {config.critic_endpoint}")
+
+# Critic independence check (ADR-005 F1)
+if config.producer_endpoint == config.critic_endpoint:
+    raise ValueError("Critic endpoint must differ from the producer endpoint (independence).")
+
+# Build args dict from config + derived parameters
+run_id = dbutils.widgets.get("run_id").strip()
+if not run_id:
+    import datetime
+    run_id = f"analyze_source_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}"
+
+args = {
+    "run_id": run_id,
+    "lob": config.lob,
+    "domain": config.domain,
+    "source_catalog": config.source_catalog,
+    "source_schema": config.source_schema,
+    "output_catalog": config.output_catalog,
+    "output_schema": config.output_schema,
+    "context_snapshot_id": dbutils.widgets.get("context_snapshot_id").strip(),
+    "source_snapshot_id": dbutils.widgets.get("source_snapshot_id").strip(),
+    "pack_id": config.pack_id,
+    "pack_version": config.pack_version,
+    "geography": config.geography,
+    "pack_domains": config.pack_domains,
+    "producer_endpoint": config.producer_endpoint,
+    "critic_endpoint": config.critic_endpoint,
+}
 
 REPO_ROOT = PurePosixPath(sys.path[0]).as_posix()
 
@@ -85,10 +131,7 @@ prior_rows = [
 ]
 prior = build_prior(prior_rows, memory_partition=f"{args['source_catalog']}.{args['source_schema']}")
 
-# Critic independence (ADR-005 F1): a same-model critic makes "CONFIRMED" self-agreement.
-if args["critic_endpoint"] and args["producer_endpoint"] == args["critic_endpoint"]:
-    raise ValueError("Critic endpoint must differ from the producer endpoint (independence).")
-
+# Initialize models (critic independence already validated above)
 producer = DatabricksFoundationModel(args["producer_endpoint"])
 critic = DatabricksFoundationModel(args["critic_endpoint"]) if args["critic_endpoint"] else None
 

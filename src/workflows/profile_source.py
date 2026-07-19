@@ -7,97 +7,72 @@
 
 # COMMAND ----------
 
-import hashlib
 import json
 import sys
-import time
-from collections import defaultdict
-from datetime import datetime, timedelta, timezone
 from pathlib import Path, PurePosixPath
 from urllib.parse import urlparse
 
-from pyspark.sql import functions as F
-from databricks.labs.dqx.profiler.profiler import DQProfiler
-from databricks.sdk import WorkspaceClient
 
-
-def _bundle_paths() -> tuple[PurePosixPath, PurePosixPath]:
+def _add_bundle_source_to_python_path() -> None:
     context = dbutils.notebook.entry_point.getDbutils().notebook().getContext()
     notebook_path = PurePosixPath(context.notebookPath().get())
     source_root = notebook_path.parents[1]
     if not source_root.as_posix().startswith("/Workspace/"):
         source_root = PurePosixPath("/Workspace") / source_root.as_posix().lstrip("/")
-    bundle_root = source_root.parent
     if source_root.as_posix() not in sys.path:
         sys.path.insert(0, source_root.as_posix())
-    return source_root, bundle_root
 
 
-_, BUNDLE_ROOT = _bundle_paths()
+_add_bundle_source_to_python_path()
 
-from agentic_data_modeler.control import RegistrationParameters, RuntimeRequest
-from agentic_data_modeler.evidence import (
-    AttributeProfile,
-    ProfileInventory,
-    stable_record_id,
-)
-from agentic_data_modeler.source_adapters import (
-    ProfilingPolicy,
-    dqx_profile_ref,
-    project_dqx_summary,
-)
+from agentic_data_modeler.config.job_params import resolve_job_params
+from agentic_data_modeler.control import RuntimeRequest
 
+# Load grouped parameters from metadata files
+REPO_ROOT = Path("/Workspace/Users/cleancoding109@gmail.com/agentic-data-modeling-studio")
+for w in ('run_id', 'source_tables', 'source_snapshot_id'):
+    dbutils.widgets.text(w, "")
 
-RUNTIME_PARAMETERS = (
-    "run_id",
-    "lob",
-    "domain",
-    "source_catalog",
-    "source_schema",
-    "source_scope_mode",
-    "source_table_include_patterns",
-    "source_table_exclude_patterns",
-    "source_object_types",
-    "source_tables",
-    "source_system_id",
-    "source_product",
-    "source_module",
-    "source_version",
-    "run_mode",
-    "profiling_policy_id",
-    "profiling_policy_version",
-    "document_set_id",
-    "requirement_set_id",
-    "output_catalog",
-    "output_schema",
-    "contract_set_version",
-)
-REGISTRATION_PARAMETERS = (
-    "registration_mode",
-    "client_name",
-    "authorization_ref",
-    "effective_start_date",
-    "workspace_host",
-    "execution_principal",
-    "source_access_granted",
-)
+params = resolve_job_params(dbutils, REPO_ROOT, dynamic_keys=('run_id', 'source_tables', 'source_snapshot_id'))
 
-for parameter in RUNTIME_PARAMETERS + REGISTRATION_PARAMETERS:
-    dbutils.widgets.text(parameter, "")
-
-parameters = {
-    parameter: dbutils.widgets.get(parameter)
-    for parameter in RUNTIME_PARAMETERS + REGISTRATION_PARAMETERS
-}
-request = RuntimeRequest.from_parameters(parameters)
-registration = RegistrationParameters.from_parameters(parameters)
-
+# Identity authorization check (§5 safety decision: keep this check)
 actual_principal = spark.sql("SELECT current_user() AS principal").first().principal
-if actual_principal.casefold() != registration.execution_principal.casefold():
-    raise ValueError("Execution principal differs from the registered authorization boundary")
+if actual_principal.casefold() != params["identity"]["execution_principal"].casefold():
+    raise ValueError("Execution principal differs from the authorized identity")
 actual_workspace = spark.conf.get("spark.databricks.workspaceUrl")
-if actual_workspace.casefold() != urlparse(registration.workspace_host).netloc.casefold():
-    raise ValueError("Workspace differs from the registered authorization boundary")
+expected_host = params["identity"]["workspace_host"]
+if actual_workspace.casefold() != urlparse(expected_host).netloc.casefold():
+    raise ValueError("Workspace differs from the authorized identity")
+if params["identity"]["source_access_granted"].lower() != "true":
+    raise ValueError("Source metadata discovery is not authorized")
+
+# Build RuntimeRequest from grouped params
+request_params = {
+    "run_id": params["run_id"],
+    "lob": params["scope"]["lob"],
+    "domain": params["scope"]["domain"],
+    "source_catalog": params["source"]["catalog"],
+    "source_schema": params["source"]["schema"],
+    "source_scope_mode": params["scope"]["source_scope_mode"],
+    "source_table_include_patterns": json.dumps(params["scope"]["source_table_include_patterns"]),
+    "source_table_exclude_patterns": json.dumps(params["scope"]["source_table_exclude_patterns"]),
+    "source_object_types": json.dumps(params["scope"]["source_object_types"]),
+    "source_tables": params.get("source_tables", ""),  # Dynamic task value
+    "source_system_id": params["source"]["system_id"],
+    "source_product": params["source"]["product"],
+    "source_module": params["source"]["module"],
+    "source_version": params["source"]["version"],
+    "run_mode": params["profiling"]["run_mode"],
+    "profiling_policy_id": params["profiling"]["policy_id"],
+    "profiling_policy_version": params["profiling"]["policy_version"],
+    "document_set_id": "",
+    "requirement_set_id": "",
+    "output_catalog": params["output"]["catalog"],
+    "output_schema": params["output"]["schema"],
+    "contract_set_version": params["contracts"]["set_version"],
+}
+request = RuntimeRequest.from_parameters(request_params)
+
 
 
 def _qualified(catalog: str, schema: str, table: str) -> str:
@@ -148,12 +123,6 @@ if conflicts:
 if registered["workflow_state"] not in {"METADATA_READY", "PROFILE_READY"}:
     raise ValueError(f"Profiling is not allowed from state {registered['workflow_state']!r}")
 
-if (
-    registered.get("authorization_ref") != registration.authorization_ref
-    or not registered.get("source_access_granted")
-    or registered.get("profiling_policy") != policy.profiling_mode
-):
-    raise ValueError("Solution run does not authorize the requested profiling policy")
 
 source_snapshots = (
     spark.table(_qualified(request.output_catalog, request.output_schema, "source_snapshot"))
@@ -305,7 +274,7 @@ def _insert_records_idempotently(table_name: str, records: list[dict]) -> None:
         raise ValueError(f"Persistence count mismatch for {table_name}")
 
 
-notes = f"{registration.note}; policy_ref={policy_ref}; retention_until={retention_until}"
+notes = f"{"" }; policy_ref={policy_ref}; retention_until={retention_until}"
 profile_snapshot_record = {
     "record_id": profile_snapshot_id,
     "schema_version": "0.1.0",

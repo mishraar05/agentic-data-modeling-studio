@@ -13,14 +13,7 @@ resources:
             notebook_path: ../src/workflows/00_validate_scope.py
             source: WORKSPACE
             base_parameters:
-              run_id: modeling_job_{{job.run_id}}
-              lob: ${var.lob}
-              domain: ${var.domain}
-              source_catalog: ${var.source_catalog}
-              source_schema: ${var.source_schema}
-              source_tables: ${var.source_tables}
-              output_catalog: ${var.output_catalog}
-              output_schema: ${var.output_schema}
+              run_id: validate_scope_{{job.run_id}}
       tags:
         solution: agentic-data-modeling-studio
         artifact_scope: modeling-and-sttm

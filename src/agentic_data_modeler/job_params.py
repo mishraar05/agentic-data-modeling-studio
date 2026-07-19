@@ -1,56 +1,27 @@
-"""Load merged Databricks job parameters from the ``metadata/`` folder.
+"""DEPRECATED: This module has been moved to agentic_data_modeler.config.job_params
 
-Each task passes only ``env`` (e.g. dev/prod); this reads ``metadata/base.json``
-overlaid with ``metadata/<env>.json`` and returns one flat dict. Values produced
-mid-DAG (``source_tables``, snapshot ids, ``run_id``) are passed as task values
-and override the file via ``resolve_job_params``. Secrets are never stored here.
+This file is kept temporarily for backwards compatibility during the refactoring.
+All imports should now use:
+    from agentic_data_modeler.config.job_params import load_params, resolve_job_params
+
+This file will be removed once all notebooks and workflows are updated.
 """
 
-from __future__ import annotations
+import warnings
+from agentic_data_modeler.config.job_params import (
+    load_params as _load_params,
+    resolve_job_params as _resolve_job_params,
+    _deep_merge as __deep_merge,
+)
 
-import json
-from pathlib import Path
-from typing import Any
+warnings.warn(
+    "agentic_data_modeler.job_params is deprecated. "
+    "Use agentic_data_modeler.config.job_params instead.",
+    DeprecationWarning,
+    stacklevel=2,
+)
 
-
-def _deep_merge(base: dict[str, Any], override: dict[str, Any]) -> dict[str, Any]:
-    out = dict(base)
-    for key, value in override.items():
-        if key == "_comment":
-            continue
-        if isinstance(value, dict) and isinstance(out.get(key), dict):
-            out[key] = _deep_merge(out[key], value)
-        else:
-            out[key] = value
-    return out
-
-
-def load_params(repo_root: str | Path, env: str = "dev",
-                metadata_dir: str = "metadata") -> dict[str, Any]:
-    """Return base.json merged with <env>.json (env wins). Comments stripped."""
-    root = Path(repo_root)
-    base = json.loads((root / metadata_dir / "base.json").read_text(encoding="utf-8"))
-    base.pop("_comment", None)
-    env_file = root / metadata_dir / f"{env}.json"
-    if not env_file.exists():
-        raise FileNotFoundError(f"No metadata file for env '{env}': {env_file}")
-    override = json.loads(env_file.read_text(encoding="utf-8"))
-    merged = _deep_merge(base, override)
-    merged.pop("_comment", None)
-    return merged
-
-
-def resolve_job_params(dbutils, repo_root: str | Path, *,
-                       dynamic_keys: tuple[str, ...] = ()) -> dict[str, Any]:  # pragma: no cover
-    """Notebook entry point: read the ``env`` widget, load the merged params, then
-    let any non-empty dynamic widgets (upstream task values) override the file."""
-    env = (dbutils.widgets.get("env") or "dev").strip()
-    params = load_params(repo_root, env)
-    for key in dynamic_keys:
-        try:
-            value = dbutils.widgets.get(key).strip()
-        except Exception:
-            value = ""
-        if value:
-            params[key] = value
-    return params
+# Re-export for backwards compatibility
+load_params = _load_params
+resolve_job_params = _resolve_job_params
+_deep_merge = __deep_merge

@@ -12,13 +12,3 @@ SOLUTION_RUN_WORKFLOW_STATES = (
     "STTM_READY",
     "PUBLISHED",
 )
-
-
-def registration_rerun_preserves_state(workflow_state: str) -> bool:
-    """Return whether registration may safely reuse an existing solution run.
-
-    Registration establishes the initial ``VALIDATED`` state. A rerun may see
-    that state or any governed downstream state, but it must never regress it.
-    """
-
-    return workflow_state in SOLUTION_RUN_WORKFLOW_STATES

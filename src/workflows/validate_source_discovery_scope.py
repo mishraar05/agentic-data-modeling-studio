@@ -8,8 +8,10 @@
 
 # COMMAND ----------
 
+# DBTITLE 1,Load and validate parameters
+import json
 import sys
-from pathlib import PurePosixPath
+from pathlib import Path, PurePosixPath
 
 
 def _add_bundle_source_to_python_path() -> None:
@@ -27,41 +29,44 @@ def _add_bundle_source_to_python_path() -> None:
 
 _add_bundle_source_to_python_path()
 
+from agentic_data_modeler.config.job_params import resolve_job_params
 from agentic_data_modeler.control import RuntimeRequest
 
+# Load grouped parameters from metadata files
+REPO_ROOT = Path("/Workspace/Users/cleancoding109@gmail.com/agentic-data-modeling-studio")
+for w in ("run_id",):
+    dbutils.widgets.text(w, "")
 
-PARAMETERS = (
-    "run_id",
-    "lob",
-    "domain",
-    "source_catalog",
-    "source_schema",
-    "source_scope_mode",
-    "source_table_include_patterns",
-    "source_table_exclude_patterns",
-    "source_object_types",
-    "source_tables",
-    "source_system_id",
-    "source_product",
-    "source_module",
-    "source_version",
-    "run_mode",
-    "profiling_policy_id",
-    "profiling_policy_version",
-    "document_set_id",
-    "requirement_set_id",
-    "output_catalog",
-    "output_schema",
-    "contract_set_version",
-)
+params = resolve_job_params(dbutils, REPO_ROOT, dynamic_keys=("run_id",))
 
-for parameter in PARAMETERS:
-    dbutils.widgets.text(parameter, "")
+# Build RuntimeRequest from grouped params
+request_params = {
+    "run_id": params["run_id"],
+    "lob": params["scope"]["lob"],
+    "domain": params["scope"]["domain"],
+    "source_catalog": params["source"]["catalog"],
+    "source_schema": params["source"]["schema"],
+    "source_scope_mode": params["scope"]["source_scope_mode"],
+    "source_table_include_patterns": json.dumps(params["scope"]["source_table_include_patterns"]),
+    "source_table_exclude_patterns": json.dumps(params["scope"]["source_table_exclude_patterns"]),
+    "source_object_types": json.dumps(params["scope"]["source_object_types"]),
+    "source_tables": "",  # Explicit tables handled via manifest resolution
+    "source_system_id": params["source"]["system_id"],
+    "source_product": params["source"]["product"],
+    "source_module": params["source"]["module"],
+    "source_version": params["source"]["version"],
+    "run_mode": params["profiling"]["run_mode"],
+    "profiling_policy_id": params["profiling"]["policy_id"],
+    "profiling_policy_version": params["profiling"]["policy_version"],
+    "document_set_id": "",
+    "requirement_set_id": "",
+    "output_catalog": params["output"]["catalog"],
+    "output_schema": params["output"]["schema"],
+    "contract_set_version": params["contracts"]["set_version"],
+}
+request = RuntimeRequest.from_parameters(request_params)
 
-request = RuntimeRequest.from_parameters(
-    {parameter: dbutils.widgets.get(parameter) for parameter in PARAMETERS}
-)
-
+# Observability output
 print("Source-discovery scope validation passed")
 print(f"run_id={request.run_id}")
 print(f"lob={request.lob}")

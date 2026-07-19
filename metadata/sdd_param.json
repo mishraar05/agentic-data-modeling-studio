@@ -1,0 +1,44 @@
+{
+  "_comment_purpose": "Deployment-specific parameter overrides for Source Data Dictionary generation. This file deep-merges over common.json. See metadata/README.md for merge rules.",
+  
+  "_comment_models": "AI model endpoints for the semantic analysis agents. These should be Foundation Model API serving endpoints in Databricks. Producer generates SDD content; Critic reviews and refines it per Charter §2 'LLM/agent responsibilities'.",
+  "models": {
+    "producer_endpoint": "databricks-meta-llama-3-1-70b-instruct",
+    "critic_endpoint": "databricks-meta-llama-3-1-70b-instruct",
+    "_comment": "Use Foundation Model API endpoint names (e.g., 'databricks-meta-llama-3-1-70b-instruct') or custom Model Serving endpoint names. Both endpoints can be the same or different models depending on workload optimization."
+  },
+  
+  "_comment_identity": "Authorization boundary enforcement per Charter §6. Validates the execution context matches the authorized principal and workspace. source_access_granted must be explicitly 'true' to proceed with source metadata discovery.",
+  "identity": {
+    "workspace_host": "https://dbc-b2d72a44-d1b1.cloud.databricks.com",
+    "execution_principal": "cleancoding109@gmail.com",
+    "source_access_granted": "true",
+    "_comment": "workspace_host: Full HTTPS URL of the Databricks workspace (AWS: https://<id>.cloud.databricks.com, Azure: https://<name>.azuredatabricks.net). execution_principal: Email or service principal name that is authorized to run source discovery jobs. source_access_granted: Must be string 'true' to authorize source metadata read access (security gate, not a boolean)."
+  },
+  
+  "_comment_contracts": "Override contract set version if this deployment needs a different version than common.json default.",
+  "contracts": {
+    "set_version": "0.3.0",
+    "_comment": "Contract schema version - must match the deployed DDL in the control schema. Updated to 0.3.0 after registration field removal (solution_run v0.2.0 → v0.3.0)."
+  },
+  
+  "_comment_versioning": "Override versioning if this deployment uses different skill/prompt/config versions.",
+  "versioning": {
+    "config_version": "1.0.0",
+    "_comment": "Increment when this sdd_param.json changes materially. Enables Charter §6 reproducibility: 'reproduce outputs from versioned... configuration snapshots.'"
+  },
+  
+  "_comment_governance": "Override governance rules for this deployment environment (dev/staging/prod may have different approval requirements).",
+  "governance": {
+    "default_reviewer_group": "data_modeling_reviewers",
+    "default_approver_group": "data_modeling_approvers",
+    "_comment": "Charter §6: 'prevent automatic approval of material model artifacts.' Override these for environment-specific reviewer/approver groups (e.g., 'prod_approvers' in production)."
+  },
+  
+  "_comment_execution": "Override execution limits for this deployment (dev may have lower limits than prod).",
+  "execution": {
+    "model_temperature": 0.1,
+    "cost_limit_per_run_usd": 50.0,
+    "_comment": "Low temperature (0.1) ensures consistent semantic interpretation. Adjust cost_limit_per_run_usd based on environment budget (dev: $50, prod: higher)."
+  }
+}

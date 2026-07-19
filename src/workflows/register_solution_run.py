@@ -7,111 +7,69 @@
 
 # COMMAND ----------
 
+import json
 import sys
-from datetime import datetime, timezone
-from pathlib import PurePosixPath
+from pathlib import Path, PurePosixPath
 from urllib.parse import urlparse
-
-from pyspark.sql import functions as F
 
 
 def _add_bundle_source_to_python_path() -> None:
     context = dbutils.notebook.entry_point.getDbutils().notebook().getContext()
-    root = PurePosixPath(context.notebookPath().get()).parents[1]
-    if not root.as_posix().startswith("/Workspace/"):
-        root = PurePosixPath("/Workspace") / root.as_posix().lstrip("/")
-    if root.as_posix() not in sys.path:
-        sys.path.insert(0, root.as_posix())
+    notebook_path = PurePosixPath(context.notebookPath().get())
+    source_root = notebook_path.parents[1]
+    if not source_root.as_posix().startswith("/Workspace/"):
+        source_root = PurePosixPath("/Workspace") / source_root.as_posix().lstrip("/")
+    if source_root.as_posix() not in sys.path:
+        sys.path.insert(0, source_root.as_posix())
 
 
 _add_bundle_source_to_python_path()
 
-from agentic_data_modeler.control import RegistrationParameters, RuntimeRequest
+from agentic_data_modeler.config.job_params import resolve_job_params
+from agentic_data_modeler.control import RuntimeRequest
 
+# Load grouped parameters from metadata files
+REPO_ROOT = Path("/Workspace/Users/cleancoding109@gmail.com/agentic-data-modeling-studio")
+for w in ('run_id', 'source_tables', 'work_package_id'):
+    dbutils.widgets.text(w, "")
 
-RUNTIME_PARAMETERS = (
-    "run_id", "lob", "domain", "source_catalog", "source_schema",
-    "source_scope_mode", "source_table_include_patterns", "source_table_exclude_patterns",
-    "source_object_types", "source_tables", "source_system_id", "source_product",
-    "source_module", "source_version", "run_mode", "profiling_policy_id",
-    "profiling_policy_version", "document_set_id", "requirement_set_id",
-    "output_catalog", "output_schema", "contract_set_version",
-)
-REGISTRATION_PARAMETERS = (
-    "registration_mode", "client_name", "authorization_ref", "effective_start_date",
-    "workspace_host", "execution_principal", "source_access_granted",
-)
-for name in RUNTIME_PARAMETERS + REGISTRATION_PARAMETERS:
-    dbutils.widgets.text(name, "")
-parameters = {name: dbutils.widgets.get(name) for name in RUNTIME_PARAMETERS + REGISTRATION_PARAMETERS}
-request = RuntimeRequest.from_parameters(parameters)
-registration = RegistrationParameters.from_parameters(parameters)
+params = resolve_job_params(dbutils, REPO_ROOT, dynamic_keys=('run_id', 'source_tables', 'work_package_id'))
 
+# Identity authorization check (§5 safety decision: keep this check)
 actual_principal = spark.sql("SELECT current_user() AS principal").first().principal
-if actual_principal.casefold() != registration.execution_principal.casefold():
-    raise ValueError("Execution principal does not match the authorized principal")
+if actual_principal.casefold() != params["identity"]["execution_principal"].casefold():
+    raise ValueError("Execution principal differs from the authorized identity")
 actual_workspace = spark.conf.get("spark.databricks.workspaceUrl")
-if actual_workspace.casefold() != urlparse(registration.workspace_host).netloc.casefold():
-    raise ValueError("Workspace does not match the authorized workspace")
+expected_host = params["identity"]["workspace_host"]
+if actual_workspace.casefold() != urlparse(expected_host).netloc.casefold():
+    raise ValueError("Workspace differs from the authorized identity")
+if params["identity"]["source_access_granted"].lower() != "true":
+    raise ValueError("Source metadata discovery is not authorized")
 
-now = datetime.now(timezone.utc).replace(tzinfo=None)
-provenance = {
-    "run_id": request.run_id,
-    "context_snapshot_id": None,
-    "source_snapshot_id": None,
-    "profile_snapshot_id": None,
-    "model_version": None,
-    "prompt_version": None,
-    "skill_version": None,
-    "tool_version": "solution-run-registration/0.2.0",
+# Build RuntimeRequest from grouped params
+request_params = {
+    "run_id": params["run_id"],
+    "lob": params["scope"]["lob"],
+    "domain": params["scope"]["domain"],
+    "source_catalog": params["source"]["catalog"],
+    "source_schema": params["source"]["schema"],
+    "source_scope_mode": params["scope"]["source_scope_mode"],
+    "source_table_include_patterns": json.dumps(params["scope"]["source_table_include_patterns"]),
+    "source_table_exclude_patterns": json.dumps(params["scope"]["source_table_exclude_patterns"]),
+    "source_object_types": json.dumps(params["scope"]["source_object_types"]),
+    "source_tables": params.get("source_tables", ""),  # Dynamic task value
+    "source_system_id": params["source"]["system_id"],
+    "source_product": params["source"]["product"],
+    "source_module": params["source"]["module"],
+    "source_version": params["source"]["version"],
+    "run_mode": params["profiling"]["run_mode"],
+    "profiling_policy_id": params["profiling"]["policy_id"],
+    "profiling_policy_version": params["profiling"]["policy_version"],
+    "document_set_id": "",
+    "requirement_set_id": "",
+    "output_catalog": params["output"]["catalog"],
+    "output_schema": params["output"]["schema"],
+    "contract_set_version": params["contracts"]["set_version"],
 }
-record = {
-    "record_id": request.run_id,
-    "schema_version": "0.2.0",
-    "lob": request.lob,
-    "domain": request.domain,
-    "artifact_version": "0.2.0",
-    "lifecycle_state": "ACTIVE",
-    "provenance": provenance,
-    "created_at": now,
-    "updated_at": now,
-    "workflow_state": "VALIDATED",
-    "source_catalog": request.source_catalog,
-    "source_schema": request.source_schema,
-    "source_tables": list(request.source_tables),
-    "source_product": request.source_product,
-    "source_module": request.source_module,
-    "source_version": request.source_version,
-    "knowledge_pack_id": None,
-    "knowledge_pack_version": None,
-    "output_catalog": request.output_catalog,
-    "output_schema": request.output_schema,
-    "authorization_ref": registration.authorization_ref,
-    "source_access_granted": registration.source_access_granted,
-    "profiling_policy": request.profiling_mode.value,
-    "run_type": "VALIDATE",
-    "start_timestamp": now,
-    "end_timestamp": now,
-    "status": "COMPLETED",
-    "error_message": None,
-    "cost_usd": None,
-}
+request = RuntimeRequest.from_parameters(request_params)
 
-target = ".".join(f"`{v}`" for v in (request.output_catalog, request.output_schema, "solution_run"))
-df = spark.createDataFrame([record], schema=spark.table(target).schema)
-df.createOrReplaceTempView("_solution_run_stage")
-spark.sql(f"""
-    MERGE INTO {target} t USING _solution_run_stage s ON t.record_id = s.record_id
-    WHEN NOT MATCHED THEN INSERT *
-""")
-rows = spark.table(target).where(F.col("record_id") == request.run_id).limit(2).collect()
-if len(rows) != 1:
-    raise ValueError("Solution-run registration did not persist exactly one record")
-persisted = rows[0].asDict(recursive=True)
-for field in ("lob", "domain", "source_catalog", "source_schema", "source_tables", "output_catalog", "output_schema"):
-    if persisted[field] != record[field]:
-        raise ValueError(f"Existing solution run conflicts on {field}")
-
-print(f"solution_run_id={request.run_id}")
-print(f"workflow_state={persisted['workflow_state']}")
-print(f"request_fingerprint={request.fingerprint()}")

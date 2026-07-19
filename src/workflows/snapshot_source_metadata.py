@@ -7,15 +7,10 @@
 
 # COMMAND ----------
 
-import hashlib
 import json
 import sys
-from collections import defaultdict
-from datetime import datetime, timezone
-from pathlib import PurePosixPath
+from pathlib import Path, PurePosixPath
 from urllib.parse import urlparse
-
-from pyspark.sql import functions as F
 
 
 def _add_bundle_source_to_python_path() -> None:
@@ -24,74 +19,60 @@ def _add_bundle_source_to_python_path() -> None:
     source_root = notebook_path.parents[1]
     if not source_root.as_posix().startswith("/Workspace/"):
         source_root = PurePosixPath("/Workspace") / source_root.as_posix().lstrip("/")
-    source_root_text = source_root.as_posix()
-    if source_root_text not in sys.path:
-        sys.path.insert(0, source_root_text)
+    if source_root.as_posix() not in sys.path:
+        sys.path.insert(0, source_root.as_posix())
 
 
 _add_bundle_source_to_python_path()
 
-from agentic_data_modeler.control import RegistrationParameters, RuntimeRequest
-from agentic_data_modeler.evidence import (
-    ColumnMetadata,
-    ConstraintMetadata,
-    MetadataInventory,
-    ObjectMetadata,
-    one_based_ordinal_offset,
-    stable_record_id,
-)
+from agentic_data_modeler.config.job_params import resolve_job_params
+from agentic_data_modeler.control import RuntimeRequest
 
+# Load grouped parameters from metadata files
+REPO_ROOT = Path("/Workspace/Users/cleancoding109@gmail.com/agentic-data-modeling-studio")
+for w in ('run_id', 'source_tables'):
+    dbutils.widgets.text(w, "")
 
-RUNTIME_PARAMETERS = (
-    "run_id",
-    "lob",
-    "domain",
-    "source_catalog",
-    "source_schema",
-    "source_scope_mode",
-    "source_table_include_patterns",
-    "source_table_exclude_patterns",
-    "source_object_types",
-    "source_tables",
-    "source_system_id",
-    "source_product",
-    "source_module",
-    "source_version",
-    "run_mode",
-    "profiling_policy_id",
-    "profiling_policy_version",
-    "document_set_id",
-    "requirement_set_id",
-    "output_catalog",
-    "output_schema",
-    "contract_set_version",
-)
-REGISTRATION_PARAMETERS = (
-    "registration_mode",
-    "client_name",
-    "authorization_ref",
-    "effective_start_date",
-    "workspace_host",
-    "execution_principal",
-    "source_access_granted",
-)
+params = resolve_job_params(dbutils, REPO_ROOT, dynamic_keys=('run_id', 'source_tables'))
 
-for parameter in RUNTIME_PARAMETERS + REGISTRATION_PARAMETERS:
-    dbutils.widgets.text(parameter, "")
-
-parameters = {
-    parameter: dbutils.widgets.get(parameter)
-    for parameter in RUNTIME_PARAMETERS + REGISTRATION_PARAMETERS
-}
-request = RuntimeRequest.from_parameters(parameters)
-registration = RegistrationParameters.from_parameters(parameters)
-
+# Identity authorization check (§5 safety decision: keep this check)
 actual_principal = spark.sql("SELECT current_user() AS principal").first().principal
-if actual_principal.casefold() != registration.execution_principal.casefold():
-    raise ValueError("Execution principal differs from the registered authorization boundary")
+if actual_principal.casefold() != params["identity"]["execution_principal"].casefold():
+    raise ValueError("Execution principal differs from the authorized identity")
 actual_workspace = spark.conf.get("spark.databricks.workspaceUrl")
-if actual_workspace.casefold() != urlparse(registration.workspace_host).netloc.casefold():
-    raise ValueError("Workspace differs from the registered authorization boundary")
+expected_host = params["identity"]["workspace_host"]
+if actual_workspace.casefold() != urlparse(expected_host).netloc.casefold():
+    raise ValueError("Workspace differs from the authorized identity")
+if params["identity"]["source_access_granted"].lower() != "true":
+    raise ValueError("Source metadata discovery is not authorized")
+
+# Build RuntimeRequest from grouped params
+request_params = {
+    "run_id": params["run_id"],
+    "lob": params["scope"]["lob"],
+    "domain": params["scope"]["domain"],
+    "source_catalog": params["source"]["catalog"],
+    "source_schema": params["source"]["schema"],
+    "source_scope_mode": params["scope"]["source_scope_mode"],
+    "source_table_include_patterns": json.dumps(params["scope"]["source_table_include_patterns"]),
+    "source_table_exclude_patterns": json.dumps(params["scope"]["source_table_exclude_patterns"]),
+    "source_object_types": json.dumps(params["scope"]["source_object_types"]),
+    "source_tables": params.get("source_tables", ""),  # Dynamic task value
+    "source_system_id": params["source"]["system_id"],
+    "source_product": params["source"]["product"],
+    "source_module": params["source"]["module"],
+    "source_version": params["source"]["version"],
+    "run_mode": params["profiling"]["run_mode"],
+    "profiling_policy_id": params["profiling"]["policy_id"],
+    "profiling_policy_version": params["profiling"]["policy_version"],
+    "document_set_id": "",
+    "requirement_set_id": "",
+    "output_catalog": params["output"]["catalog"],
+    "output_schema": params["output"]["schema"],
+    "contract_set_version": params["contracts"]["set_version"],
+}
+request = RuntimeRequest.from_parameters(request_params)
+
 
 
 def _qualified(catalog: str, schema: str, table: str) -> str:
@@ -306,7 +287,7 @@ snapshot_record = {
     "captured_column_count": inventory.column_count,
     "metadata_query_ref": inventory.query_template_version,
     "fingerprint": snapshot_fingerprint,
-    "notes": registration.note,
+    "notes": "" ,
 }
 _insert_records_idempotently("source_snapshot", [snapshot_record])
 
@@ -341,7 +322,7 @@ for source_object in inventory.objects:
             "governed_pack_id": None,
             "governed_pack_version": None,
             "fingerprint": evidence_fingerprint,
-            "notes": registration.note,
+            "notes": "" ,
         }
     )
     object_records.append(

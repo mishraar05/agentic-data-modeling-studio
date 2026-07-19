@@ -13,14 +13,8 @@ from .source_scope import (
     SourceScopeMode,
     resolve_source_manifest,
 )
-from .registration import (
-    RegistrationError,
-    RegistrationMode,
-    RegistrationParameters,
-)
 from .workflow_state import (
     SOLUTION_RUN_WORKFLOW_STATES,
-    registration_rerun_preserves_state,
 )
 
 __all__ = [
@@ -33,9 +27,5 @@ __all__ = [
     "SourceScopeError",
     "SourceScopeMode",
     "resolve_source_manifest",
-    "RegistrationError",
-    "RegistrationMode",
-    "RegistrationParameters",
     "SOLUTION_RUN_WORKFLOW_STATES",
-    "registration_rerun_preserves_state",
 ]

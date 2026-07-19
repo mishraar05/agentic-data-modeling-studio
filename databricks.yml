@@ -9,102 +9,9 @@ variables:
   resource_prefix:
     description: Prefix applied to deployed resource names.
     default: agentic-data-modeler
-  lob:
-    description: Selected line of business for this bounded execution slice.
-    default: REQUIRED_LOB
-  domain:
-    description: Selected business domain for this bounded execution slice.
-    default: REQUIRED_DOMAIN
-  source_catalog:
-    description: Unity Catalog catalog containing the read-only source objects.
-    default: REQUIRED_SOURCE_CATALOG
-  source_schema:
-    description: Unity Catalog schema containing the read-only source objects.
-    default: REQUIRED_SOURCE_SCHEMA
-  source_scope_mode:
-    description: Selection policy resolved to a frozen source-table manifest for each run.
-    default: SCHEMA_ALL_TABLES
-  source_table_include_patterns_json:
-    description: JSON glob patterns included by PATTERN_BASED scope; '*' means all eligible tables.
-    default: '["*"]'
-  source_table_exclude_patterns_json:
-    description: JSON glob patterns excluded from schema discovery after inclusion.
-    default: '[]'
-  source_object_types_json:
-    description: JSON source object types eligible for discovery.
-    default: '["TABLE"]'
-  source_tables:
-    description: Comma-separated allow-list of source tables.
-    default: REQUIRED_SOURCE_TABLES
-  source_tables_json:
-    description: JSON explicit tables for EXPLICIT_TABLES mode; empty when schema discovery resolves the manifest.
-    default: '[]'
-  source_system_id:
-    description: Stable non-secret identity of the source system.
-    default: REQUIRED_SOURCE_SYSTEM_ID
-  source_product:
-    description: Optional declared source product.
+  work_package_id:
+    description: Optional work package identifier for tracking and governance.
     default: ""
-  source_module:
-    description: Optional declared source module.
-    default: ""
-  source_version:
-    description: Optional declared source version.
-    default: ""
-  run_mode:
-    description: Profiling mode from the approved profile_snapshot contract.
-    default: METADATA_ONLY
-  profiling_policy_id:
-    description: Exact approved profiling policy identifier.
-    default: REQUIRED_PROFILING_POLICY_ID
-  profiling_policy_version:
-    description: Exact semantic version of the approved profiling policy.
-    default: REQUIRED_PROFILING_POLICY_VERSION
-  registration_mode:
-    description: Explicit control-plane registration mode.
-    default: REQUIRED_REGISTRATION_MODE
-  client_name:
-    description: Non-secret client label for the engagement record.
-    default: REQUIRED_CLIENT_NAME
-  authorization_ref:
-    description: Durable authorization or decision reference.
-    default: REQUIRED_AUTHORIZATION_REF
-  effective_start_date:
-    description: Engagement authorization effective date in YYYY-MM-DD form.
-    default: REQUIRED_EFFECTIVE_START_DATE
-  workspace_host:
-    description: Exact HTTPS Databricks workspace origin authorized for the engagement.
-    default: REQUIRED_WORKSPACE_HOST
-  execution_principal:
-    description: Exact Databricks user or service-principal identity for the dev run.
-    default: REQUIRED_EXECUTION_PRINCIPAL
-  source_access_granted:
-    description: Explicit source-access authorization flag.
-    default: "false"
-  output_catalog:
-    description: Unity Catalog catalog for solution-owned artifacts.
-    default: REQUIRED_OUTPUT_CATALOG
-  output_schema:
-    description: Unity Catalog schema for solution-owned artifacts.
-    default: REQUIRED_OUTPUT_SCHEMA
-  knowledge_pack_id:
-    description: Exact approved knowledge-pack identifier.
-    default: public_us_pnc_personal_auto
-  knowledge_pack_version:
-    description: Exact approved knowledge-pack version.
-    default: 0.6.0
-  knowledge_geography:
-    description: Geography used for governed pack selection.
-    default: US_general
-  knowledge_domains:
-    description: Comma-separated minimum applicable domain modules.
-    default: policy
-  relationship_producer_endpoint:
-    description: Databricks Foundation Model endpoint for relationship production.
-    default: REQUIRED_RELATIONSHIP_PRODUCER_ENDPOINT
-  relationship_critic_endpoint:
-    description: Different Databricks Foundation Model endpoint for independent critique.
-    default: REQUIRED_RELATIONSHIP_CRITIC_ENDPOINT
   production_root_path:
     description: Protected workspace path owned by the production deployer.
     default: /Workspace/Applications/agentic-data-modeling-studio
@@ -118,6 +25,7 @@ sync:
     - skills/**
     - evals/**
     - knowledge/**
+    - metadata/**
   exclude:
     - tests/**
     - docs/**

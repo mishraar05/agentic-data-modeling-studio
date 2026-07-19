@@ -1,0 +1,84 @@
+{
+  "_comment_file": "Grouped default parameters for Agentic Data Modeler. See metadata/README.md for merge rules and governance.",
+  
+  "scope": {
+    "lob": "personal_auto",
+    "domain": "personal_auto_policy_claims",
+    "source_scope_mode": "SCHEMA_ALL_TABLES",
+    "source_table_include_patterns": ["*"],
+    "source_table_exclude_patterns": [],
+    "source_object_types": ["TABLE"],
+    "_comment": "Discovery boundary: LOB, domain, and table filtering patterns. Charter §3: 'One explicitly selected LOB and domain per bounded execution slice.'"
+  },
+  
+  "source": {
+    "catalog": "insurance_source_discovery",
+    "schema": "gw_pc_bronze",
+    "system_id": "guidewire_pc",
+    "product": "PolicyCenter",
+    "module": "",
+    "version": "",
+    "_comment": "Source system identity. Charter §6: 'isolate solution runs and source authorization boundaries and enforce least-privilege access.'"
+  },
+  
+  "output": {
+    "catalog": "insurance_source_discovery",
+    "schema": "control",
+    "sdd_schema": "control",
+    "silver_schema": "control",
+    "gold_schema": "control",
+    "sttm_schema": "control",
+    "excel_export_volume": "/Volumes/insurance_source_discovery/control/exports",
+    "_comment": "Output locations for all deliverables. Charter §5: Delta tables are authoritative; Excel is review format. Separate schemas support independent lifecycle management when needed."
+  },
+  
+  "knowledge_pack": {
+    "pack_id": "public_us_pnc_personal_auto",
+    "pack_version": "0.6.0",
+    "geography": "US_general",
+    "pack_domains": ["policy", "claims"],
+    "pack_effective_date": "2026-01-01",
+    "pack_approval_status": "approved",
+    "_comment": "Governed knowledge input. Architecture §4.1: 'versioned manifests and non-sensitive pack assets.' Pack must be approved and in-date for use."
+  },
+  
+  "profiling": {
+    "policy_id": "GOV-001",
+    "policy_version": "1.0.0",
+    "run_mode": "METADATA_ONLY",
+    "sample_strategy": "adaptive",
+    "max_sample_rows": 10000,
+    "privacy_enforcement": "strict",
+    "_comment": "Data profiling governance. Charter §4: 'minimized and approved source profiles.' Adaptive sampling uses more rows for small tables, respects privacy controls."
+  },
+  
+  "contracts": {
+    "set_version": "0.3.0",
+    "_comment": "Contract schema version. Must match deployed DDL in output.schema. Updated to 0.3.0 after registration field removal."
+  },
+  
+  "versioning": {
+    "config_version": "1.0.0",
+    "skill_set_version": "1.0.0",
+    "prompt_set_version": "1.0.0",
+    "_comment": "Reproducibility versions. Charter §6: 'reproduce outputs from versioned evidence, context, model, prompt, skill, and configuration snapshots.' Increment when any of these change materially."
+  },
+  
+  "governance": {
+    "default_reviewer_group": "data_modeling_reviewers",
+    "default_approver_group": "data_modeling_approvers",
+    "require_approval_for": ["silver_entity", "gold_dimension", "gold_fact", "sttm_mapping"],
+    "data_classification_max": "confidential",
+    "_comment": "Authorization and approval controls. Charter §6: 'prevent automatic approval of material model artifacts.' Reviewer can modify drafts; approver transitions to APPROVED state."
+  },
+  
+  "execution": {
+    "model_temperature": 0.1,
+    "model_max_tokens": 4096,
+    "model_timeout_seconds": 120,
+    "max_retries": 3,
+    "cost_limit_per_run_usd": 50.0,
+    "enable_tracing": true,
+    "_comment": "LLM execution controls. Low temperature (0.1) for consistent semantic analysis. Charter §6: 'meet agreed quality, cost, latency... thresholds.'"
+  }
+}

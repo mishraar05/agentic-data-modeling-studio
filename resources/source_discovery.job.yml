@@ -7,102 +7,15 @@ resources:
         LLM-driven relationship analysis for one bounded LOB/domain slice.
       max_concurrent_runs: 1
       parameters:
-        - name: lob
-          default: ${var.lob}
-        - name: domain
-          default: ${var.domain}
-        - name: source_catalog
-          default: ${var.source_catalog}
-        - name: source_schema
-          default: ${var.source_schema}
-        - name: source_scope_mode
-          default: ${var.source_scope_mode}
-        - name: source_table_include_patterns
-          default: ${var.source_table_include_patterns_json}
-        - name: source_table_exclude_patterns
-          default: ${var.source_table_exclude_patterns_json}
-        - name: source_object_types
-          default: ${var.source_object_types_json}
-        - name: explicit_source_tables
-          default: ${var.source_tables_json}
-        - name: source_system_id
-          default: ${var.source_system_id}
-        - name: source_product
-          default: ${var.source_product}
-        - name: source_module
-          default: ${var.source_module}
-        - name: source_version
-          default: ${var.source_version}
-        - name: run_mode
-          default: ${var.run_mode}
-        - name: profiling_policy_id
-          default: ${var.profiling_policy_id}
-        - name: profiling_policy_version
-          default: ${var.profiling_policy_version}
-        - name: registration_mode
-          default: ${var.registration_mode}
-        - name: client_name
-          default: ${var.client_name}
-        - name: authorization_ref
-          default: ${var.authorization_ref}
-        - name: effective_start_date
-          default: ${var.effective_start_date}
-        - name: workspace_host
-          default: ${var.workspace_host}
-        - name: execution_principal
-          default: ${var.execution_principal}
-        - name: source_access_granted
-          default: ${var.source_access_granted}
-        - name: document_set_id
-          default: ""
-        - name: requirement_set_id
-          default: ""
-        - name: output_catalog
-          default: ${var.output_catalog}
-        - name: output_schema
-          default: ${var.output_schema}
-        - name: contract_set_version
-          default: 0.3.0
-        - name: pack_id
-          default: ${var.knowledge_pack_id}
-        - name: pack_version
-          default: ${var.knowledge_pack_version}
-        - name: geography
-          default: ${var.knowledge_geography}
-        - name: pack_domains
-          default: ${var.knowledge_domains}
-        - name: producer_endpoint
-          default: ${var.relationship_producer_endpoint}
-        - name: critic_endpoint
-          default: ${var.relationship_critic_endpoint}
+        - name: work_package_id
+          default: ${var.work_package_id}
       tasks:
         - task_key: validate_scope
           notebook_task:
             notebook_path: ../src/workflows/validate_source_discovery_scope.py
             source: WORKSPACE
-            base_parameters: &runtime_parameters
-              run_id: source_discovery_{{job.run_id}}
-              lob: "{{job.parameters.lob}}"
-              domain: "{{job.parameters.domain}}"
-              source_catalog: "{{job.parameters.source_catalog}}"
-              source_schema: "{{job.parameters.source_schema}}"
-              source_scope_mode: "{{job.parameters.source_scope_mode}}"
-              source_table_include_patterns: "{{job.parameters.source_table_include_patterns}}"
-              source_table_exclude_patterns: "{{job.parameters.source_table_exclude_patterns}}"
-              source_object_types: "{{job.parameters.source_object_types}}"
-              source_tables: "{{job.parameters.explicit_source_tables}}"
-              source_system_id: "{{job.parameters.source_system_id}}"
-              source_product: "{{job.parameters.source_product}}"
-              source_module: "{{job.parameters.source_module}}"
-              source_version: "{{job.parameters.source_version}}"
-              run_mode: "{{job.parameters.run_mode}}"
-              profiling_policy_id: "{{job.parameters.profiling_policy_id}}"
-              profiling_policy_version: "{{job.parameters.profiling_policy_version}}"
-              document_set_id: "{{job.parameters.document_set_id}}"
-              requirement_set_id: "{{job.parameters.requirement_set_id}}"
-              output_catalog: "{{job.parameters.output_catalog}}"
-              output_schema: "{{job.parameters.output_schema}}"
-              contract_set_version: "{{job.parameters.contract_set_version}}"
+            base_parameters:
+              run_id: validate_scope_{{job.run_id}}
         - task_key: discover_source_scope
           depends_on:
             - task_key: validate_scope
@@ -110,14 +23,7 @@ resources:
             notebook_path: ../src/workflows/discover_source_scope.py
             source: WORKSPACE
             base_parameters:
-              <<: *runtime_parameters
-              registration_mode: "{{job.parameters.registration_mode}}"
-              client_name: "{{job.parameters.client_name}}"
-              authorization_ref: "{{job.parameters.authorization_ref}}"
-              effective_start_date: "{{job.parameters.effective_start_date}}"
-              workspace_host: "{{job.parameters.workspace_host}}"
-              execution_principal: "{{job.parameters.execution_principal}}"
-              source_access_granted: "{{job.parameters.source_access_granted}}"
+              run_id: discover_source_scope_{{job.run_id}}
         - task_key: register_solution_run
           depends_on:
             - task_key: discover_source_scope
@@ -125,15 +31,9 @@ resources:
             notebook_path: ../src/workflows/register_solution_run.py
             source: WORKSPACE
             base_parameters:
-              <<: *runtime_parameters
+              run_id: register_solution_run_{{job.run_id}}
               source_tables: "{{tasks.discover_source_scope.values.source_tables}}"
-              registration_mode: "{{job.parameters.registration_mode}}"
-              client_name: "{{job.parameters.client_name}}"
-              authorization_ref: "{{job.parameters.authorization_ref}}"
-              effective_start_date: "{{job.parameters.effective_start_date}}"
-              workspace_host: "{{job.parameters.workspace_host}}"
-              execution_principal: "{{job.parameters.execution_principal}}"
-              source_access_granted: "{{job.parameters.source_access_granted}}"
+              work_package_id: "{{job.parameters.work_package_id}}"
         - task_key: snapshot_source_metadata
           depends_on:
             - task_key: register_solution_run
@@ -141,15 +41,8 @@ resources:
             notebook_path: ../src/workflows/snapshot_source_metadata.py
             source: WORKSPACE
             base_parameters:
-              <<: *runtime_parameters
+              run_id: snapshot_source_metadata_{{job.run_id}}
               source_tables: "{{tasks.discover_source_scope.values.source_tables}}"
-              registration_mode: "{{job.parameters.registration_mode}}"
-              client_name: "{{job.parameters.client_name}}"
-              authorization_ref: "{{job.parameters.authorization_ref}}"
-              effective_start_date: "{{job.parameters.effective_start_date}}"
-              workspace_host: "{{job.parameters.workspace_host}}"
-              execution_principal: "{{job.parameters.execution_principal}}"
-              source_access_granted: "{{job.parameters.source_access_granted}}"
         - task_key: profile_source
           depends_on:
             - task_key: snapshot_source_metadata
@@ -159,15 +52,9 @@ resources:
             notebook_path: ../src/workflows/profile_source.py
             source: WORKSPACE
             base_parameters:
-              <<: *runtime_parameters
+              run_id: profile_source_{{job.run_id}}
               source_tables: "{{tasks.discover_source_scope.values.source_tables}}"
-              registration_mode: "{{job.parameters.registration_mode}}"
-              client_name: "{{job.parameters.client_name}}"
-              authorization_ref: "{{job.parameters.authorization_ref}}"
-              effective_start_date: "{{job.parameters.effective_start_date}}"
-              workspace_host: "{{job.parameters.workspace_host}}"
-              execution_principal: "{{job.parameters.execution_principal}}"
-              source_access_granted: "{{job.parameters.source_access_granted}}"
+              source_snapshot_id: "{{tasks.snapshot_source_metadata.values.source_snapshot_id}}"
         - task_key: assemble_source_evidence
           depends_on:
             - task_key: profile_source
@@ -175,15 +62,9 @@ resources:
             notebook_path: ../src/workflows/assemble_source_evidence.py
             source: WORKSPACE
             base_parameters:
-              <<: *runtime_parameters
+              run_id: assemble_source_evidence_{{job.run_id}}
               source_tables: "{{tasks.discover_source_scope.values.source_tables}}"
-              registration_mode: "{{job.parameters.registration_mode}}"
-              client_name: "{{job.parameters.client_name}}"
-              authorization_ref: "{{job.parameters.authorization_ref}}"
-              effective_start_date: "{{job.parameters.effective_start_date}}"
-              workspace_host: "{{job.parameters.workspace_host}}"
-              execution_principal: "{{job.parameters.execution_principal}}"
-              source_access_granted: "{{job.parameters.source_access_granted}}"
+              source_snapshot_id: "{{tasks.snapshot_source_metadata.values.source_snapshot_id}}"
         - task_key: assemble_context
           depends_on:
             - task_key: assemble_source_evidence
@@ -191,15 +72,7 @@ resources:
             notebook_path: ../src/workflows/assemble_context.py
             source: WORKSPACE
             base_parameters:
-              run_id: source_discovery_{{job.run_id}}
-              lob: "{{job.parameters.lob}}"
-              domain: "{{job.parameters.domain}}"
-              output_catalog: "{{job.parameters.output_catalog}}"
-              output_schema: "{{job.parameters.output_schema}}"
-              pack_id: "{{job.parameters.pack_id}}"
-              pack_version: "{{job.parameters.pack_version}}"
-              geography: "{{job.parameters.geography}}"
-              pack_domains: "{{job.parameters.pack_domains}}"
+              run_id: assemble_context_{{job.run_id}}
         - task_key: analyze_source_relationships
           depends_on:
             - task_key: assemble_context
@@ -208,20 +81,10 @@ resources:
             notebook_path: ../src/workflows/analyze_source_relationships.py
             source: WORKSPACE
             base_parameters:
-              run_id: source_discovery_{{job.run_id}}
-              lob: "{{job.parameters.lob}}"
-              domain: "{{job.parameters.domain}}"
-              output_catalog: "{{job.parameters.output_catalog}}"
-              output_schema: "{{job.parameters.output_schema}}"
+              run_id: analyze_source_relationships_{{job.run_id}}
               context_snapshot_id: "{{tasks.assemble_context.values.context_snapshot_id}}"
               source_snapshot_id: "{{tasks.assemble_context.values.source_snapshot_id}}"
               evidence_set_id: "{{tasks.assemble_context.values.evidence_set_id}}"
-              pack_id: "{{job.parameters.pack_id}}"
-              pack_version: "{{job.parameters.pack_version}}"
-              geography: "{{job.parameters.geography}}"
-              pack_domains: "{{job.parameters.pack_domains}}"
-              producer_endpoint: "{{job.parameters.producer_endpoint}}"
-              critic_endpoint: "{{job.parameters.critic_endpoint}}"
       environments:
         - environment_key: dqx
           spec:
