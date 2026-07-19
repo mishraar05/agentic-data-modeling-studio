@@ -4,12 +4,12 @@
   "$comment": "Finalized Source Data Dictionary handoff package with contextual provenance and issue gating.",
   "type": "object",
   "allOf": [
-    {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/envelope"},
+    {"$ref": "urn:agentic-data-modeler:contract:common:0.4.0#/$defs/envelope"},
     {
       "properties": {
         "schema_version": {"const": "0.1.0"},
-        "lifecycle_state": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/lifecycle_handoff"},
-        "provenance": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/contextual_provenance"},
+        "lifecycle_state": {"$ref": "urn:agentic-data-modeler:contract:common:0.4.0#/$defs/lifecycle_handoff"},
+        "provenance": {"$ref": "urn:agentic-data-modeler:contract:common:0.4.0#/$defs/contextual_provenance"},
         "artifact_version_ref": {
           "type": "string",
           "minLength": 1,
@@ -108,7 +108,7 @@
       },
       "required": ["artifact_version_ref", "context_snapshot_ref", "evidence_set_ref", "requirement_set_ref", "review_decision_ref", "source_snapshot_ref", "handoff_timestamp", "object_count", "attribute_count", "relationship_count", "code_value_count", "coverage_percentage", "open_question_count", "handoff_fingerprint", "intended_consumer"]
     },
-    {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/handoff_issue_guard"}
+    {"$ref": "urn:agentic-data-modeler:contract:common:0.4.0#/$defs/handoff_issue_guard"}
   ],
   "unevaluatedProperties": false
 }

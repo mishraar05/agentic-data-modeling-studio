@@ -54,16 +54,16 @@ Format: `{product_code}_{layer_suffix}`
 #### Control Schema
 Schema name: `control`
 - Purpose: Agent/framework operations and contract tables
-- Contains: **All 31 contract tables** (engagement, evidence_item, source_dictionary_*, etc.)
-- `tables_from_contracts: true` (the 31 contract tables go here)
+- Contains: **All 29 run-rooted contract tables** (solution_run, evidence_item, source_dictionary_*, etc.)
+- `tables_from_contracts: true` (the 29 contract tables go here)
 - Tags: `agent_harness`, `internal_use`, `contract_tables`
 
 ### Complete Schema Structure
 
 ```
 insurance_source_discovery/
-├── control/                          ← 31 contract tables
-│   ├── engagement
+├── control/                          ← 29 run-rooted contract tables
+│   ├── solution_run
 │   ├── work_package
 │   ├── solution_run
 │   ├── artifact_version
@@ -117,8 +117,8 @@ schema_builder:
   generate_for:
     - schema: control
       layer: control
-      enabled: true              # Increment 2: Generate 31 contract tables here
-      description: "31 contract tables for agent framework"
+      enabled: true              # Increment 2: Generate 29 contract tables here
+      description: "29 run-rooted contract tables for agent framework"
     
     - product: gw_pc
       layer: bronze

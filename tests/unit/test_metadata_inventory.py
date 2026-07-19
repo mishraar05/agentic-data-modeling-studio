@@ -46,7 +46,7 @@ def test_inventory_reconciles_counts_and_stable_fingerprint() -> None:
     assert first.table_count == 2
     assert first.column_count == 3
     assert first.fingerprint() == reordered.fingerprint()
-    assert first.snapshot_id("WP-1234") == reordered.snapshot_id("WP-1234")
+    assert first.snapshot_id("run-metadata-test") == reordered.snapshot_id("run-metadata-test")
 
 
 def test_missing_allow_list_object_fails_coverage_gate() -> None:
@@ -105,7 +105,7 @@ def test_constraint_cannot_reference_unknown_column() -> None:
 
 
 def test_stable_record_id_does_not_expose_physical_names() -> None:
-    record_id = stable_record_id("source_attribute", "WP-1234", "pc_policy", "policy_id")
+    record_id = stable_record_id("source_attribute", "run-metadata-test", "pc_policy", "policy_id")
     assert record_id.startswith("source_attribute_")
     assert "pc_policy" not in record_id
 

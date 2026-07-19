@@ -13,4 +13,4 @@ The former `author-source-onboarding` and `author-context-assembly` drafts were 
 
 Runtime semantic Skills remain architecture candidates and are not the current implementation priority. A solution-runner Skill will be designed only after the deployable workflow and its run/control contracts exist.
 
-LOB facts, ontology content, source metadata and engagement decisions do not belong in Skills.
+LOB facts, ontology content, source metadata and run-specific decisions do not belong in Skills.

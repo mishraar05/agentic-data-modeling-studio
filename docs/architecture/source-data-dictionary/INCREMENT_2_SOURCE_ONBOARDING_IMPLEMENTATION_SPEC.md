@@ -46,7 +46,7 @@ The decision IDs and owners are maintained in `INCREMENT_2_3_HUMAN_DECISION_REGI
 
 Per-run scope must be Lakeflow **job parameters**, not only bundle variables. Bundle variables remain deployment-time defaults for environment infrastructure such as warehouse/cluster IDs, output catalog defaults and policy registry locations. The job must expose at least:
 
-- `engagement_id`, `work_package_id`, `lob`, `domain`;
+- `run_id`, `lob`, `domain`;
 - `source_catalog`, `source_schema`, `source_tables` as a JSON array;
 - `source_system_id` and optional declared product/module/version;
 - `run_mode`;

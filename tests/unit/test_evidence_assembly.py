@@ -9,7 +9,7 @@ def _item(record_id: str, seed: str, evidence_type: str = "METADATA"):
 
 def _manifest(items):
     return EvidenceSetManifest.from_iterable(
-        work_package_id="WP-1234",
+        run_id="run-evidence-test",
         source_snapshot_id="source-1",
         profile_snapshot_id="profile-1",
         document_set_id=None,
@@ -24,7 +24,7 @@ def test_manifest_is_order_independent_and_has_stable_ids() -> None:
 
     assert first.fingerprint() == second.fingerprint()
     assert first.evidence_set_id() == second.evidence_set_id()
-    assert first.solution_run_id() == second.solution_run_id()
+    assert first.assembly_run_id() == second.assembly_run_id()
 
 
 def test_changed_evidence_changes_fingerprint() -> None:

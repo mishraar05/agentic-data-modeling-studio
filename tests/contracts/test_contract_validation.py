@@ -18,10 +18,10 @@ from jsonschema.validators import RefResolver
 CONTRACTS_DIR = Path(__file__).parent.parent.parent / "contracts"
 COMMON_SCHEMA_PATH = CONTRACTS_DIR / "_common.schema.json"
 
-# All 31 Increment-1 contracts
+# All 29 run-rooted metadata contracts
 ALL_CONTRACTS = [
     "_common",
-    "engagement", "work_package", "solution_run", "artifact_version",
+    "solution_run", "artifact_version",
     "source_snapshot", "context_snapshot", "profile_snapshot",
     "document_set", "requirement_set", "evidence_set",
     "evidence_item", "source_object_observation", "source_attribute_observation",
@@ -110,8 +110,6 @@ class TestImplementedContracts:
             f"Contract {contract_name} must set unevaluatedProperties: false"
     
     @pytest.mark.parametrize("contract_name,lifecycle_family", [
-        ("engagement", "operational"),
-        ("work_package", "operational"),
         ("solution_run", "operational"),
         ("artifact_version", "material"),
         ("source_snapshot", "append_only"),
@@ -124,7 +122,7 @@ class TestImplementedContracts:
         ("source_object_observation", "append_only"),
         ("source_attribute_observation", "append_only"),
         ("profile_evidence", "append_only"),
-        ("relationship_candidate", "append_only"),
+        ("relationship_candidate", "material"),
         ("analytical_requirement", "material"),
         ("reporting_requirement", "material"),
         ("business_term", "material"),
@@ -150,7 +148,7 @@ class TestImplementedContracts:
         for block in schema.get("allOf", []):
             if "properties" in block and "lifecycle_state" in block["properties"]:
                 lifecycle_ref = block["properties"]["lifecycle_state"].get("$ref", "")
-                expected_ref = f"urn:agentic-data-modeler:contract:common:0.3.0#/$defs/lifecycle_{lifecycle_family}"
+                expected_ref = f"urn:agentic-data-modeler:contract:common:0.4.0#/$defs/lifecycle_{lifecycle_family}"
                 assert lifecycle_ref == expected_ref, \
                     f"Contract {contract_name} must use lifecycle_{lifecycle_family}"
                 found_lifecycle_ref = True
@@ -165,7 +163,7 @@ class TestLifecycleGuards:
         "artifact_version", "analytical_requirement", "reporting_requirement",
         "business_term", "business_rule", "source_dictionary_attribute",
         "source_dictionary_object", "source_dictionary_relationship",
-        "source_dictionary_code_value"
+        "source_dictionary_code_value", "relationship_candidate"
     ])
     def test_material_contracts_require_approval_guard(self, contract_name):
         """Material lifecycle contracts must use material_approval_guard."""
@@ -181,7 +179,7 @@ class TestLifecycleGuards:
     @pytest.mark.parametrize("contract_name", [
         "source_snapshot", "context_snapshot", "profile_snapshot", "document_set",
         "requirement_set", "evidence_set", "evidence_item", "source_object_observation",
-        "source_attribute_observation", "profile_evidence", "relationship_candidate",
+        "source_attribute_observation", "profile_evidence",
         "artifact_dependency", "lineage_edge", "skill_resolution"
     ])
     def test_append_only_contracts_use_no_op_guard(self, contract_name):
@@ -211,10 +209,10 @@ class TestProvenanceRules:
     @pytest.mark.parametrize("contract_name", [
         "source_dictionary_attribute", "source_dictionary_object",
         "source_dictionary_relationship", "source_dictionary_code_value",
-        "source_dictionary_handoff"
+        "source_dictionary_handoff", "relationship_candidate"
     ])
     def test_dictionary_contracts_use_contextual_provenance(self, contract_name):
-        """Dictionary contracts must use contextual_provenance."""
+        """Semantic contracts must use contextual_provenance."""
         schema = load_contract_schema(contract_name)
         provenance_ref_found = False
         for block in schema.get("allOf", []):
@@ -228,7 +226,7 @@ class TestProvenanceRules:
     
     @pytest.mark.parametrize("contract_name", [
         "evidence_item", "source_object_observation", "source_attribute_observation",
-        "profile_evidence", "relationship_candidate"
+        "profile_evidence"
     ])
     def test_evidence_contracts_use_base_provenance(self, contract_name):
         """Evidence contracts (pre-context) must use base provenance."""
@@ -269,10 +267,10 @@ class TestSemanticClaims:
 
 
 class TestSchemaCompleteness:
-    """Test that all 31 contracts are present and loadable."""
+    """Test that all 29 contracts are present and loadable."""
     
-    def test_all_31_contracts_exist(self):
-        """Verify all 31 contract schema files exist."""
+    def test_all_29_contracts_exist(self):
+        """Verify all 29 contract schema files exist."""
         missing = []
         for contract_name in ALL_CONTRACTS:
             schema_path = CONTRACTS_DIR / f"{contract_name}.schema.json"
@@ -309,5 +307,5 @@ class TestFixtureValidation:
 # - Evidence state rules (OBSERVED requires SOURCE_FACT provenance)
 # - Confidence component rules (INFERRED requires evidence_count == unique refs)
 # - Governed code reference validation (pack/version/fingerprint match)
-# - Cross-engagement and cross-work-package scope validation
+# - Cross-run and cross-context scope validation
 # - Lifecycle transition validation

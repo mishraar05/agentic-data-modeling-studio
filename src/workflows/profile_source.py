@@ -50,8 +50,6 @@ from agentic_data_modeler.source_adapters import (
 
 RUNTIME_PARAMETERS = (
     "run_id",
-    "engagement_id",
-    "work_package_id",
     "lob",
     "domain",
     "source_catalog",
@@ -110,27 +108,13 @@ policy_path = Path(
     BUNDLE_ROOT.as_posix(),
     "config",
     "profiling_policies",
-    f"{request.engagement_id}_{request.work_package_id}.json",
+    "source_discovery.json",
 )
 if not policy_path.is_file():
-    raise ValueError("No approved profiling policy projection exists for this work package")
+    raise ValueError("No approved profiling policy projection exists for this solution run")
 policy_payload = json.loads(policy_path.read_text(encoding="utf-8"))
-policy_scope = {
-    "engagement_id": request.engagement_id,
-    "work_package_id": request.work_package_id,
-    "authorization_ref": registration.authorization_ref,
-}
-scope_conflicts = [
-    key for key, value in policy_scope.items() if policy_payload.get(key) != value
-]
-if scope_conflicts:
-    raise ValueError(f"Profiling policy scope conflicts on: {sorted(scope_conflicts)}")
 policy = ProfilingPolicy.from_mapping(
-    {
-        key: value
-        for key, value in policy_payload.items()
-        if key not in {"engagement_id", "work_package_id", "authorization_ref"}
-    }
+    policy_payload
 )
 if request.profiling_mode.value != policy.profiling_mode:
     raise ValueError("Runtime profiling mode differs from the approved policy")
@@ -139,49 +123,41 @@ if request.profiling_policy_id != policy.policy_id:
 if request.profiling_policy_version != policy.policy_version:
     raise ValueError("Runtime profiling policy version differs from the approved policy")
 
-work_package_table = _qualified(request.output_catalog, request.output_schema, "work_package")
-work_packages = (
-    spark.table(work_package_table)
-    .where(F.col("record_id") == request.work_package_id)
+solution_run_table = _qualified(request.output_catalog, request.output_schema, "solution_run")
+solution_runs = (
+    spark.table(solution_run_table)
+    .where(F.col("record_id") == request.run_id)
     .limit(2)
     .collect()
 )
-if len(work_packages) != 1:
-    raise ValueError(f"Expected one registered work package; found {len(work_packages)}")
-registered = work_packages[0].asDict(recursive=True)
+if len(solution_runs) != 1:
+    raise ValueError(f"Expected one registered solution run; found {len(solution_runs)}")
+registered = solution_runs[0].asDict(recursive=True)
 expected_boundary = {
-    "engagement_id": request.engagement_id,
     "lob": request.lob,
     "domain": request.domain,
     "source_catalog": request.source_catalog,
     "source_schema": request.source_schema,
-    "source_tables_allow_list": list(request.source_tables),
+    "source_tables": list(request.source_tables),
     "output_catalog": request.output_catalog,
     "output_schema": request.output_schema,
 }
 conflicts = [key for key, value in expected_boundary.items() if registered.get(key) != value]
 if conflicts:
-    raise ValueError(f"Registered work-package boundary conflicts on: {sorted(conflicts)}")
+    raise ValueError(f"Registered solution-run boundary conflicts on: {sorted(conflicts)}")
 if registered["workflow_state"] not in {"METADATA_READY", "PROFILE_READY"}:
     raise ValueError(f"Profiling is not allowed from state {registered['workflow_state']!r}")
 
-engagement = (
-    spark.table(_qualified(request.output_catalog, request.output_schema, "engagement"))
-    .where(F.col("record_id") == request.engagement_id)
-    .select("authorization_ref", "source_access_granted", "profiling_policy")
-    .first()
-)
 if (
-    engagement is None
-    or engagement.authorization_ref != registration.authorization_ref
-    or not engagement.source_access_granted
-    or engagement.profiling_policy != policy.profiling_mode
+    registered.get("authorization_ref") != registration.authorization_ref
+    or not registered.get("source_access_granted")
+    or registered.get("profiling_policy") != policy.profiling_mode
 ):
-    raise ValueError("Engagement does not authorize the requested profiling policy")
+    raise ValueError("Solution run does not authorize the requested profiling policy")
 
 source_snapshots = (
     spark.table(_qualified(request.output_catalog, request.output_schema, "source_snapshot"))
-    .where(F.col("work_package_ref") == request.work_package_id)
+    .where(F.col("solution_run_ref") == request.run_id)
     .where(F.col("lifecycle_state") == "COMMITTED")
     .limit(2)
     .collect()
@@ -275,7 +251,7 @@ policy_ref = (
     + ",".join(policy.accepted_decision_refs)
 )
 inventory = ProfileInventory.from_iterable(
-    work_package_id=request.work_package_id,
+    run_id=request.run_id,
     source_snapshot_id=source_snapshot_id,
     policy_ref=policy_ref,
     template_version=template_version,
@@ -291,7 +267,6 @@ profile_fingerprint = inventory.fingerprint()
 now = datetime.now(timezone.utc).replace(tzinfo=None)
 retention_until = (now.date() + timedelta(days=policy.evidence_retention_days)).isoformat()
 provenance = {
-    "work_package_id": request.work_package_id,
     "run_id": request.run_id,
     "context_snapshot_id": None,
     "source_snapshot_id": source_snapshot_id,
@@ -334,7 +309,6 @@ notes = f"{registration.note}; policy_ref={policy_ref}; retention_until={retenti
 profile_snapshot_record = {
     "record_id": profile_snapshot_id,
     "schema_version": "0.1.0",
-    "engagement_id": request.engagement_id,
     "lob": request.lob,
     "domain": request.domain,
     "artifact_version": "synthetic-dev/0.1.0",
@@ -366,7 +340,6 @@ for profile in inventory.profiles:
         {
             "record_id": evidence_id,
             "schema_version": "0.1.0",
-            "engagement_id": request.engagement_id,
             "lob": request.lob,
             "domain": request.domain,
             "artifact_version": "synthetic-dev/0.1.0",
@@ -374,7 +347,7 @@ for profile in inventory.profiles:
             "provenance": provenance,
             "created_at": now,
             "updated_at": now,
-            "work_package_ref": request.work_package_id,
+            "solution_run_ref": request.run_id,
             "provenance_class": "SOURCE_FACT",
             "evidence_type": "PROFILE",
             "content": content,
@@ -399,7 +372,6 @@ for profile in inventory.profiles:
                 profile.attribute_name,
             ),
             "schema_version": "0.1.0",
-            "engagement_id": request.engagement_id,
             "lob": request.lob,
             "domain": request.domain,
             "artifact_version": "synthetic-dev/0.1.0",
@@ -434,42 +406,21 @@ if persisted_count != inventory.attribute_count:
 
 spark.sql(
     f"""
-    UPDATE {work_package_table}
+    UPDATE {solution_run_table}
     SET workflow_state = 'PROFILE_READY', updated_at = current_timestamp()
-    WHERE record_id = '{request.work_package_id}'
+    WHERE record_id = '{request.run_id}'
       AND workflow_state IN ('METADATA_READY', 'PROFILE_READY')
     """
 )
 final_state = (
-    spark.table(work_package_table)
-    .where(F.col("record_id") == request.work_package_id)
+    spark.table(solution_run_table)
+    .where(F.col("record_id") == request.run_id)
     .select("workflow_state")
     .first()
     .workflow_state
 )
 if final_state != "PROFILE_READY":
-    raise ValueError(f"Work package did not reach PROFILE_READY; received {final_state!r}")
-
-profile_run_record = {
-    "record_id": f"{request.run_id}_profile",
-    "schema_version": "0.1.0",
-    "engagement_id": request.engagement_id,
-    "lob": request.lob,
-    "domain": request.domain,
-    "artifact_version": "synthetic-dev/0.1.0",
-    "lifecycle_state": "ACTIVE",
-    "provenance": provenance,
-    "created_at": now,
-    "updated_at": now,
-    "work_package_ref": request.work_package_id,
-    "run_type": "PROFILE",
-    "start_timestamp": now,
-    "end_timestamp": now,
-    "status": "COMPLETED",
-    "error_message": None,
-    "cost_usd": None,
-}
-_insert_records_idempotently("solution_run", [profile_run_record])
+    raise ValueError(f"Solution run did not reach PROFILE_READY; received {final_state!r}")
 
 print("Restricted DQX profiling passed")
 print(f"profiler_engine=DQX@{policy.profiler_engine_version}")
@@ -478,4 +429,4 @@ print(f"table_count={inventory.table_count}")
 print(f"attribute_count={inventory.attribute_count}")
 print(f"fingerprint={profile_fingerprint}")
 print(f"retention_until={retention_until}")
-print(f"work_package_state={final_state}")
+print(f"solution_run_state={final_state}")

@@ -1,7 +1,4 @@
 {
-  "engagement_id": "E-123",
-  "work_package_id": "WP-1234",
-  "authorization_ref": "SYNTHETIC-D23-02-E123-v1",
   "policy_id": "GOV-001",
   "policy_version": "1.0.0",
   "profiling_mode": "RESTRICTED",

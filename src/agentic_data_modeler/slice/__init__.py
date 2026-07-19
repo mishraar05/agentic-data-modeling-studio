@@ -1,7 +1,8 @@
 """Runnable Source Data Dictionary vertical slice.
 
-This package wires Phases 0-9 of the SDD agent end to end so the design can be
-exercised against synthetic data. It is a development slice, not production:
+This package wires Phases 0-9 of the SDD agent end to end. Phase 1 reads a real
+catalog via information_schema (no hardcoded schemas); the source is bound from
+config/proof_slice.yaml. It is a development slice, not production:
 
 - the semantic producer is a pluggable ``LLM`` (a deterministic stub today);
 - human review is a pluggable ``ReviewPolicy`` (``AutoApprove`` in dev, so the

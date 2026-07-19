@@ -37,7 +37,10 @@ class ContractToDDL:
         output_path.mkdir(parents=True, exist_ok=True)
         
         # Find all contract files
-        contract_files = list(contracts_path.glob("*.schema.json"))
+        contract_files = [
+            path for path in contracts_path.glob("*.schema.json")
+            if path.name != "_common.schema.json"
+        ]
         
         if not contract_files:
             print(f"⚠️  No *.schema.json files found in {contracts_dir}")
@@ -53,14 +56,14 @@ class ContractToDDL:
         
         for contract_file in sorted(contract_files):
             try:
-                with open(contract_file, 'r') as f:
+                with open(contract_file, 'r', encoding='utf-8') as f:
                     contract = json.load(f)
                 
                 table_name = contract_file.stem.replace('.schema', '')
                 ddl = self.ddl_generator.generate(contract, catalog, schema, table_name)
                 
                 output_file = output_path / f"{table_name}.sql"
-                with open(output_file, 'w') as f:
+                with open(output_file, 'w', encoding='utf-8') as f:
                     f.write(ddl)
                 
                 print(f"✅ {table_name:40s} → {output_file.name}")

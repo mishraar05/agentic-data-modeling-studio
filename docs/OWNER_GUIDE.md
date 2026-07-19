@@ -41,7 +41,7 @@ repeatable.
 
 ## Current proof slice
 
-The current slice is P&C Personal Auto, Policy domain, work package `WP-1234`,
+The current slice is P&C Personal Auto, Policy domain, identified by its solution run,
 covering all seven PolicyCenter tables currently present in the authorized source
 schema. Scope discovery, registration, metadata capture and DQX profiling are
 deployed and repeatably successful. The observed facts are also frozen in one

@@ -15,7 +15,7 @@
 **Increment 2 converts the 31 approved JSON Schema contracts from Increment 1 into physical Delta tables in Unity Catalog**, creating the authoritative system of record for the Agentic Data Modeling Studio.
 
 **Key Outcomes**:
-* 31 Delta tables deployed to Unity Catalog
+* 29 run-rooted Delta tables deployed to Unity Catalog
 * Automated schema generation from JSON Schema contracts
 * Unity Catalog governance controls (tags, comments, ownership)
 * Table validation suite proving schema conformance
@@ -44,14 +44,14 @@ Per AGENTS.md §"Anti-drift gate", this work must answer:
 ### 2. Which selected LOB/domain does it serve?
 
 **Answer**: Cross-cutting foundation, serves all LOBs/domains
-* All 31 tables are domain-agnostic record types
+* All 29 tables are domain-agnostic record types
 * Supports first proof slice (US P&C Personal Auto — Pennsylvania)
 * Supports future LOB/domain expansions without schema changes
 
 ### 3. What evidence will prove improvement?
 
 **Evidence Measures**:
-* ✅ **Schema Completeness**: 31/31 tables created and validated
+* ✅ **Schema Completeness**: 29/29 tables created and validated
 * ✅ **Contract Conformance**: Generated DDL matches approved JSON Schema contracts
 * ✅ **Governance Coverage**: All tables have UC tags, comments, ownership per GOV-002
 * ✅ **Data Quality**: Tables enforce required fields, data types, constraints per contracts
@@ -121,7 +121,7 @@ Conformance Test (proves contract ↔ table match)
 **Input**: 31 JSON Schema contracts (`contracts/*.schema.json`)
 
 **Output**: 
-* 31 Delta DDL statements (`generated/ddl/*.sql`)
+* 29 Delta DDL statements (`generated/ddl/*.sql`)
 * 31 Unity Catalog table creation scripts
 * Validation suite (`tests/schema_builder/test_table_conformance.py`)
 
@@ -159,7 +159,7 @@ Conformance Test (proves contract ↔ table match)
 |---|-------------|--------|----------|-------|
 | 1 | Schema Builder Tool | Python module | `src/schema_builder/` | Tech Lead |
 | 2 | Generated DDL Scripts | SQL files | `generated/ddl/` | Auto-generated |
-| 3 | 31 Delta Tables | UC tables | `main.source_discovery.*` | Data Architect |
+| 3 | 29 Delta Tables | UC tables | `main.source_discovery.*` | Data Architect |
 | 4 | Table Validation Suite | Python tests | `tests/schema_builder/` | Tech Lead |
 | 5 | UC Governance Integration | Documentation | `docs/architecture/` | Data Steward |
 | 6 | Usage Examples | Notebooks | `examples/increment_2/` | Tech Lead |
@@ -272,7 +272,7 @@ main (catalog)
 **Deliverable**: JSON Schema parser and data structure
 
 **Steps**:
-1. Load all 31 JSON Schema contracts
+1. Load all 29 JSON Schema record contracts
 2. Parse `properties`, `required`, `allOf` composition
 3. Extract lifecycle state enums
 4. Extract provenance patterns
@@ -280,7 +280,7 @@ main (catalog)
 6. Validate against Draft 2020-12 (reuse Increment 1 validation)
 
 **Acceptance Criteria**:
-* ✅ All 31 contracts parse without error
+* ✅ All 29 record contracts parse without error
 * ✅ All properties extracted with correct types
 * ✅ Lifecycle states identified
 * ✅ Required fields identified
@@ -295,12 +295,12 @@ main (catalog)
 2. Generate `schema_version STRING` (fixed per contract)
 3. Generate `lifecycle_state STRING` + CHECK constraint
 4. Generate provenance fields (base or contextual)
-5. Generate core metadata fields (engagement_id, lob, domain, created_at, created_by)
+5. Generate core metadata fields (run identity, lob, domain, created_at, created_by)
 6. Generate contract-specific properties
 7. Apply NOT NULL constraints per `required` array
 
 **Acceptance Criteria**:
-* ✅ DDL generates for all 31 contracts
+* ✅ DDL generates for all 29 record contracts
 * ✅ All required fields marked NOT NULL
 * ✅ Lifecycle state CHECK constraints present
 * ✅ Valid SQL syntax
@@ -346,7 +346,7 @@ main (catalog)
 #### Task 3.1: DDL Validation
 **Owner**: Tech Lead  
 **Duration**: 1 day  
-**Deliverable**: Validated DDL scripts for all 31 tables
+**Deliverable**: Validated DDL scripts for all 29 tables
 
 **Steps**:
 1. Run `sqlglot` or Databricks SQL parser on generated DDL
@@ -356,14 +356,14 @@ main (catalog)
 5. Generate SQL linting report
 
 **Acceptance Criteria**:
-* ✅ All 31 DDL scripts parse without errors
+* ✅ All 29 DDL scripts parse without errors
 * ✅ No reserved word conflicts
 * ✅ Constraints valid
 
 #### Task 3.2: Table Creation Execution
 **Owner**: Data Architect  
 **Duration**: 1 day  
-**Deliverable**: 31 tables created in `main.source_discovery`
+**Deliverable**: 29 tables created in `main.source_discovery`
 
 **Steps**:
 1. Execute DDL scripts in dependency order (foundation → control → evidence → etc.)
@@ -372,7 +372,7 @@ main (catalog)
 4. Create table inventory in Databricks catalog
 
 **Acceptance Criteria**:
-* ✅ 31/31 tables created successfully
+* ✅ 29/29 tables created successfully
 * ✅ Tables queryable (`SELECT * FROM main.source_discovery.engagement LIMIT 1`)
 * ✅ No errors in UC
 
@@ -412,7 +412,7 @@ main (catalog)
 5. Create pytest suite (`tests/schema_builder/test_table_conformance.py`)
 
 **Acceptance Criteria**:
-* ✅ 31/31 tables pass conformance tests
+* ✅ 29/29 tables pass conformance tests
 * ✅ All fields present
 * ✅ All types correct
 * ✅ All constraints enforced
@@ -487,7 +487,7 @@ main (catalog)
 6. Create `docs/architecture/TABLE_USAGE_GUIDE.md`
 
 **Acceptance Criteria**:
-* ✅ All 31 tables documented
+* ✅ All 29 tables documented
 * ✅ Code examples work
 * ✅ Lifecycle rules clear
 
@@ -546,7 +546,7 @@ main (catalog)
 
 ### Must-Have (Blocking for Increment 3+)
 
-1. ✅ **Schema Completeness**: 31/31 Delta tables created
+1. ✅ **Schema Completeness**: 29/29 Delta tables created
 2. ✅ **Contract Conformance**: 100% field/type/constraint match to contracts
 3. ✅ **Lifecycle Enforcement**: State machine transitions validated
 4. ✅ **Evidence Traceability**: Foreign key patterns work
@@ -570,8 +570,8 @@ main (catalog)
 
 | Week | Phase | Tasks | Deliverable |
 |------|-------|-------|-------------|
-| **Week 1** | Foundation + Generation | UC setup, schema builder, DDL generation | DDL scripts for 31 tables |
-| **Week 2** | Creation + Validation | Table creation, smoke tests, conformance tests | 31 tables live and validated |
+| **Week 1** | Foundation + Generation | UC setup, schema builder, DDL generation | DDL scripts for 29 tables |
+| **Week 2** | Creation + Validation | Table creation, smoke tests, conformance tests | 29 tables live and validated |
 | **Week 3** | Testing + Handoff | Integration tests, documentation, handoff | Increment 2 complete |
 
 ### 4-Week Plan (Recommended)
@@ -591,7 +591,7 @@ main (catalog)
 
 ### Blockers (Must Complete Before Start)
 
-* ✅ Increment 1 complete (31 contracts validated)
+* ✅ Increment 1 complete (29 record contracts validated)
 * ✅ Governance policies formalized (GOV-001 through GOV-007)
 * ⏳ Unity Catalog `main` catalog provisioned
 * ⏳ Service principal for table creation
@@ -735,7 +735,7 @@ main (catalog)
 | **Test Pass Rate** | 100% | pytest results |
 | **DDL Generation Time** | < 5 minutes | Tool execution time |
 | **Schema Validation Time** | < 1 minute | Test suite execution |
-| **Documentation Coverage** | 100% (all 31 tables) | Manual review |
+| **Documentation Coverage** | 100% (all 29 tables) | Manual review |
 
 ### Qualitative Metrics
 
@@ -895,7 +895,7 @@ CREATE TABLE IF NOT EXISTS main.source_discovery.engagement (
   schema_version STRING NOT NULL COMMENT 'Contract schema version',
   
   -- Core Fields
-  engagement_id STRING NOT NULL COMMENT 'Business identifier for the engagement',
+  run_id STRING NOT NULL COMMENT 'Identifier for the bounded solution run',
   engagement_name STRING NOT NULL COMMENT 'Human-readable engagement name',
   client_organization STRING COMMENT 'Client organization name',
   lob STRING NOT NULL COMMENT 'Line of business (e.g., P&C, Life, Health)',
@@ -927,7 +927,7 @@ TBLPROPERTIES (
 
 -- Column-level tags (applied via ALTER TABLE after creation)
 ALTER TABLE main.source_discovery.engagement 
-  ALTER COLUMN engagement_id 
+  ALTER COLUMN run_id
   SET TAGS ('business_key' = 'true');
 ```
 

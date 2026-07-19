@@ -2,8 +2,9 @@
 
     python scripts/run_proof_slice.py
 
-Run 1 analyzes synthetic Personal Auto tables and auto-approves. Run 2 shares
-the same episodic memory and reuses run 1's decisions instead of re-asking.
+Reads a REAL catalog (information_schema) for the tables bound in
+config/proof_slice.yaml, analyzes them, and auto-approves. Run 2 shares the same
+episodic memory and reuses run 1's decisions instead of re-asking.
 """
 
 from __future__ import annotations
@@ -15,14 +16,16 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
+sys.path.insert(0, str(ROOT / "tests"))
+
+from fixtures.build_source_db import build as build_source_db
 
 from agentic_data_modeler.slice.llm import DeterministicStubLLM
 from agentic_data_modeler.slice.memory import EpisodicMemory
 from agentic_data_modeler.slice.orchestrator import run_sdd_agent
 from agentic_data_modeler.slice.persistence import RecordStore
-from agentic_data_modeler.slice.records import Scope
 from agentic_data_modeler.slice.review import AutoApprovePolicy
-from agentic_data_modeler.slice.synthetic import personal_auto_inventory
+from agentic_data_modeler.slice.source_binding import load_binding
 
 
 def _print(label, result):
@@ -39,18 +42,26 @@ def _print(label, result):
 def main() -> None:
     out = Path(os.environ.get("SLICE_OUT", Path(tempfile.gettempdir()) / "sdd_slice_runs"))
     out.mkdir(parents=True, exist_ok=True)
+
+    binding = load_binding(ROOT)                       # source + scope from config (D23-01/02)
+    build_source_db(ROOT / "tests/fixtures/proof_slice_source.duckdb")  # dev: (re)build the fixture catalog
+    inventory = binding.read_inventory()               # real information_schema read
+    print(f"source: {binding.schema} tables={binding.tables}  ({inventory.column_count} columns)")
+
     memory = EpisodicMemory(out / "episodic_memory.json")
     llm, policy = DeterministicStubLLM(), AutoApprovePolicy()
     print(f"review policy: {policy.name}")
 
-    r1 = run_sdd_agent(ROOT, Scope("ENG-DEMO", "personal_auto", "personal_auto_policy_claims", "WP-001", "RUN-1"),
-                       personal_auto_inventory(), memory=memory,
-                       store=RecordStore(out / "store_run1.json"), review_policy=policy, llm=llm)
-    _print("RUN 1 (fresh memory)", r1)
+    def run(run_id):
+        return run_sdd_agent(
+            ROOT, binding.scope(run_id=run_id), inventory,
+            memory=memory, store=RecordStore(out / f"store_{run_id}.json"),
+            review_policy=policy, llm=llm, pack_id=binding.pack_id,
+            pack_version=binding.pack_version, geography=binding.geography,
+            pack_domains=binding.pack_domains)
 
-    r2 = run_sdd_agent(ROOT, Scope("ENG-DEMO", "personal_auto", "personal_auto_policy_claims", "WP-001", "RUN-2"),
-                       personal_auto_inventory(), memory=memory,
-                       store=RecordStore(out / "store_run2.json"), review_policy=policy, llm=llm)
+    _print("RUN 1 (fresh memory)", run("RUN-1"))
+    r2 = run("RUN-2")
     _print("RUN 2 (same memory — should reuse decisions)", r2)
 
     print("\nMemory loop proven:" if r2.n_reused_from_memory > 0 else "\nNo reuse detected:",

@@ -74,7 +74,7 @@ The `envelope` definition (in `contracts/common.schema.json`) contains:
 3. Merge `allOf` schemas (flatten composition)
 4. Return fully resolved properties + required fields
 
-**Without this**: Can't generate correct DDL for any of the 31 contracts
+**Without this**: Can't generate correct DDL for any of the 29 record contracts
 
 ### Step 2: Test with Real Contracts
 **Duration**: 1 hour  
@@ -86,7 +86,7 @@ The `envelope` definition (in `contracts/common.schema.json`) contains:
 
 ### Step 3: Batch Generation
 **Duration**: 1 hour  
-**Deliverable**: DDL for all 31 contracts × 3 bronze schemas = 93 tables
+**Deliverable**: DDL for all 29 record contracts × 3 bronze schemas = 87 tables
 
 1. Run schema builder for gw_pc_bronze
 2. Run for gw_cc_bronze

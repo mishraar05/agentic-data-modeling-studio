@@ -9,12 +9,6 @@ variables:
   resource_prefix:
     description: Prefix applied to deployed resource names.
     default: agentic-data-modeler
-  engagement_id:
-    description: Non-PII identifier for the modeling engagement.
-    default: REQUIRED_ENGAGEMENT_ID
-  work_package_id:
-    description: Non-PII identifier for one bounded source-discovery work package.
-    default: REQUIRED_WORK_PACKAGE_ID
   lob:
     description: Selected line of business for this bounded execution slice.
     default: REQUIRED_LOB
@@ -93,6 +87,24 @@ variables:
   output_schema:
     description: Unity Catalog schema for solution-owned artifacts.
     default: REQUIRED_OUTPUT_SCHEMA
+  knowledge_pack_id:
+    description: Exact approved knowledge-pack identifier.
+    default: public_us_pnc_personal_auto
+  knowledge_pack_version:
+    description: Exact approved knowledge-pack version.
+    default: 0.6.0
+  knowledge_geography:
+    description: Geography used for governed pack selection.
+    default: US_general
+  knowledge_domains:
+    description: Comma-separated minimum applicable domain modules.
+    default: policy
+  relationship_producer_endpoint:
+    description: Databricks Foundation Model endpoint for relationship production.
+    default: REQUIRED_RELATIONSHIP_PRODUCER_ENDPOINT
+  relationship_critic_endpoint:
+    description: Different Databricks Foundation Model endpoint for independent critique.
+    default: REQUIRED_RELATIONSHIP_CRITIC_ENDPOINT
   production_root_path:
     description: Protected workspace path owned by the production deployer.
     default: /Workspace/Applications/agentic-data-modeling-studio

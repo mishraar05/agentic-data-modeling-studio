@@ -40,20 +40,19 @@ def sha256_hex(text: str) -> str:
 def envelope(
     *,
     record_id: str,
-    engagement_id: str,
     lob: str,
     domain: str,
     artifact_version: str,
     lifecycle_state: str,
     provenance: dict[str, Any],
     created_at: str | None = None,
+    schema_version: str = SCHEMA_VERSION,
 ) -> dict[str, Any]:
     """Build the shared contract envelope (see contracts/_common.schema.json)."""
     ts = created_at or now_iso()
     return {
         "record_id": record_id,
-        "schema_version": SCHEMA_VERSION,
-        "engagement_id": engagement_id,
+        "schema_version": schema_version,
         "lob": lob,
         "domain": domain,
         "artifact_version": artifact_version,

@@ -2,10 +2,10 @@
 # This inventory defines contract coverage and authoring order. It does not make
 # every listed reference mandatory at runtime; required and optional instance
 # references are declared separately below.
-inventory_version: "0.2.0"
-expected_record_count: 31
+inventory_version: "0.3.0"
+expected_record_count: 29
 id_pattern: "urn:agentic-data-modeler:contract:{record}:{major}.{minor}.{patch}"
-common_ref: "urn:agentic-data-modeler:contract:common:0.3.0"
+common_ref: "urn:agentic-data-modeler:contract:common:0.4.0"
 
 dependency_semantics:
   build_after: >-
@@ -44,6 +44,7 @@ provenance_policy:
     - source_dictionary_relationship
     - source_dictionary_code_value
     - source_dictionary_handoff
+    - relationship_candidate
 
 lifecycle_guard_policy:
   default_def: no_op_guard
@@ -53,29 +54,27 @@ lifecycle_guard_policy:
 
 records:
   # Control, run and immutable set/snapshot manifests
-  - {record: engagement, family: control, lifecycle: operational, schema_version: "0.1.0", produced_in: increment_1, build_after: [], required_instance_refs: [], optional_instance_refs: [], allowed_inline_enum_paths: []}
-  - {record: work_package, family: control, lifecycle: operational, schema_version: "0.1.0", produced_in: increment_1, build_after: [engagement], required_instance_refs: [engagement], optional_instance_refs: [], allowed_inline_enum_paths: []}
-  - {record: solution_run, family: control, lifecycle: operational, schema_version: "0.1.0", produced_in: increment_1, build_after: [work_package], required_instance_refs: [work_package], optional_instance_refs: [], allowed_inline_enum_paths: []}
+  - {record: solution_run, family: control, lifecycle: operational, schema_version: "0.2.0", produced_in: increment_1, build_after: [], required_instance_refs: [], optional_instance_refs: [], allowed_inline_enum_paths: []}
   - {record: artifact_version, family: control, lifecycle: material, schema_version: "0.1.0", produced_in: increment_1, build_after: [solution_run], required_instance_refs: [solution_run], optional_instance_refs: [review_decision], allowed_inline_enum_paths: []}
-  - {record: source_snapshot, family: snapshot, lifecycle: append_only, schema_version: "0.1.0", produced_in: increment_2, build_after: [solution_run], required_instance_refs: [work_package, solution_run], optional_instance_refs: [], allowed_inline_enum_paths: []}
+  - {record: source_snapshot, family: snapshot, lifecycle: append_only, schema_version: "0.1.0", produced_in: increment_2, build_after: [solution_run], required_instance_refs: [solution_run], optional_instance_refs: [], allowed_inline_enum_paths: []}
   - {record: profile_snapshot, family: snapshot, lifecycle: append_only, schema_version: "0.1.0", produced_in: increment_2, build_after: [source_snapshot], required_instance_refs: [source_snapshot], optional_instance_refs: [], allowed_inline_enum_paths: []}
-  - {record: document_set, family: snapshot, lifecycle: append_only, schema_version: "0.1.0", produced_in: increment_2, build_after: [work_package], required_instance_refs: [work_package], optional_instance_refs: [], allowed_inline_enum_paths: []}
-  - {record: requirement_set, family: snapshot, lifecycle: append_only, schema_version: "0.1.0", produced_in: increment_2, build_after: [work_package], required_instance_refs: [work_package], optional_instance_refs: [document_set], allowed_inline_enum_paths: []}
-  - {record: evidence_set, family: snapshot, lifecycle: append_only, schema_version: "0.1.0", produced_in: increment_2, build_after: [source_snapshot, requirement_set], required_instance_refs: [work_package, solution_run, source_snapshot], optional_instance_refs: [profile_snapshot, document_set, requirement_set, evidence_item], allowed_inline_enum_paths: []}
-  - {record: context_snapshot, family: snapshot, lifecycle: append_only, schema_version: "0.1.0", produced_in: increment_3, build_after: [evidence_set], required_instance_refs: [work_package, evidence_set], optional_instance_refs: [requirement_set, review_decision], allowed_inline_enum_paths: []}
+  - {record: document_set, family: snapshot, lifecycle: append_only, schema_version: "0.1.0", produced_in: increment_2, build_after: [solution_run], required_instance_refs: [solution_run], optional_instance_refs: [], allowed_inline_enum_paths: []}
+  - {record: requirement_set, family: snapshot, lifecycle: append_only, schema_version: "0.1.0", produced_in: increment_2, build_after: [solution_run], required_instance_refs: [solution_run], optional_instance_refs: [document_set], allowed_inline_enum_paths: []}
+  - {record: evidence_set, family: snapshot, lifecycle: append_only, schema_version: "0.1.0", produced_in: increment_2, build_after: [source_snapshot, requirement_set], required_instance_refs: [solution_run, source_snapshot], optional_instance_refs: [profile_snapshot, document_set, requirement_set, evidence_item], allowed_inline_enum_paths: []}
+  - {record: context_snapshot, family: snapshot, lifecycle: append_only, schema_version: "0.1.0", produced_in: increment_3, build_after: [evidence_set], required_instance_refs: [solution_run, evidence_set], optional_instance_refs: [requirement_set, review_decision], allowed_inline_enum_paths: []}
 
   # Evidence: created before the governed context snapshot
-  - {record: evidence_item, family: evidence, lifecycle: append_only, schema_version: "0.1.0", produced_in: increment_2, build_after: [solution_run], required_instance_refs: [work_package, solution_run], optional_instance_refs: [source_snapshot, profile_snapshot, document_set], allowed_inline_enum_paths: []}
+  - {record: evidence_item, family: evidence, lifecycle: append_only, schema_version: "0.1.0", produced_in: increment_2, build_after: [solution_run], required_instance_refs: [solution_run], optional_instance_refs: [source_snapshot, profile_snapshot, document_set], allowed_inline_enum_paths: []}
   - {record: source_object_observation, family: evidence, lifecycle: append_only, schema_version: "0.1.0", produced_in: increment_2, build_after: [evidence_item, source_snapshot], required_instance_refs: [source_snapshot, evidence_item], optional_instance_refs: [], allowed_inline_enum_paths: []}
   - {record: source_attribute_observation, family: evidence, lifecycle: append_only, schema_version: "0.1.0", produced_in: increment_2, build_after: [evidence_item, source_snapshot], required_instance_refs: [source_snapshot, evidence_item], optional_instance_refs: [], allowed_inline_enum_paths: []}
   - {record: profile_evidence, family: evidence, lifecycle: append_only, schema_version: "0.1.0", produced_in: increment_2, build_after: [evidence_item, profile_snapshot], required_instance_refs: [profile_snapshot, evidence_item], optional_instance_refs: [], allowed_inline_enum_paths: []}
-  - {record: relationship_candidate, family: evidence, lifecycle: append_only, schema_version: "0.1.0", produced_in: increment_2, build_after: [source_object_observation, source_attribute_observation], required_instance_refs: [evidence_item, source_object_observation], optional_instance_refs: [source_attribute_observation, profile_evidence], allowed_inline_enum_paths: []}
+  - {record: relationship_candidate, family: evidence, lifecycle: material, schema_version: "0.2.0", produced_in: increment_2, build_after: [context_snapshot, source_object_observation, source_attribute_observation], required_instance_refs: [context_snapshot, source_snapshot, evidence_set, evidence_item, source_object_observation], optional_instance_refs: [source_attribute_observation, profile_evidence, review_decision, open_question], allowed_inline_enum_paths: []}
 
   # Supplied and extracted requirements
-  - {record: analytical_requirement, family: requirement, lifecycle: material, schema_version: "0.1.0", produced_in: increment_2, build_after: [evidence_item], required_instance_refs: [work_package, evidence_item], optional_instance_refs: [document_set, review_decision], allowed_inline_enum_paths: []}
-  - {record: reporting_requirement, family: requirement, lifecycle: material, schema_version: "0.1.0", produced_in: increment_2, build_after: [evidence_item], required_instance_refs: [work_package, evidence_item], optional_instance_refs: [document_set, review_decision], allowed_inline_enum_paths: []}
-  - {record: business_term, family: requirement, lifecycle: material, schema_version: "0.1.0", produced_in: increment_2, build_after: [evidence_item], required_instance_refs: [work_package, evidence_item], optional_instance_refs: [document_set, review_decision], allowed_inline_enum_paths: []}
-  - {record: business_rule, family: requirement, lifecycle: material, schema_version: "0.1.0", produced_in: increment_2, build_after: [evidence_item], required_instance_refs: [work_package, evidence_item], optional_instance_refs: [document_set, review_decision], allowed_inline_enum_paths: []}
+  - {record: analytical_requirement, family: requirement, lifecycle: material, schema_version: "0.1.0", produced_in: increment_2, build_after: [evidence_item], required_instance_refs: [solution_run, evidence_item], optional_instance_refs: [document_set, review_decision], allowed_inline_enum_paths: []}
+  - {record: reporting_requirement, family: requirement, lifecycle: material, schema_version: "0.1.0", produced_in: increment_2, build_after: [evidence_item], required_instance_refs: [solution_run, evidence_item], optional_instance_refs: [document_set, review_decision], allowed_inline_enum_paths: []}
+  - {record: business_term, family: requirement, lifecycle: material, schema_version: "0.1.0", produced_in: increment_2, build_after: [evidence_item], required_instance_refs: [solution_run, evidence_item], optional_instance_refs: [document_set, review_decision], allowed_inline_enum_paths: []}
+  - {record: business_rule, family: requirement, lifecycle: material, schema_version: "0.1.0", produced_in: increment_2, build_after: [evidence_item], required_instance_refs: [solution_run, evidence_item], optional_instance_refs: [document_set, review_decision], allowed_inline_enum_paths: []}
 
   # Source Data Dictionary material artifacts
   - {record: source_dictionary_object, family: dictionary, lifecycle: material, schema_version: "0.1.0", produced_in: increment_4, build_after: [context_snapshot, source_object_observation], required_instance_refs: [context_snapshot, source_object_observation, evidence_item], optional_instance_refs: [review_decision, open_question], allowed_inline_enum_paths: []}
@@ -87,10 +86,10 @@ records:
   - {record: validation_finding, family: governance, lifecycle: open_item, schema_version: "0.1.0", produced_in: increment_1, build_after: [artifact_version], required_instance_refs: [artifact_version], optional_instance_refs: [evidence_item], allowed_inline_enum_paths: []}
   - {record: review_item, family: governance, lifecycle: open_item, schema_version: "0.1.0", produced_in: increment_1, build_after: [artifact_version], required_instance_refs: [artifact_version], optional_instance_refs: [validation_finding], allowed_inline_enum_paths: []}
   - {record: review_decision, family: governance, lifecycle: governance_decision, schema_version: "0.1.0", produced_in: increment_1, build_after: [review_item], required_instance_refs: [review_item], optional_instance_refs: [evidence_item], allowed_inline_enum_paths: []}
-  - {record: open_question, family: governance, lifecycle: open_item, schema_version: "0.1.0", produced_in: increment_1, build_after: [work_package], required_instance_refs: [work_package], optional_instance_refs: [context_snapshot, evidence_item], allowed_inline_enum_paths: []}
+  - {record: open_question, family: governance, lifecycle: open_item, schema_version: "0.1.0", produced_in: increment_1, build_after: [solution_run], required_instance_refs: [solution_run], optional_instance_refs: [context_snapshot, evidence_item], allowed_inline_enum_paths: []}
 
   # Reproducibility, lineage and handoff
   - {record: artifact_dependency, family: lineage, lifecycle: append_only, schema_version: "0.1.0", produced_in: increment_1, build_after: [artifact_version], required_instance_refs: [artifact_version], optional_instance_refs: [context_snapshot, evidence_set, requirement_set], allowed_inline_enum_paths: []}
-  - {record: lineage_edge, family: lineage, lifecycle: append_only, schema_version: "0.1.0", produced_in: increment_1, build_after: [evidence_item], required_instance_refs: [work_package], optional_instance_refs: [evidence_item, artifact_version], allowed_inline_enum_paths: []}
+  - {record: lineage_edge, family: lineage, lifecycle: append_only, schema_version: "0.1.0", produced_in: increment_1, build_after: [evidence_item], required_instance_refs: [solution_run], optional_instance_refs: [evidence_item, artifact_version], allowed_inline_enum_paths: []}
   - {record: source_dictionary_handoff, family: handoff, lifecycle: handoff, schema_version: "0.1.0", produced_in: increment_6, build_after: [artifact_version, context_snapshot, review_decision], required_instance_refs: [artifact_version, context_snapshot, evidence_set, requirement_set, review_decision, source_snapshot], optional_instance_refs: [profile_snapshot, artifact_dependency, lineage_edge, open_question], allowed_inline_enum_paths: []}
   - {record: skill_resolution, family: observability, lifecycle: append_only, schema_version: "0.1.0", produced_in: increment_1, build_after: [solution_run], required_instance_refs: [solution_run], optional_instance_refs: [context_snapshot], allowed_inline_enum_paths: []}

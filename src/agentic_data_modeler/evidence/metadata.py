@@ -154,8 +154,8 @@ class MetadataInventory:
     def fingerprint(self) -> str:
         return hashlib.sha256(self.canonical_payload().encode("utf-8")).hexdigest()
 
-    def snapshot_id(self, work_package_id: str) -> str:
-        return stable_record_id("source_snapshot", work_package_id, self.fingerprint())
+    def snapshot_id(self, run_id: str) -> str:
+        return stable_record_id("source_snapshot", run_id, self.fingerprint())
 
     def object_evidence_content(self, object_name: str) -> str:
         item = self.object_named(object_name)

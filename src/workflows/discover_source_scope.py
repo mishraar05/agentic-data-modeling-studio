@@ -36,8 +36,6 @@ from agentic_data_modeler.control import (
 
 RUNTIME_PARAMETERS = (
     "run_id",
-    "engagement_id",
-    "work_package_id",
     "lob",
     "domain",
     "source_catalog",

@@ -14,8 +14,8 @@
 
 | ID | Decision | Owner role | Blocks | Required recorded outcome | Current state |
 |---|---|---|---|---|---|
-| `D23-01` | Exact Personal Auto proof slice | Solution owner + source owner | metadata integration | source system, catalog, schema, connected Policy/Claims tables, LOB/domain, in/out scope | `OPEN` |
-| `D23-02` | Execution identities and privileges | Platform/security owner + source owner | any source/output integration | dev/test/prod principals, source `USE/SELECT`, output write, job/run and document access | `OPEN` |
+| `D23-01` | Exact Personal Auto proof slice | Solution owner + source owner | metadata integration | source system, catalog, schema, connected Policy/Claims tables, LOB/domain, in/out scope | `ACCEPTED` |
+| `D23-02` | Execution identities and privileges | Platform/security owner + source owner | any source/output integration | dev/test/prod principals, source `USE/SELECT`, output write, job/run and document access | `ACCEPTED` |
 | `D23-03` | Profiling run modes and resource policy | Data owner + platform owner | profiling build acceptance | permitted modes, sampling method, table/row/byte/query/time/concurrency limits | `ACCEPTED` (synthetic dev only) |
 | `D23-04` | Sensitive/raw-value and suppression policy | Privacy/data governance owner | profiling execution | classification inputs, allowed metrics/distributions, minimum-count suppression, masking, raw-value prohibition/exception | `ACCEPTED` (synthetic dev only) |
 | `D23-05` | Profile/evidence retention | Data governance owner | persistence build acceptance | retention periods, deletion/legal hold, allowed query text/values in Delta, logs and MLflow | `ACCEPTED` (synthetic dev only) |
@@ -42,7 +42,7 @@
 
 - **Decision owner:** Solution owner acting as data/platform owner for the isolated synthetic-development proof slice; recorded from explicit owner approval.
 - **Approval time:** `2026-07-18T18:47:21+05:30`.
-- **Effective scope:** engagement `E-123`, work package `WP-1234`, P&C Personal Auto / Policy, the seven authorized `insurance_source_discovery.gw_pc_bronze` tables, DEV workspace only.
+- **Effective scope:** the recorded P&C Personal Auto / Policy solution run, the seven authorized `insurance_source_discovery.gw_pc_bronze` tables, DEV workspace only.
 - **Outcome:** contract-owned `RESTRICTED` mode; full-scan aggregate counts; at most 7 tables, 62 attributes and 7 queries; concurrency 1; 120-second per-query acceptance limit and 900-second total task limit.
 - **Rejected alternatives:** `FULL`, value distributions, concurrent execution and an unbounded scan, because they add privacy/cost risk without being needed to prove the first controlled pipeline.
 - **Evidence:** owner approval in the project execution thread; policy `GOV-001@1.0.0`.
@@ -78,7 +78,7 @@
 
 - **Decision owner:** Solution owner acting as data/platform/privacy owner for the isolated synthetic-development slice; recorded from the explicit instruction to deploy and bring the DQX profiling refactor after the DQX trade-off was explained.
 - **Approval time:** `2026-07-18T19:54:13+05:30`.
-- **Effective scope:** engagement `E-123`, work package `WP-1234`, P&C Personal Auto / Policy, the frozen `SCHEMA_ALL_TABLES` manifest for `insurance_source_discovery.gw_pc_bronze`, DEV workspace only.
+- **Effective scope:** the recorded P&C Personal Auto / Policy solution run, the frozen `SCHEMA_ALL_TABLES` manifest for `insurance_source_discovery.gw_pc_bronze`, DEV workspace only.
 - **Outcome:** use pinned `databricks-labs-dqx==0.15.0` programmatically with sampling and row limits disabled. DQX may calculate its standard rich summary transiently inside the isolated synthetic job. The governed projection persists only row, null and exact distinct counts; generated DQX rules, minima/maxima, distributions, patterns, query text and source values are discarded and must not enter Delta evidence, logs, traces or exceptions.
 - **Evidence:** owner instruction in the project execution thread; DQX public profiler API and pinned engine version; policy `GOV-001@1.0.0`.
 - **Implementation consequence:** DQX sits behind a versioned adapter; scope, budgets, persistence, retention, provenance, idempotency and workflow state remain solution-owned deterministic controls.
@@ -94,6 +94,28 @@
 - **Implementation consequence:** exact pack selection may pass the approval/eligibility gate. This decision does not approve model artifacts, source-code mappings, jurisdiction applicability, production deployment, or cross-engagement access.
 - **Remaining gate:** `D23-08` stays `OPEN`; runtime authorization, effective-date and applicability policy must be recorded before a governed context snapshot can advance to `CONTEXT_READY`.
 - **Re-review trigger:** pack content/fingerprint change, legal/licensing decision, a new version, changed scope, revoked source, or production authorization.
+
+### Accepted decision record: D23-01 v1 — source scope selection
+
+- **Decision owner:** Solution owner + source owner, recorded from owner direction.
+- **Approval time:** `2026-07-19`.
+- **Effective scope:** proof slice; source catalog `insurance_source_discovery`, schema `gw_pc_bronze` (from product `gw_pc` + layer `bronze`).
+- **Outcome:** source scope is selected by `proof_slice.source_scope.mode` in `config/env_config.yaml`: `partial` processes only `allow_listed_tables`; `full` processes every table in the defined `catalog.schema`.
+- **Rejected alternatives:** hardcoding a fixed table list in code (brittle, not owner-controlled).
+- **Evidence:** owner direction; `config/env_config.yaml` `proof_slice.source_scope`.
+- **Implementation consequence:** Phase 0 scope validation reads `source_scope`; `full` enumerates tables from the catalog, `partial` uses the allow-list. Removes the source/table blocker.
+- **Re-review trigger:** change of source system, catalog, schema, or a move to production data.
+
+### Accepted decision record: D23-02 v1 — execution identity assumption
+
+- **Decision owner:** Platform/security owner, recorded from owner direction.
+- **Approval time:** `2026-07-19`.
+- **Effective scope:** all SDD runtime source/output access.
+- **Outcome:** service-principal permissioning is a platform/framework responsibility, not an SDD-runtime concern. The framework **assumes the configured service principal already holds the required `USE`/`SELECT` on the source and write on outputs**. The agent performs no per-run identity or grant gate.
+- **Rejected alternatives:** the agent managing or verifying grants — out of scope; the platform owns IAM.
+- **Evidence:** owner direction.
+- **Implementation consequence:** removes `D23-02` as a blocker; no grant-management code in the agent. A denied read surfaces as a platform permissions error, not an agent decision.
+- **Re-review trigger:** platform introduces per-engagement identity isolation or revokes the standing-permission assumption.
 
 ## Suggested resolution order
 
@@ -120,8 +142,9 @@ An email or chat statement is not durable authority until it is entered through 
 
 ## Known current blockers
 
-- No exact proof-slice source/table allow-list is recorded.
-- No project knowledge pack is both `APPROVED` and `runtime_eligible: true`.
+- Source scope is recorded (`D23-01`): `config/env_config.yaml` → `proof_slice.source_scope` (partial allow-list or full schema).
+- Execution identity is assumed available (`D23-02`): platform-owned; the agent does not manage grants.
+- A runtime-eligible knowledge pack exists (`D23-07`): `public_us_pnc_personal_auto@0.6.0`.
 - Production profiling privacy, suppression, sampling, query-budget and retention decisions are not recorded. `D23-03`–`D23-05 v1` authorize only the isolated synthetic-development proof slice.
 - Quantitative evidence/context readiness thresholds are not recorded.
 - `SOURCE_DEPENDENT_DATABRICKS_FLOW_DESIGN.md` null-byte cleanup is complete; its text structure remains readable.

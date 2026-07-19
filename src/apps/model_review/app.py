@@ -13,7 +13,7 @@ st.info(
 st.subheader("Planned review areas")
 st.markdown(
     """
-- Engagement and run scope
+- Solution-run and context scope
 - Reconstructed Source Data Dictionary
 - Silver ODS model
 - Gold dimensional model

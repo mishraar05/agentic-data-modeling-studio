@@ -13,8 +13,8 @@ from .source_scope import SourceScopeMode, validate_patterns
 
 
 # The machine-readable Increment-1 inventory is the approved contract-set
-# identity. It pins all 31 record versions and common_ref 0.3.0.
-APPROVED_CONTRACT_SET_VERSION = "0.2.0"
+# identity. It pins the 29-record contract set and common_ref 0.4.0.
+APPROVED_CONTRACT_SET_VERSION = "0.3.0"
 
 _IDENTIFIER = re.compile(r"^[A-Za-z0-9_]+$")
 _SEMANTIC_VERSION = re.compile(r"^[0-9]+\.[0-9]+\.[0-9]+$")
@@ -100,11 +100,9 @@ def _parse_source_tables(raw: Any, *, allow_empty: bool) -> tuple[str, ...]:
 
 @dataclass(frozen=True, slots=True)
 class RuntimeRequest:
-    """Validated runtime boundary for exactly one source-discovery work package."""
+    """Validated runtime boundary for exactly one source-discovery solution run."""
 
     run_id: str
-    engagement_id: str
-    work_package_id: str
     lob: str
     domain: str
     source_catalog: str
@@ -207,8 +205,6 @@ class RuntimeRequest:
 
         return cls(
             run_id=_required_text(parameters, "run_id"),
-            engagement_id=_required_text(parameters, "engagement_id"),
-            work_package_id=_required_text(parameters, "work_package_id"),
             lob=_required_text(parameters, "lob"),
             domain=_required_text(parameters, "domain"),
             source_catalog=source_catalog,

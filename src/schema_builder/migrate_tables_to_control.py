@@ -2,7 +2,7 @@
 """
 Migration Script: Move Contract Tables from Bronze Schemas to Control Schema
 Version: 1.0.0
-Purpose: Migrate 31 contract tables from gw_*_bronze schemas to control schema
+Purpose: Migrate 29 contract tables from gw_*_bronze schemas to control schema
 """
 
 from pyspark.sql import SparkSession
@@ -15,10 +15,8 @@ CATALOG = "insurance_source_discovery"
 SOURCE_SCHEMAS = ["gw_pc_bronze", "gw_cc_bronze", "gw_bc_bronze"]
 TARGET_SCHEMA = "control"
 
-# List of all 31 contract tables
+# List of all 29 contract tables
 CONTRACT_TABLES = [
-    "engagement",
-    "work_package",
     "solution_run",
     "artifact_version",
     "source_snapshot",

@@ -43,6 +43,6 @@ The resolved manifest is stored in the existing work-package table boundary and 
 ## Anti-drift evidence
 
 - **Charter deliverable:** reconstructed Source Data Dictionary.
-- **Scope:** reusable cross-cutting source onboarding for any selected LOB/domain; first exercised by E-123 / WP-1234, P&C Personal Auto / Policy.
+- **Scope:** reusable cross-cutting source onboarding for any selected LOB/domain; first exercised by the P&C Personal Auto / Policy proof slice.
 - **Acceptance:** every eligible discovered table appears once in the frozen manifest; metadata/profile coverage reconciles to 100%; exclusions and drift are visible and reproducible.
 - **Why now:** full-estate dictionary generation is a current product requirement, whereas manually enumerating proof-slice tables prevents the next scaling step.

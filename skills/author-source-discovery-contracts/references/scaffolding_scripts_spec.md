@@ -54,10 +54,10 @@ Run mutation tests proving that contracts reject:
 - mismatched value discriminators;
 - governed value types without exact governed references;
 - inferred evidence count zero or inconsistent with references;
-- dangling, wrong-provenance, cross-engagement and cross-work-package evidence; and
+- dangling, wrong-provenance, cross-run and cross-context evidence; and
 - material approval or issued handoff without applicable decisions.
 
-Forward-test at least one record from every lifecycle family: evidence item, work package, review decision, open question, material dictionary record and handoff.
+Forward-test at least one record from every lifecycle family: evidence item, solution run, review decision, open question, material dictionary record and handoff.
 
 ## Runner
 

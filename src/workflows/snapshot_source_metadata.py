@@ -44,8 +44,6 @@ from agentic_data_modeler.evidence import (
 
 RUNTIME_PARAMETERS = (
     "run_id",
-    "engagement_id",
-    "work_package_id",
     "lob",
     "domain",
     "source_catalog",
@@ -100,29 +98,28 @@ def _qualified(catalog: str, schema: str, table: str) -> str:
     return ".".join(f"`{identifier}`" for identifier in (catalog, schema, table))
 
 
-work_package_table = _qualified(request.output_catalog, request.output_schema, "work_package")
-work_packages = (
-    spark.table(work_package_table)
-    .where(F.col("record_id") == request.work_package_id)
+solution_run_table = _qualified(request.output_catalog, request.output_schema, "solution_run")
+solution_runs = (
+    spark.table(solution_run_table)
+    .where(F.col("record_id") == request.run_id)
     .limit(2)
     .collect()
 )
-if len(work_packages) != 1:
-    raise ValueError(f"Expected one registered work package; found {len(work_packages)}")
-registered = work_packages[0].asDict(recursive=True)
+if len(solution_runs) != 1:
+    raise ValueError(f"Expected one registered solution run; found {len(solution_runs)}")
+registered = solution_runs[0].asDict(recursive=True)
 expected_boundary = {
-    "engagement_id": request.engagement_id,
     "lob": request.lob,
     "domain": request.domain,
     "source_catalog": request.source_catalog,
     "source_schema": request.source_schema,
-    "source_tables_allow_list": list(request.source_tables),
+    "source_tables": list(request.source_tables),
     "output_catalog": request.output_catalog,
     "output_schema": request.output_schema,
 }
 conflicts = [key for key, value in expected_boundary.items() if registered.get(key) != value]
 if conflicts:
-    raise ValueError(f"Registered work-package boundary conflicts on: {sorted(conflicts)}")
+    raise ValueError(f"Registered solution-run boundary conflicts on: {sorted(conflicts)}")
 if registered["workflow_state"] not in {"VALIDATED", "METADATA_READY", "PROFILE_READY"}:
     raise ValueError(f"Metadata snapshot is not allowed from state {registered['workflow_state']!r}")
 
@@ -246,10 +243,9 @@ inventory = MetadataInventory.from_iterables(
 )
 inventory.validate()
 snapshot_fingerprint = inventory.fingerprint()
-snapshot_id = inventory.snapshot_id(request.work_package_id)
+snapshot_id = inventory.snapshot_id(request.run_id)
 now = datetime.now(timezone.utc).replace(tzinfo=None)
 provenance = {
-    "work_package_id": request.work_package_id,
     "run_id": request.run_id,
     "context_snapshot_id": None,
     "source_snapshot_id": snapshot_id,
@@ -295,7 +291,6 @@ def _insert_records_idempotently(table_name: str, records: list[dict]) -> None:
 snapshot_record = {
     "record_id": snapshot_id,
     "schema_version": "0.1.0",
-    "engagement_id": request.engagement_id,
     "lob": request.lob,
     "domain": request.domain,
     "artifact_version": "synthetic-dev/0.1.0",
@@ -303,7 +298,7 @@ snapshot_record = {
     "provenance": provenance,
     "created_at": now,
     "updated_at": now,
-    "work_package_ref": request.work_package_id,
+    "solution_run_ref": request.run_id,
     "snapshot_timestamp": now,
     "source_catalog": request.source_catalog,
     "source_schema": request.source_schema,
@@ -326,7 +321,6 @@ for source_object in inventory.objects:
         {
             "record_id": evidence_id,
             "schema_version": "0.1.0",
-            "engagement_id": request.engagement_id,
             "lob": request.lob,
             "domain": request.domain,
             "artifact_version": "synthetic-dev/0.1.0",
@@ -334,7 +328,7 @@ for source_object in inventory.objects:
             "provenance": provenance,
             "created_at": now,
             "updated_at": now,
-            "work_package_ref": request.work_package_id,
+            "solution_run_ref": request.run_id,
             "provenance_class": "SOURCE_FACT",
             "evidence_type": "METADATA",
             "content": content,
@@ -354,7 +348,6 @@ for source_object in inventory.objects:
         {
             "record_id": stable_record_id("source_object", snapshot_id, source_object.name),
             "schema_version": "0.1.0",
-            "engagement_id": request.engagement_id,
             "lob": request.lob,
             "domain": request.domain,
             "artifact_version": "synthetic-dev/0.1.0",
@@ -389,7 +382,6 @@ for source_object in inventory.objects:
                     "source_attribute", snapshot_id, source_object.name, column.name
                 ),
                 "schema_version": "0.1.0",
-                "engagement_id": request.engagement_id,
                 "lob": request.lob,
                 "domain": request.domain,
                 "artifact_version": "synthetic-dev/0.1.0",
@@ -433,46 +425,25 @@ if persisted_attribute_count != inventory.column_count:
 
 spark.sql(
     f"""
-    UPDATE {work_package_table}
+    UPDATE {solution_run_table}
     SET workflow_state = 'METADATA_READY', updated_at = current_timestamp()
-    WHERE record_id = '{request.work_package_id}'
+    WHERE record_id = '{request.run_id}'
       AND workflow_state = 'VALIDATED'
     """
 )
 final_state = (
-    spark.table(work_package_table)
-    .where(F.col("record_id") == request.work_package_id)
+    spark.table(solution_run_table)
+    .where(F.col("record_id") == request.run_id)
     .select("workflow_state")
     .first()
     .workflow_state
 )
 if final_state not in {"METADATA_READY", "PROFILE_READY"}:
-    raise ValueError(f"Work package did not preserve metadata readiness; received {final_state!r}")
-
-metadata_run_record = {
-    "record_id": f"{request.run_id}_metadata",
-    "schema_version": "0.1.0",
-    "engagement_id": request.engagement_id,
-    "lob": request.lob,
-    "domain": request.domain,
-    "artifact_version": "synthetic-dev/0.1.0",
-    "lifecycle_state": "ACTIVE",
-    "provenance": provenance,
-    "created_at": now,
-    "updated_at": now,
-    "work_package_ref": request.work_package_id,
-    "run_type": "METADATA",
-    "start_timestamp": now,
-    "end_timestamp": now,
-    "status": "COMPLETED",
-    "error_message": None,
-    "cost_usd": None,
-}
-_insert_records_idempotently("solution_run", [metadata_run_record])
+    raise ValueError(f"Solution run did not preserve metadata readiness; received {final_state!r}")
 
 print("Metadata snapshot passed")
 print(f"snapshot_id={snapshot_id}")
 print(f"table_count={inventory.table_count}")
 print(f"column_count={inventory.column_count}")
 print(f"fingerprint={snapshot_fingerprint}")
-print(f"work_package_state={final_state}")
+print(f"solution_run_state={final_state}")

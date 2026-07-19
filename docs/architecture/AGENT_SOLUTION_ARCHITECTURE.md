@@ -47,7 +47,7 @@ The initial implementation uses **one custom agent harness with specialist capab
 
 | Capability | Responsibility | Primary output |
 |---|---|---|
-| Scope and context manager | Fix engagement, LOB, domain, source boundary, requirements, governed inputs, and context snapshot | Executable work package |
+| Scope and context manager | Fix solution run, LOB, domain, source boundary, requirements, governed inputs, and context snapshot | Executable bounded context |
 | Source Data Analyst | Reconstruct source meaning, structure, relationships, code values, evidence, and gaps | Reconstructed Source Data Dictionary |
 | Silver ODS Modeler | Create scalable source-aligned/canonical ODS design | Silver model |
 | Gold Dimensional Modeler | Create requirement-driven facts, dimensions, grain, and measures | Gold model |
@@ -72,7 +72,7 @@ The product choices shown in the Databricks “Create new Agent” screen are co
 | **MLflow for GenAI** | Trace, evaluate, compare, monitor, and collect expert feedback | Mandatory harness component |
 | **Unity Catalog and Delta** | Govern evidence and persist versioned artifacts and decisions | Authoritative data/control plane |
 | **Databricks Labs DQX** | Programmatic source profiling and later execution of approved data-quality rules behind a versioned adapter | Profiling engine; solution-owned scope, privacy, persistence and approval controls remain authoritative |
-| **AI Search** | Retrieve only approved unstructured evidence with engagement and scope filters | Optional evidence service; never unfiltered memory |
+| **AI Search** | Retrieve only approved unstructured evidence with run, source, and LOB/domain filters | Optional evidence service; never unfiltered memory |
 
 The custom agent should follow the Databricks-recommended MLflow `ResponsesAgent` interface so the implementation can use custom orchestration while retaining tracing, evaluation, deployment, and monitoring integration. Product previews or beta services must sit behind an adapter and cannot become an irreplaceable core dependency.
 
@@ -98,7 +98,7 @@ It has four planes:
 1. **Portable pack source:** versioned manifests and non-sensitive pack assets under `knowledge/`.
 2. **Governed registry:** Unity Catalog/Delta records for pack identity, version, scope, ownership, approval, effective dates, authorization, and fingerprints.
 3. **Governed content:** structured Delta records and, where approved, documents in Unity Catalog Volumes or filtered AI Search indexes.
-4. **Runtime context:** the context assembler selects the smallest applicable subset for one engagement, LOB/domain, product/module/version, effective date, task, and approval state.
+4. **Runtime context:** the context assembler selects the smallest applicable subset for one solution run, LOB/domain, product/module/version, effective date, task, and approval state.
 
 Knowledge categories include supplied ontology, business glossary, modeling standards, LOB knowledge, domain knowledge, KPI definitions, code sets, and authorized target reference models.
 
@@ -107,7 +107,7 @@ Agents have read/retrieval access to eligible knowledge and write generated resu
 Every task receives a bounded **context envelope** containing:
 
 1. charter and applicable policies;
-2. engagement, LOB, domain, source, and target scope;
+2. solution run, LOB, domain, source, and target scope;
 3. task objective and output contract;
 4. approved ontology/glossary/standards inputs, when supplied;
 5. task-relevant source evidence and requirement evidence;
@@ -119,14 +119,14 @@ Every task receives a bounded **context envelope** containing:
 
 The context assembler must:
 
-- filter by engagement, LOB, domain, source, artifact type, version, effective date, and approval state;
+- filter by memory partition, LOB, domain, source, artifact type, version, effective date, and approval state;
 - prefer authoritative and approved evidence;
 - distinguish source fact, governed input, inference, requirement, and human decision;
 - retrieve the smallest sufficient context rather than dumping whole repositories;
 - retain evidence IDs so every material output can cite its support;
 - detect conflicting and stale context;
 - set token budgets and summarize only with retained provenance;
-- prevent one engagement's data or decisions from entering another; and
+- prevent one run's source facts from entering another run and prevent decisions from crossing memory partitions; and
 - fail closed when essential evidence is missing or contradictory.
 
 Chat history is not authoritative memory. Working memory is run-scoped; durable memory consists only of versioned evidence, artifacts, and approved decisions.
@@ -137,15 +137,15 @@ The durable-memory principle above resolves into three named stores, mapped to t
 
 | Store | Memory type | Holds | Scope | Lifecycle |
 |---|---|---|---|---|
-| Governed knowledge layer (§4.1) | **Semantic** | General domain meaning: glossary, code sets, LOB/domain modules, standards, approved reference models | Cross-engagement, reusable | Versioned pack; `CANDIDATE` → `APPROVED`; immutable versions |
-| Engagement decision & run stores | **Episodic** | Events bound to engagement/run/time: authorized schema-scope policy, resolved frozen source manifest, `review_decision`, `open_question`, `context_snapshot`, `solution_run`, `work_package`, `artifact_version` | Engagement- and scope-isolated | Append-only / versioned; never auto-promoted |
+| Governed knowledge layer (§4.1) | **Semantic** | General domain meaning: glossary, code sets, LOB/domain modules, standards, approved reference models | Cross-run, reusable | Versioned pack; `CANDIDATE` → `APPROVED`; immutable versions |
+| Decision and run stores | **Episodic** | Events bound to run/time: authorized schema-scope policy, resolved frozen source manifest, `review_decision`, `open_question`, `context_snapshot`, `solution_run`, `artifact_version` | Run-, source-, and memory-partition-isolated | Append-only / versioned; never auto-promoted |
 | Skills (`SKILL.md`, §7) | **Procedural** | How to perform a bounded, evaluable reasoning task | Reusable playbook | Versioned; gated on unseen evaluation cases |
 
 Deterministic scope/authorization gates (`00_validate_scope.py`, tool-permission middleware, approval-state enforcement) are execution, not memory.
 
-Placement is then mechanical: a general truth about the domain is semantic; a fact or decision true only for one engagement/run is episodic; a reusable procedure is procedural; a safety invariant is deterministic code. Domain content never enters a skill, and engagement data never enters the knowledge layer.
+Placement is then mechanical: a general truth about the domain is semantic; a fact or decision true only for one run or source boundary is episodic; a reusable procedure is procedural; a safety invariant is deterministic code. Domain content never enters a skill, and run-specific source data never enters the knowledge layer.
 
-**Consolidation gate (episodic → semantic).** Repeated approved decisions may reveal a generalizable pattern worth adding to reusable knowledge (Charter §7 — reducing reviewer overrides through learning). That promotion is a governed, human-reviewed authoring act performed through the knowledge-pack maintainer plane ([`build-governed-knowledge-pack`](../../skills/build-governed-knowledge-pack/SKILL.md)); it strips engagement-specific facts, cannot be an automatic or silent write, and may not set `APPROVED` or `runtime_eligible`. Engagement isolation (Charter §6) bounds it: one engagement's episodic memory must never flow into another's context except through approved semantic knowledge.
+**Consolidation gate (episodic → semantic).** Repeated approved decisions may reveal a generalizable pattern worth adding to reusable knowledge (Charter §7 — reducing reviewer overrides through learning). That promotion is a governed, human-reviewed authoring act performed through the knowledge-pack maintainer plane ([`build-governed-knowledge-pack`](../../skills/build-governed-knowledge-pack/SKILL.md)); it strips run- and source-specific facts, cannot be an automatic or silent write, and may not set `APPROVED` or `runtime_eligible`. Memory isolation (Charter §6) bounds it: episodic decisions must never cross partitions except through approved semantic knowledge.
 
 ## 5. Guardrails
 
@@ -155,7 +155,7 @@ Guardrails are enforced in the harness and data plane, not merely written in pro
 
 - validate scope and user/app identity;
 - authorize every evidence class and retrieval source;
-- exclude prohibited or cross-engagement content;
+- exclude prohibited or cross-run content;
 - scan untrusted documents for instruction-like content and treat it as data;
 - assemble only applicable skills and tools; and
 - require a versioned output contract.
@@ -164,7 +164,7 @@ Guardrails are enforced in the harness and data plane, not merely written in pro
 
 - constrain read-only source tools to the authorized catalog/schema and the resolved frozen source manifest, and writes to solution-owned artifact stores;
 - separate source reads from artifact writes;
-- constrain tool arguments to the engagement and task scope;
+- constrain tool arguments to the solution-run and source scope;
 - enforce time, cost, token, tool-call, and recursion limits;
 - require structured intermediate and final outputs;
 - prohibit invented source fields, concept IDs, requirements, and evidence references; and
@@ -205,7 +205,7 @@ A skill is a reusable procedural playbook, not an agent persona, fact store, pro
 
 Create a skill only when all are true:
 
-- the activity recurs across engagements or model elements;
+- the activity recurs across solution runs or model elements;
 - it has a stable objective and bounded responsibility;
 - its required inputs and output contract are clear;
 - it contains domain/modeling judgment that benefits from explicit guidance; and
@@ -221,9 +221,9 @@ Good candidates include:
 - perform model and requirement coverage critique; and
 - prepare an artifact for architect review.
 
-LOB facts, ontology content, source metadata, and engagement decisions belong in governed context stores, not inside `SKILL.md`. A skill may explain how to retrieve and apply them.
+LOB facts, ontology content, source metadata, and run-specific decisions belong in governed context stores, not inside `SKILL.md`. A skill may explain how to retrieve and apply them.
 
-Knowledge-pack authoring is a separate maintainer plane. [`build-governed-knowledge-pack`](../../skills/build-governed-knowledge-pack/SKILL.md) may research, scaffold and validate new immutable candidate pack versions, but it is not available to the engagement runtime agent and cannot approve, publish for runtime, or embed LOB/jurisdiction facts in its own instructions.
+Knowledge-pack authoring is a separate maintainer plane. [`build-governed-knowledge-pack`](../../skills/build-governed-knowledge-pack/SKILL.md) may research, scaffold and validate new immutable candidate pack versions, but it is not available to the runtime agent and cannot approve, publish for runtime, or embed LOB/jurisdiction facts in its own instructions.
 
 Every skill must declare:
 

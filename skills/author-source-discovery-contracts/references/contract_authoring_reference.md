@@ -66,7 +66,7 @@ Use `_common.schema.json#/$defs/semantic_claim` and preserve these rules:
 - `LIST`, `MAPPING` and `CARDINALITY` values use their closed structural shapes.
 - `CODE_VALUE`, `KEY_ROLE`, `PRIVACY_CLASS` and `RETENTION_RULE` require `governed_code_ref`.
 
-Physical observations carry their own unique `evidence_refs`. Dataset validation verifies existence, `SOURCE_FACT` provenance, same engagement and same work package.
+Physical observations carry their own unique `evidence_refs`. Dataset validation verifies existence, `SOURCE_FACT` provenance, and the same solution run.
 
 ## 6. Schema conventions
 
@@ -86,7 +86,7 @@ After schema validation it must recursively locate semantic claims and physical 
 
 - referenced evidence records exist and validate;
 - observed and physical references resolve to `SOURCE_FACT`;
-- engagement and work-package identities match;
+- run identities and required context snapshots match;
 - inferred `evidence_count` equals the number of unique evidence references;
 - governed code references match the selected context-pack identity/version/fingerprint when context exists; and
 - approval/handoff decision references resolve and are applicable.

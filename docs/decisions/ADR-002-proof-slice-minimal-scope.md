@@ -20,7 +20,7 @@ What *does* exist is disproportionate:
 Two problems compound:
 
 1. **Drift.** Effort has gone to authoring/re-structuring input content and governance docs, not to the core capability the product is supposed to wrap.
-2. **Over-engineering.** The schema is designed as a multi-tenant, fully-audited system-of-record *before* the one hard creative capability (turning messy source metadata into a reviewable, evidence-backed model) has been demonstrated once. Identifiers such as `engagement_id` and `work_package_id` presuppose concurrent client engagements and formal work decomposition that do not exist.
+2. **Over-engineering.** The schema is designed as a multi-tenant, fully-audited system-of-record *before* the one hard creative capability (turning messy source metadata into a reviewable, evidence-backed model) has been demonstrated once. Separate client and work-decomposition identifiers presuppose operating boundaries that do not exist.
 
 ## Decision
 
@@ -107,7 +107,7 @@ KEEP = core to the proof · SIMPLIFY = concept needed, but as column/file/string
 ## Consequences
 
 - The next milestone is a working end-to-end slice (evidence in → deliverables out → human review), not more knowledge content or governance tables.
-- Scope identifiers shrink to `run_id`, `version`, `lob`, `domain` for the proof. `engagement_id` and `work_package_id` are removed from the near-term path (including the `00_validate_scope` parameter set) and reintroduced only against the re-entry table above.
+- Scope identity is `run_id`, `version`, `lob`, and `domain`; the execution path does not carry redundant client or work-decomposition keys.
 - No deferred concern is deleted from the charter's long-term intent; each has an explicit trigger, so deferral is auditable rather than lossy.
 - Knowledge packs remain valid **input**. Their versioning pace should stop being treated as delivery progress.
 - Risk if not adopted: continued investment in a platform skeleton around an unproven core, and a growing gap between artifact count and demonstrated capability — the exact failure the charter's anti-drift gate (§8) exists to prevent.

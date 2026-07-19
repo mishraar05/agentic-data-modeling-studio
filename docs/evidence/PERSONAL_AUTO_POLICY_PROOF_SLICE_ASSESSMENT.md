@@ -1,7 +1,8 @@
 # P&C Personal Auto Policy proof-slice assessment
 
 **Assessment date:** 2026-07-18  
-**Engagement / work package:** `E-123` / `WP-1234`  
+**Execution scope:** P&C Personal Auto / Policy proof-slice run
+
 **Charter deliverable advanced:** reconstructed Source Data Dictionary  
 **Reusable need:** schema-wide source onboarding with restricted DQX profiling  
 

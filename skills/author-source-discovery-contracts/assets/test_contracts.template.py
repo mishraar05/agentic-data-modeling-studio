@@ -42,13 +42,11 @@ HASH = "a" * 64
 ENVELOPE = {
     "record_id": "synthetic-record-1",
     "schema_version": "0.1.0",
-    "engagement_id": "synthetic-engagement",
     "lob": "synthetic-lob",
     "domain": "synthetic-domain",
     "artifact_version": "0.1.0",
     "lifecycle_state": "DRAFT",
     "provenance": {
-        "work_package_id": "synthetic-work-package",
         "run_id": "synthetic-run",
         "context_snapshot_id": "synthetic-context",
     },
@@ -213,8 +211,7 @@ def check_referential(
 ) -> list[str]:
     """Reference behavior; production code must validate contracts before this pass."""
     problems: set[str] = set()
-    expected_engagement = record.get("engagement_id")
-    expected_work_package = record.get("provenance", {}).get("work_package_id")
+    expected_run = record.get("provenance", {}).get("run_id")
     for kind, node in _walk(record):
         refs = node.get("evidence_refs", [])
         if kind == "claim" and node.get("evidence_state") not in {"OBSERVED", "INFERRED"}:
@@ -232,19 +229,16 @@ def check_referential(
                 problems.add(f"not_source_fact:{ref}")
             if node.get("evidence_state") == "OBSERVED" and evidence.get("provenance_class") != "SOURCE_FACT":
                 problems.add(f"not_source_fact:{ref}")
-            if evidence.get("engagement_id") != expected_engagement:
-                problems.add(f"cross_engagement:{ref}")
-            if evidence.get("provenance", {}).get("work_package_id") != expected_work_package:
-                problems.add(f"cross_work_package:{ref}")
+            if evidence.get("provenance", {}).get("run_id") != expected_run:
+                problems.add(f"cross_run:{ref}")
     return sorted(problems)
 
 
 def _evidence(**overrides: Any) -> dict[str, Any]:
     evidence = {
         "record_id": "synthetic-evidence-1",
-        "engagement_id": "synthetic-engagement",
         "provenance_class": "SOURCE_FACT",
-        "provenance": {"work_package_id": "synthetic-work-package", "run_id": "synthetic-run"},
+        "provenance": {"run_id": "synthetic-run"},
     }
     evidence.update(overrides)
     return evidence
@@ -263,18 +257,13 @@ def test_referential_wrong_provenance_fails() -> None:
     assert check_referential(_attribute(), store) == ["not_source_fact:synthetic-evidence-1"]
 
 
-def test_referential_cross_engagement_fails() -> None:
-    store = {"synthetic-evidence-1": _evidence(engagement_id="other-engagement")}
-    assert check_referential(_attribute(), store) == ["cross_engagement:synthetic-evidence-1"]
-
-
-def test_referential_cross_work_package_fails() -> None:
+def test_referential_cross_run_fails() -> None:
     store = {
         "synthetic-evidence-1": _evidence(
-            provenance={"work_package_id": "other-work-package", "run_id": "synthetic-run"}
+            provenance={"run_id": "other-run"}
         )
     }
-    assert check_referential(_attribute(), store) == ["cross_work_package:synthetic-evidence-1"]
+    assert check_referential(_attribute(), store) == ["cross_run:synthetic-evidence-1"]
 
 
 def test_referential_finds_nested_claims_generically() -> None:

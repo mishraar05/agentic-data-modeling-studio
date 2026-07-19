@@ -1,19 +1,18 @@
--- Auto-generated from evidence_item.schema.json vunknown
+-- Auto-generated from evidence_item.schema.json v0.1.0
 -- Configuration: config/env_config.yaml (schema=gw_pc_bronze)
 -- DO NOT EDIT MANUALLY — Regenerate from contract + config
 
 CREATE TABLE IF NOT EXISTS insurance_source_discovery.gw_pc_bronze.evidence_item (
   record_id STRING NOT NULL,
   schema_version STRING NOT NULL,
-  engagement_id STRING NOT NULL,
   lob STRING NOT NULL,
   domain STRING NOT NULL,
   artifact_version STRING NOT NULL,
   lifecycle_state STRING NOT NULL,
-  provenance STRUCT<work_package_id: STRING, run_id: STRING, context_snapshot_id: STRING, source_snapshot_id: STRING, profile_snapshot_id: STRING, model_version: STRING, prompt_version: STRING, skill_version: STRING, tool_version: STRING> NOT NULL,
+  provenance STRUCT<run_id: STRING, context_snapshot_id: STRING, source_snapshot_id: STRING, profile_snapshot_id: STRING, model_version: STRING, prompt_version: STRING, skill_version: STRING, tool_version: STRING> NOT NULL,
   created_at TIMESTAMP NOT NULL,
   updated_at TIMESTAMP NOT NULL,
-  work_package_ref STRING NOT NULL,
+  solution_run_ref STRING NOT NULL,
   provenance_class STRING NOT NULL,
   evidence_type STRING NOT NULL,
   content STRING NOT NULL,
@@ -29,10 +28,7 @@ CREATE TABLE IF NOT EXISTS insurance_source_discovery.gw_pc_bronze.evidence_item
   notes STRING,
 
   -- Constraints
-  CONSTRAINT table_pk PRIMARY KEY (record_id),
-  CONSTRAINT lifecycle_state_check CHECK (lifecycle_state IN ('COMMITTED', 'SUPERSEDED')),
-  CONSTRAINT provenance_class_check CHECK (provenance_class IN ('SOURCE_FACT', 'DOCUMENT_CLAIM', 'GOVERNED_INPUT', 'REQUIREMENT', 'INFERENCE', 'HUMAN_DECISION', 'UNRESOLVED')),
-  CONSTRAINT evidence_type_check CHECK (evidence_type IN ('METADATA', 'PROFILE', 'DOCUMENT_EXCERPT', 'REQUIREMENT', 'GLOSSARY_TERM', 'STANDARD', 'PRIOR_DECISION'))
+  CONSTRAINT evidence_item_pk PRIMARY KEY (record_id)
 )
 USING DELTA
 TBLPROPERTIES (
@@ -44,3 +40,8 @@ TBLPROPERTIES (
   'governance.purpose' = 'source_data_discovery'
 )
 ;
+
+-- CHECK constraints added via ALTER TABLE
+ALTER TABLE insurance_source_discovery.gw_pc_bronze.evidence_item ADD CONSTRAINT evidence_item_lifecycle_state_check CHECK (lifecycle_state IN ('COMMITTED', 'SUPERSEDED'));
+ALTER TABLE insurance_source_discovery.gw_pc_bronze.evidence_item ADD CONSTRAINT evidence_item_provenance_class_check CHECK (provenance_class IN ('SOURCE_FACT', 'DOCUMENT_CLAIM', 'GOVERNED_INPUT', 'REQUIREMENT', 'INFERENCE', 'HUMAN_DECISION', 'UNRESOLVED'));
+ALTER TABLE insurance_source_discovery.gw_pc_bronze.evidence_item ADD CONSTRAINT evidence_item_evidence_type_check CHECK (evidence_type IN ('METADATA', 'PROFILE', 'DOCUMENT_EXCERPT', 'REQUIREMENT', 'GLOSSARY_TERM', 'STANDARD', 'PRIOR_DECISION'));

@@ -1,4 +1,11 @@
-"""run_sdd_agent — Phases 0-9 end to end over an allow-listed source slice."""
+"""run_sdd_agent — Phases 0-9 end to end over an allow-listed source slice.
+
+LEGACY / DEMO PATH. This vertical-slice orchestrator (with its stub LLM,
+AutoApprove policy and local JSON stores) exists to demonstrate the flow offline.
+The CANONICAL production agent is ``agentic_data_modeler.analyst.analyze_source``
+(real model port, independent critic, deterministic gap checks, human review).
+Do not extend this module for production; use the analyst package.
+"""
 
 from __future__ import annotations
 
@@ -34,7 +41,7 @@ class RunResult:
 def _ingest_evidence(root: Path, scope: Scope, inventory: MetadataInventory, snapshot_ref: str):
     obj_obs, attr_obs = [], []
     for om in sorted(inventory.objects, key=lambda o: o.name):
-        ev_item = C.stable_id("evidence_item", scope.work_package_id, om.name)
+        ev_item = C.stable_id("evidence_item", scope.run_id, om.name)
         obj_obs.append(records.object_observation(
             root, scope, snapshot_ref=snapshot_ref, evidence_item_ref=ev_item,
             catalog=inventory.catalog, schema=inventory.schema, object_name=om.name,
@@ -61,7 +68,7 @@ def run_sdd_agent(root: Path, scope: Scope, inventory: MetadataInventory, *,
     manifest = select_approved_pack(
         root, pack_id=pack_id, pack_version=pack_version,
         geography=geography, lob=scope.lob, domains=pack_domains)
-    snapshot_ref = inventory.snapshot_id(scope.work_package_id)
+    snapshot_ref = inventory.snapshot_id(scope.run_id)
     ctx = assemble_context(root, scope, manifest=manifest, evidence_set_ref=snapshot_ref,
                            evidence_fingerprint=inventory.fingerprint())
     store.append("context_snapshot", ctx.snapshot)

@@ -73,7 +73,7 @@ Target schema: `insurance_source_discovery.gw_pc_bronze`
 3. Create contract_to_ddl.py core script
 
 ### Phase 2:
-1. Parse all 31 JSON Schema contracts
+1. Parse all 29 JSON Schema record contracts
 2. Generate DDL for bronze layer tables
 3. Create 93 Delta tables (31 × 3 bronze schemas)
 

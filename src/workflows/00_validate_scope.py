@@ -1,6 +1,6 @@
 # Databricks notebook source
 # MAGIC %md
-# MAGIC # Validate modeling work-package scope
+# MAGIC # Validate modeling run scope
 # MAGIC
 # MAGIC This entry point validates configuration only. It does not read source
 # MAGIC values, create target models, or provision schemas.
@@ -9,7 +9,6 @@
 
 PARAMETERS = (
     "run_id",
-    "engagement_id",
     "lob",
     "domain",
     "source_catalog",
@@ -43,7 +42,6 @@ for table_name in source_tables:
 
 print("Modeling scope validation passed")
 print(f"run_id={scope['run_id']}")
-print(f"engagement_id={scope['engagement_id']}")
 print(f"lob={scope['lob']}")
 print(f"domain={scope['domain']}")
 print(f"source_table_count={len(source_tables)}")

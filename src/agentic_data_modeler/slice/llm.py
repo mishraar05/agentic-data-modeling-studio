@@ -40,7 +40,7 @@ _ABBREV = {
 }
 _PRIVACY = re.compile(r"(ssn|social_security|dob|birth|first_name|last_name|full_name|"
                       r"email|phone|address|license|passport|tax_id)", re.I)
-_OPAQUE = re.compile(r"^(col\d+|f\d+|x\d+|c\d+|field\d+|val\d+)$", re.I)
+_OPAQUE = re.compile(r"^(col|c|f|x|fld|field|val|attr)_?\d+$", re.I)
 
 
 def _humanize(name: str) -> str:

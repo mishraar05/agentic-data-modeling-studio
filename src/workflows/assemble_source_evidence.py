@@ -3,7 +3,7 @@
 # MAGIC # Assemble immutable source evidence
 # MAGIC
 # MAGIC This deterministic task freezes the metadata and restricted-profile
-# MAGIC evidence already created for the authorized work package. It does not
+# MAGIC evidence already created for the authorized solution run. It does not
 # MAGIC infer business meaning or manufacture absent documents/requirements.
 
 # COMMAND ----------
@@ -34,8 +34,6 @@ from agentic_data_modeler.evidence import EvidenceItemReference, EvidenceSetMani
 
 RUNTIME_PARAMETERS = (
     "run_id",
-    "engagement_id",
-    "work_package_id",
     "lob",
     "domain",
     "source_catalog",
@@ -107,22 +105,22 @@ def _exactly_one(dataframe, description: str):
     return rows[0]
 
 
-work_package_table = _qualified("work_package")
-work_package = _exactly_one(
-    spark.table(work_package_table).where(F.col("record_id") == request.work_package_id),
-    "work package",
+solution_run_table = _qualified("solution_run")
+solution_run = _exactly_one(
+    spark.table(solution_run_table).where(F.col("record_id") == request.run_id),
+    "solution run",
 ).asDict(recursive=True)
-if work_package["workflow_state"] not in {"PROFILE_READY", "EVIDENCE_READY"}:
+if solution_run["workflow_state"] not in {"PROFILE_READY", "EVIDENCE_READY"}:
     raise ValueError(
         "Evidence assembly requires PROFILE_READY or EVIDENCE_READY; received "
-        f"{work_package['workflow_state']!r}"
+        f"{solution_run['workflow_state']!r}"
     )
-if tuple(work_package["source_tables_allow_list"]) != tuple(request.source_tables):
-    raise ValueError("Frozen source manifest differs from the registered work package")
+if tuple(solution_run["source_tables"]) != tuple(request.source_tables):
+    raise ValueError("Frozen source manifest differs from the registered solution run")
 
 source_snapshot = _exactly_one(
     spark.table(_qualified("source_snapshot")).where(
-        (F.col("provenance.work_package_id") == request.work_package_id)
+        (F.col("provenance.run_id") == request.run_id)
         & (F.col("source_catalog") == request.source_catalog)
         & (F.col("source_schema") == request.source_schema)
     ),
@@ -132,7 +130,7 @@ source_snapshot_id = source_snapshot["record_id"]
 
 profile_snapshot = _exactly_one(
     spark.table(_qualified("profile_snapshot")).where(
-        (F.col("provenance.work_package_id") == request.work_package_id)
+        (F.col("provenance.run_id") == request.run_id)
         & (F.col("source_snapshot_ref") == source_snapshot_id)
         & F.col("provenance.tool_version").startswith("dqx/0.15.0/")
     ),
@@ -143,7 +141,7 @@ profile_snapshot_id = profile_snapshot["record_id"]
 evidence_rows = (
     spark.table(_qualified("evidence_item"))
     .where(
-        (F.col("work_package_ref") == request.work_package_id)
+        (F.col("solution_run_ref") == request.run_id)
         & (F.col("source_snapshot_ref") == source_snapshot_id)
         & (
             F.col("profile_snapshot_ref").isNull()
@@ -154,7 +152,7 @@ evidence_rows = (
     .collect()
 )
 manifest = EvidenceSetManifest.from_iterable(
-    work_package_id=request.work_package_id,
+    run_id=request.run_id,
     source_snapshot_id=source_snapshot_id,
     profile_snapshot_id=profile_snapshot_id,
     document_set_id=None,
@@ -180,10 +178,8 @@ if profile_count != int(profile_snapshot["profiled_attribute_count"]):
 
 now = datetime.now(timezone.utc).replace(tzinfo=None)
 evidence_set_id = manifest.evidence_set_id()
-assembly_run_id = manifest.solution_run_id()
 provenance = {
-    "work_package_id": request.work_package_id,
-    "run_id": assembly_run_id,
+    "run_id": request.run_id,
     "context_snapshot_id": None,
     "source_snapshot_id": source_snapshot_id,
     "profile_snapshot_id": profile_snapshot_id,
@@ -225,35 +221,9 @@ def _insert_record_idempotently(
         )
 
 
-solution_run_record = {
-    "record_id": assembly_run_id,
-    "schema_version": "0.1.0",
-    "engagement_id": request.engagement_id,
-    "lob": request.lob,
-    "domain": request.domain,
-    "artifact_version": "synthetic-dev/0.1.0",
-    "lifecycle_state": "ACTIVE",
-    "provenance": provenance,
-    "created_at": now,
-    "updated_at": now,
-    "work_package_ref": request.work_package_id,
-    "run_type": "EVIDENCE",
-    "start_timestamp": now,
-    "end_timestamp": now,
-    "status": "COMPLETED",
-    "error_message": None,
-    "cost_usd": None,
-}
-_insert_record_idempotently(
-    "solution_run",
-    solution_run_record,
-    ("work_package_ref", "run_type", "status"),
-)
-
 evidence_set_record = {
     "record_id": evidence_set_id,
     "schema_version": "0.1.0",
-    "engagement_id": request.engagement_id,
     "lob": request.lob,
     "domain": request.domain,
     "artifact_version": "synthetic-dev/0.1.0",
@@ -261,8 +231,7 @@ evidence_set_record = {
     "provenance": provenance,
     "created_at": now,
     "updated_at": now,
-    "work_package_ref": request.work_package_id,
-    "solution_run_ref": assembly_run_id,
+    "solution_run_ref": request.run_id,
     "source_snapshot_ref": source_snapshot_id,
     "profile_snapshot_ref": profile_snapshot_id,
     "document_set_ref": None,
@@ -275,7 +244,6 @@ _insert_record_idempotently(
     "evidence_set",
     evidence_set_record,
     (
-        "work_package_ref",
         "solution_run_ref",
         "source_snapshot_ref",
         "profile_snapshot_ref",
@@ -288,26 +256,27 @@ _insert_record_idempotently(
 
 spark.sql(
     f"""
-    UPDATE {work_package_table}
+    UPDATE {solution_run_table}
     SET workflow_state = 'EVIDENCE_READY', updated_at = current_timestamp()
-    WHERE record_id = '{request.work_package_id}'
+    WHERE record_id = '{request.run_id}'
       AND workflow_state IN ('PROFILE_READY', 'EVIDENCE_READY')
     """
 )
 final_state = _exactly_one(
-    spark.table(work_package_table)
-    .where(F.col("record_id") == request.work_package_id)
+    spark.table(solution_run_table)
+    .where(F.col("record_id") == request.run_id)
     .select("workflow_state"),
-    "final work-package state",
+    "final solution-run state",
 ).workflow_state
 if final_state != "EVIDENCE_READY":
-    raise ValueError(f"Work package did not reach EVIDENCE_READY; received {final_state!r}")
+    raise ValueError(f"Solution run did not reach EVIDENCE_READY; received {final_state!r}")
 
 dbutils.jobs.taskValues.set(key="evidence_set_id", value=evidence_set_id)
+dbutils.jobs.taskValues.set(key="source_snapshot_id", value=source_snapshot_id)
 print("Source evidence assembly passed")
 print(f"evidence_set_id={evidence_set_id}")
 print(f"evidence_item_count={len(manifest.items)}")
 print(f"metadata_evidence_count={metadata_count}")
 print(f"profile_evidence_count={profile_count}")
 print(f"fingerprint={manifest.fingerprint()}")
-print(f"work_package_state={final_state}")
+print(f"solution_run_state={final_state}")

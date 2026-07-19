@@ -19,7 +19,7 @@ from .registration import (
     RegistrationParameters,
 )
 from .workflow_state import (
-    WORK_PACKAGE_WORKFLOW_STATES,
+    SOLUTION_RUN_WORKFLOW_STATES,
     registration_rerun_preserves_state,
 )
 
@@ -36,6 +36,6 @@ __all__ = [
     "RegistrationError",
     "RegistrationMode",
     "RegistrationParameters",
-    "WORK_PACKAGE_WORKFLOW_STATES",
+    "SOLUTION_RUN_WORKFLOW_STATES",
     "registration_rerun_preserves_state",
 ]

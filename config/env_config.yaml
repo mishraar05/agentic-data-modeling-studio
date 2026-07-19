@@ -53,8 +53,8 @@ layers:
 control_schema:
   name: control
   description: "Agent/framework control, harness, and contract tables"
-  purpose: "31 contract tables (engagement, evidence, dictionary, governance, etc.), agent operation tracking, pipeline orchestration"
-  tables_from_contracts: true  # The 31 contract tables go here
+  purpose: "29 run-rooted contract tables for context, evidence, dictionary, governance, and orchestration"
+  tables_from_contracts: true  # The 29 contract tables go here
   tags:
     - key: "agent_harness"
       value: "true"
@@ -85,6 +85,17 @@ proof_slice:
   jurisdiction: California
   lob: "P&C Personal Auto"
   description: "US P&C Personal Auto — California proof slice (source data)"
+
+  # D23-01 (ACCEPTED): source scope selection. Maps to SourceScopeMode
+  # (control/source_scope.py) — the discovery is already implemented.
+  #   SCHEMA_ALL_TABLES -> every table in catalog.schema (allow_listed_tables must be empty)
+  #   EXPLICIT_TABLES   -> only allow_listed_tables
+  # catalog/schema derive from the catalog name + {product}_{layer} naming.
+  source_scope:
+    mode: SCHEMA_ALL_TABLES            # SCHEMA_ALL_TABLES | EXPLICIT_TABLES | PATTERN_BASED
+    catalog: insurance_source_discovery
+    schema: gw_pc_bronze
+    allow_listed_tables: []            # required only for EXPLICIT_TABLES
 
 # Table Naming Conventions
 table_naming:
@@ -160,8 +171,8 @@ schema_builder:
   generate_for:
     - schema: control
       layer: control
-      enabled: true  # Increment 2 - 31 contract tables
-      description: "31 contract tables for agent framework"
+      enabled: true  # Increment 2 - 29 contract tables
+      description: "29 run-rooted contract tables for agent framework"
     - product: gw_pc
       layer: bronze
       enabled: false  # Source data - future increment
@@ -185,4 +196,4 @@ current_increment:
   target_schema: control
   target_layer: control
   status: "READY_TO_START"
-  description: "Deploy 31 contract tables to control schema"
+  description: "Deploy 29 run-rooted contract tables to control schema"

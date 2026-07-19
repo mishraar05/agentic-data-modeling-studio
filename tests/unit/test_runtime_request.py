@@ -14,8 +14,6 @@ from agentic_data_modeler.control import (
 def _valid_parameters() -> dict[str, str]:
     return {
         "run_id": "source_discovery_101",
-        "engagement_id": "eng_ca_personal_auto",
-        "work_package_id": "wp_policy_core",
         "lob": "P&C Personal Auto",
         "domain": "Policy",
         "source_catalog": "guidewire_dev",
@@ -61,8 +59,7 @@ def test_equivalent_requests_have_identical_fingerprints() -> None:
 @pytest.mark.parametrize(
     ("name", "value", "message"),
     [
-        ("engagement_id", "", "engagement_id is required"),
-        ("work_package_id", "REQUIRED_WORK_PACKAGE_ID", "unresolved placeholder"),
+        ("run_id", "", "run_id is required"),
         ("source_catalog", "catalog-name", "safe unqualified identifier"),
         ("profiling_policy_version", "latest", "semantic version"),
         ("contract_set_version", "latest", "exactly match"),

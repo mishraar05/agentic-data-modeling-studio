@@ -1,0 +1,27 @@
+# Proof-slice source binding.
+# This file IS the content of decisions D23-01 (which source/tables) and
+# D23-02 (execution identities/privileges). Swap `source` to point at the real
+# Unity Catalog once access is granted — no code changes required.
+
+source:
+  engine: duckdb                                   # dev adapter; use `unity_catalog` in prod
+  database: tests/fixtures/proof_slice_source.duckdb
+  catalog: insurance_source_discovery
+  schema: gw_pc_bronze
+  allow_listed_tables: [pc_policy, pc_claim, pc_driver]   # D23-01: exact in-scope tables
+
+scope:
+  lob: personal_auto
+  domain: personal_auto_policy_claims
+
+knowledge_pack:
+  pack_id: public_us_pnc_personal_auto
+  pack_version: "0.6.0"
+  geography: US_general
+  pack_domains: [policy, claims]
+
+identities:                                        # D23-02 (dev tier)
+  read_principal: dev_source_reader
+  read_grant: SELECT                               # read-only on the source
+  write_principal: dev_pipeline
+  output_target: local_store                       # dev; Delta control schema in prod

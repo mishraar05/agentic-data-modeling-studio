@@ -1,6 +1,6 @@
 # Databricks notebook source
 # MAGIC %md
-# MAGIC # Validate source-discovery work-package scope
+# MAGIC # Validate source-discovery run scope
 # MAGIC
 # MAGIC This entry point parses per-run job parameters and fails before any
 # MAGIC source read when scope, policy, contract version, or output separation
@@ -32,8 +32,6 @@ from agentic_data_modeler.control import RuntimeRequest
 
 PARAMETERS = (
     "run_id",
-    "engagement_id",
-    "work_package_id",
     "lob",
     "domain",
     "source_catalog",
@@ -66,8 +64,6 @@ request = RuntimeRequest.from_parameters(
 
 print("Source-discovery scope validation passed")
 print(f"run_id={request.run_id}")
-print(f"engagement_id={request.engagement_id}")
-print(f"work_package_id={request.work_package_id}")
 print(f"lob={request.lob}")
 print(f"domain={request.domain}")
 print(f"source_scope_mode={request.source_scope_mode.value}")

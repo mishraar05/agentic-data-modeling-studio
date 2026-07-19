@@ -4,13 +4,13 @@
   "$comment": "Immutable governed context snapshot manifest. Records the exact knowledge pack version, selected modules, approved requirements, effective dates, and content fingerprints used to govern one SDD generation execution.",
   "type": "object",
   "allOf": [
-    {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/envelope"},
+    {"$ref": "urn:agentic-data-modeler:contract:common:0.4.0#/$defs/envelope"},
     {
       "properties": {
         "schema_version": {"const": "0.1.0"},
-        "lifecycle_state": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/lifecycle_append_only"},
-        "provenance": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/provenance"},
-        "work_package_ref": {"type": "string", "minLength": 1},
+        "lifecycle_state": {"$ref": "urn:agentic-data-modeler:contract:common:0.4.0#/$defs/lifecycle_append_only"},
+        "provenance": {"$ref": "urn:agentic-data-modeler:contract:common:0.4.0#/$defs/provenance"},
+        "solution_run_ref": {"type": "string", "minLength": 1},
         "evidence_set_ref": {"type": "string", "minLength": 1},
         "requirement_set_ref": {"type": "string", "minLength": 1},
         "snapshot_timestamp": {"type": "string", "format": "date-time"},
@@ -32,7 +32,7 @@
         "notes": {"type": "string"}
       },
       "required": [
-        "work_package_ref",
+        "solution_run_ref",
         "evidence_set_ref",
         "snapshot_timestamp",
         "knowledge_pack_id",
@@ -44,7 +44,7 @@
         "budget_compliance"
       ]
     },
-    {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/no_op_guard"}
+    {"$ref": "urn:agentic-data-modeler:contract:common:0.4.0#/$defs/no_op_guard"}
   ],
   "unevaluatedProperties": false
 }

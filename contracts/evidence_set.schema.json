@@ -4,17 +4,12 @@
   "$comment": "Immutable assembly of evidence items from source metadata, profiles, and requirements for SDD authoring.",
   "type": "object",
   "allOf": [
-    {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/envelope"},
+    {"$ref": "urn:agentic-data-modeler:contract:common:0.4.0#/$defs/envelope"},
     {
       "properties": {
         "schema_version": {"const": "0.1.0"},
-        "lifecycle_state": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/lifecycle_append_only"},
-        "provenance": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/provenance"},
-        "work_package_ref": {
-          "type": "string",
-          "minLength": 1,
-          "description": "Reference to the work package"
-        },
+        "lifecycle_state": {"$ref": "urn:agentic-data-modeler:contract:common:0.4.0#/$defs/lifecycle_append_only"},
+        "provenance": {"$ref": "urn:agentic-data-modeler:contract:common:0.4.0#/$defs/provenance"},
         "solution_run_ref": {
           "type": "string",
           "minLength": 1,
@@ -56,9 +51,9 @@
           "description": "SHA-256 hash of evidence set for verification"
         }
       },
-      "required": ["work_package_ref", "solution_run_ref", "source_snapshot_ref", "evidence_item_count", "assembly_timestamp", "fingerprint"]
+      "required": ["solution_run_ref", "source_snapshot_ref", "evidence_item_count", "assembly_timestamp", "fingerprint"]
     },
-    {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/no_op_guard"}
+    {"$ref": "urn:agentic-data-modeler:contract:common:0.4.0#/$defs/no_op_guard"}
   ],
   "unevaluatedProperties": false
 }

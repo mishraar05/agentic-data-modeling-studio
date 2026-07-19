@@ -26,7 +26,7 @@ class EvidenceItemReference:
 
 @dataclass(frozen=True, slots=True)
 class EvidenceSetManifest:
-    work_package_id: str
+    run_id: str
     source_snapshot_id: str
     profile_snapshot_id: str | None
     document_set_id: str | None
@@ -38,7 +38,7 @@ class EvidenceSetManifest:
     def from_iterable(
         cls,
         *,
-        work_package_id: str,
+        run_id: str,
         source_snapshot_id: str,
         profile_snapshot_id: str | None,
         document_set_id: str | None,
@@ -46,7 +46,7 @@ class EvidenceSetManifest:
         items,
     ) -> "EvidenceSetManifest":
         manifest = cls(
-            work_package_id=work_package_id,
+            run_id=run_id,
             source_snapshot_id=source_snapshot_id,
             profile_snapshot_id=profile_snapshot_id,
             document_set_id=document_set_id,
@@ -57,8 +57,8 @@ class EvidenceSetManifest:
         return manifest
 
     def validate(self) -> None:
-        if not self.work_package_id or not self.source_snapshot_id:
-            raise ValueError("work package and source snapshot are required")
+        if not self.run_id or not self.source_snapshot_id:
+            raise ValueError("solution run and source snapshot are required")
         if not self.items:
             raise ValueError("evidence set cannot be empty")
         identities = set()
@@ -84,7 +84,7 @@ class EvidenceSetManifest:
             "profile_snapshot_id": self.profile_snapshot_id,
             "requirement_set_id": self.requirement_set_id,
             "source_snapshot_id": self.source_snapshot_id,
-            "work_package_id": self.work_package_id,
+            "run_id": self.run_id,
         }
 
     def fingerprint(self) -> str:
@@ -96,5 +96,5 @@ class EvidenceSetManifest:
     def evidence_set_id(self) -> str:
         return stable_record_id("evidence_set", self.fingerprint())
 
-    def solution_run_id(self) -> str:
+    def assembly_run_id(self) -> str:
         return stable_record_id("evidence_assembly_run", self.fingerprint())

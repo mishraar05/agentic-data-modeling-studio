@@ -33,7 +33,7 @@ def _required(parameters: Mapping[str, Any], name: str) -> str:
 
 @dataclass(frozen=True, slots=True)
 class RegistrationParameters:
-    """Human-supplied authority needed to register one dev work package."""
+    """Human-supplied authority needed to register one bounded dev solution run."""
 
     mode: RegistrationMode
     client_name: str

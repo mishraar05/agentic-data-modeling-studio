@@ -4,30 +4,30 @@
   "$comment": "Source Data Dictionary attribute record. Contains physical metadata, inferred business meaning, privacy class, relationships, and trust evidence. Primary deliverable artifact using contextual provenance and semantic claims.",
   "type": "object",
   "allOf": [
-    {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/envelope"},
+    {"$ref": "urn:agentic-data-modeler:contract:common:0.4.0#/$defs/envelope"},
     {
       "properties": {
         "schema_version": {"const": "0.1.0"},
-        "lifecycle_state": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/lifecycle_material"},
-        "provenance": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/contextual_provenance"},
+        "lifecycle_state": {"$ref": "urn:agentic-data-modeler:contract:common:0.4.0#/$defs/lifecycle_material"},
+        "provenance": {"$ref": "urn:agentic-data-modeler:contract:common:0.4.0#/$defs/contextual_provenance"},
         "context_snapshot_ref": {"type": "string", "minLength": 1},
         "source_attribute_observation_ref": {"type": "string", "minLength": 1},
         "source_object_name": {"type": "string", "minLength": 1},
         "source_attribute_name": {"type": "string", "minLength": 1},
         "ordinal_position": {"type": "integer", "minimum": 1},
-        "physical_type": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/physical_observation"},
-        "physical_length": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/physical_observation"},
-        "physical_precision": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/physical_observation"},
-        "physical_scale": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/physical_observation"},
-        "physical_nullable": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/physical_observation"},
-        "business_name": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/semantic_claim"},
-        "business_definition": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/semantic_claim"},
-        "business_purpose": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/semantic_claim"},
-        "synonyms": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/semantic_claim"},
-        "subject_area": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/semantic_claim"},
-        "key_role": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/semantic_claim"},
-        "privacy_class": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/semantic_claim"},
-        "retention_rule": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/semantic_claim"},
+        "physical_type": {"$ref": "urn:agentic-data-modeler:contract:common:0.4.0#/$defs/physical_observation"},
+        "physical_length": {"$ref": "urn:agentic-data-modeler:contract:common:0.4.0#/$defs/physical_observation"},
+        "physical_precision": {"$ref": "urn:agentic-data-modeler:contract:common:0.4.0#/$defs/physical_observation"},
+        "physical_scale": {"$ref": "urn:agentic-data-modeler:contract:common:0.4.0#/$defs/physical_observation"},
+        "physical_nullable": {"$ref": "urn:agentic-data-modeler:contract:common:0.4.0#/$defs/physical_observation"},
+        "business_name": {"$ref": "urn:agentic-data-modeler:contract:common:0.4.0#/$defs/semantic_claim"},
+        "business_definition": {"$ref": "urn:agentic-data-modeler:contract:common:0.4.0#/$defs/semantic_claim"},
+        "business_purpose": {"$ref": "urn:agentic-data-modeler:contract:common:0.4.0#/$defs/semantic_claim"},
+        "synonyms": {"$ref": "urn:agentic-data-modeler:contract:common:0.4.0#/$defs/semantic_claim"},
+        "subject_area": {"$ref": "urn:agentic-data-modeler:contract:common:0.4.0#/$defs/semantic_claim"},
+        "key_role": {"$ref": "urn:agentic-data-modeler:contract:common:0.4.0#/$defs/semantic_claim"},
+        "privacy_class": {"$ref": "urn:agentic-data-modeler:contract:common:0.4.0#/$defs/semantic_claim"},
+        "retention_rule": {"$ref": "urn:agentic-data-modeler:contract:common:0.4.0#/$defs/semantic_claim"},
         "code_set_ref": {"type": "string", "minLength": 1},
         "profile_evidence_refs": {
           "type": "array",
@@ -59,7 +59,7 @@
         "business_definition"
       ]
     },
-    {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/material_approval_guard"}
+    {"$ref": "urn:agentic-data-modeler:contract:common:0.4.0#/$defs/material_approval_guard"}
   ],
   "unevaluatedProperties": false
 }

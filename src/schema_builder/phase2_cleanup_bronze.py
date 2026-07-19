@@ -12,7 +12,7 @@ CATALOG = "insurance_source_discovery"
 SOURCE_SCHEMAS = ["gw_pc_bronze", "gw_cc_bronze", "gw_bc_bronze"]
 
 CONTRACT_TABLES = [
-    "engagement", "work_package", "solution_run", "artifact_version",
+    "solution_run", "artifact_version",
     "source_snapshot", "context_snapshot", "profile_snapshot",
     "document_set", "requirement_set", "evidence_set", "evidence_item",
     "source_object_observation", "source_attribute_observation",
@@ -29,7 +29,7 @@ print("=" * 80)
 print("⚠️  Phase 2: Cleanup Bronze Schemas (DESTRUCTIVE)")
 print("=" * 80)
 print()
-print("This will DROP all 31 contract tables from:")
+print("This will DROP all 29 contract tables from:")
 print("  - gw_pc_bronze")
 print("  - gw_cc_bronze")
 print("  - gw_bc_bronze")

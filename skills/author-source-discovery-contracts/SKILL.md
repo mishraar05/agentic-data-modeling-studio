@@ -3,12 +3,12 @@ name: author-source-discovery-contracts
 description: >-
   Author or revise the versioned JSON Schema contract suite, deterministic
   validation specification, and tests for the Source Discovery and Source Data
-  Dictionary flow. Use for Increment-1 contract design covering engagement,
-  work-package, source snapshot, profiling, supplied evidence, analytical
+  Dictionary flow. Use for contract design covering solution runs, immutable
+  context, source snapshots, profiling, supplied evidence, analytical
   requirements, governed context, dictionary, review, lineage, handoff, and
   skill-resolution records. This is an authoring-plane skill; it does not infer
   business meaning, approve artifacts, authorize knowledge packs, or run an
-  engagement.
+  solution run.
 ---
 
 # Author Source Discovery Contracts
@@ -19,7 +19,7 @@ Version: `0.3.2-PRODUCTION`
 Status: `COMPLETE — INCREMENT 1 DELIVERED`  
 Completion Date: 2025-01-XX
 
-**✅ Increment 1 Complete**: All 31 contract schemas authored, validated, and ready for foundation implementation.
+**✅ Contract set complete**: All 29 record contracts and the shared schema are validated.
 
 Use this Skill to turn intact governing requirements and designs into contract
 specifications that Genie Code or an engineer can implement. Do not use it as a
@@ -72,14 +72,14 @@ For Databricks workspace execution:
 Location: `tests/contracts/test_contract_validation.py`
 
 The validation suite covers:
-* ✅ JSON Schema Draft 2020-12 compliance for all 31 contracts
+* ✅ JSON Schema Draft 2020-12 compliance for all 29 record contracts
 * ✅ URN format validation (`urn:agentic-data-modeler:contract:<name>:<version>`)
 * ✅ Structural template compliance (envelope, unevaluatedProperties: false)
 * ✅ Lifecycle family correctness (operational, material, append_only, etc.)
 * ✅ Lifecycle guard enforcement (no_op_guard, material_approval_guard, handoff_issue_guard)
 * ✅ Provenance pattern verification (base vs contextual)
 * ✅ Semantic claim usage in dictionary contracts
-* ✅ Schema completeness (all 31 contracts present and loadable)
+* ✅ Schema completeness (all 29 record contracts present and loadable)
 
 ### Running Validation
 
@@ -93,7 +93,7 @@ from jsonschema import Draft202012Validator
 contracts_dir = Path("/Workspace/Users/{username}/agentic-data-modeling-studio/contracts")
 
 all_contracts = [
-    "_common", "engagement", "work_package", "solution_run", "artifact_version",
+    "_common", "solution_run", "artifact_version",
     "source_snapshot", "context_snapshot", "profile_snapshot",
     "document_set", "requirement_set", "evidence_set",
     "evidence_item", "source_object_observation", "source_attribute_observation",
@@ -136,7 +136,7 @@ Note: Pytest may encounter `__pycache__` issues in Databricks workspace filesyst
 
 Before marking contract authoring complete:
 
-1. ✅ **All 31 contracts** must pass JSON Schema Draft 2020-12 validation
+1. ✅ **All 29 record contracts** must pass JSON Schema Draft 2020-12 validation
 2. ✅ **URN format** must be correct for all schemas
 3. ✅ **Lifecycle families** must match inventory specification
 4. ✅ **Provenance patterns** must be correctly applied (base vs contextual)
@@ -222,9 +222,9 @@ Preserve these distinctions:
    Referential checks must walk nested claims and physical evidence references;
    they must not depend on a hard-coded list of field names.
 9. Evaluate at least one positive and one negative fixture for every lifecycle
-   family, plus cross-engagement, cross-work-package, dangling evidence,
+   family, plus cross-run, cross-context, dangling evidence,
    provenance-class, typed-value, and degraded-mode cases.
-10. **MANDATORY**: Execute pytest-based validation before completion. All 31
+10. **MANDATORY**: Execute pytest-based validation before completion. All 29
     contracts must pass JSON Schema Draft 2020-12 validation.
 11. Produce a build handoff that lists generated files, inventory version, common
     schema version, validation results, unresolved decisions, integrity-gate
@@ -243,7 +243,7 @@ Preserve these distinctions:
   value.
 - Match `value_type` to the JSON representation. Governed code-bearing types
   require a pinned governed-code reference.
-- Enforce same-engagement and same-work-package scope for referenced evidence.
+- Enforce same-run and exact-context scope for referenced evidence.
 - Keep records append-only where the inventory says append-only; supersede or
   version material artifacts instead of overwriting them.
 
@@ -255,7 +255,7 @@ Stop and return a blocking finding when:
 - inventory count or dependencies do not reconcile;
 - a structural term has no accepted contract owner;
 - a domain code cannot resolve to an approved pinned pack version;
-- a reference is dangling or crosses engagement/work-package scope;
+- a reference is dangling or crosses run/context scope;
 - an observed fact lacks `SOURCE_FACT` evidence;
 - a lifecycle transition lacks the required human decision;
 - profiling is required despite a permitted metadata-only or restricted mode;
@@ -269,7 +269,7 @@ A draft authoring package is complete only when:
 - the Skill package passes the Skill validator;
 - the inventory count, references, and authoring graph pass deterministic checks;
 - common and worked-example schemas pass Draft 2020-12 meta-schema validation;
-- **all 31 contract schemas pass JSON Schema Draft 2020-12 validation**;
+- **all 29 record contracts pass JSON Schema Draft 2020-12 validation**;
 - **the validation test suite executes successfully with 0 failures**;
 - all lifecycle-family forward tests pass;
 - the reusable contract test template passes in an isolated fixture repository;
@@ -282,14 +282,12 @@ architecture is restored.
 
 ## Increment 1 Deliverables (COMPLETE ✅)
 
-All 31 contract schemas have been authored and validated:
+All 29 record contracts have been authored and validated:
 
 ### Foundation (1)
 - ✅ `_common.schema.json` — Foundation vocabulary and guards
 
-### Control & Run (4)
-- ✅ `engagement.schema.json`
-- ✅ `work_package.schema.json`
+### Control & Run (2)
 - ✅ `solution_run.schema.json`
 - ✅ `artifact_version.schema.json`
 
@@ -335,7 +333,7 @@ All 31 contract schemas have been authored and validated:
 - ✅ `skill_resolution.schema.json`
 
 ### Validation Results
-- ✅ All 32 schemas (31 contracts + common) pass JSON Schema Draft 2020-12 validation
+- ✅ All 30 schemas (29 record contracts + common) pass JSON Schema Draft 2020-12 validation
 - ✅ All URN formats correct
 - ✅ All lifecycle families and guards correctly applied
 - ✅ All provenance patterns verified
@@ -345,7 +343,7 @@ All 31 contract schemas have been authored and validated:
 
 ## Changelog
 
-- `0.3.2-PRODUCTION`: **Increment 1 complete**. All 31 contract schemas authored,
+- `0.3.2-PRODUCTION`: **Contract set complete**. All 29 record contracts authored,
   validated, and documented. Added mandatory dependencies section (jsonschema,
   pytest). Added mandatory validation requirements with workspace-compatible
   execution methods. Updated completion evidence to require validation test

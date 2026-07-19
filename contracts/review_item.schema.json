@@ -4,12 +4,12 @@
   "$comment": "Review item requiring human decision, optionally linked to validation findings.",
   "type": "object",
   "allOf": [
-    {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/envelope"},
+    {"$ref": "urn:agentic-data-modeler:contract:common:0.4.0#/$defs/envelope"},
     {
       "properties": {
         "schema_version": {"const": "0.1.0"},
-        "lifecycle_state": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/lifecycle_open_item"},
-        "provenance": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/provenance"},
+        "lifecycle_state": {"$ref": "urn:agentic-data-modeler:contract:common:0.4.0#/$defs/lifecycle_open_item"},
+        "provenance": {"$ref": "urn:agentic-data-modeler:contract:common:0.4.0#/$defs/provenance"},
         "artifact_version_ref": {
           "type": "string",
           "minLength": 1,
@@ -47,7 +47,7 @@
         }
       ]
     },
-    {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/no_op_guard"}
+    {"$ref": "urn:agentic-data-modeler:contract:common:0.4.0#/$defs/no_op_guard"}
   ],
   "unevaluatedProperties": false
 }

@@ -67,7 +67,7 @@ An ontology, enterprise glossary, canonical model, authorized product model, KPI
 
 ## 4. Required inputs
 
-The solution operates with the evidence that an engagement is authorized to provide:
+The solution operates with the evidence that a bounded solution run is authorized to use:
 
 - source catalog, schema, table, column, key, constraint, index, and view metadata;
 - minimized and approved source profiles;
@@ -75,7 +75,7 @@ The solution operates with the evidence that an engagement is authorized to prov
 - supplied report inventory, metric definitions, report-to-source knowledge, and reporting requirements;
 - new analytical use cases and acceptance criteria;
 - approved ontology, glossary, canonical model, standards, privacy rules, and KPI definitions;
-- prior approved modeling decisions for the same engagement and scope; and
+- prior approved modeling decisions for the same source and LOB/domain memory partition; and
 - human answers to unresolved questions.
 
 When tool-specific conversion is added later, ETL mappings, report definitions, SQL, stored procedures, and semantic-layer assets enter through separate evidence adapters. Their absence must not prevent the current modeling and STTM workflow from operating on provided evidence.
@@ -94,7 +94,7 @@ Delta tables are the authoritative system of record. Excel and the Databricks Ap
 | Decision and gap register | Contradictions, open questions, decisions, rationale, owner, impact, status | Append-only Delta tables | App review queue + Excel export |
 | Run evidence | Context snapshot, model/prompt/skill versions, tool calls, traces, validation, cost, latency | MLflow traces plus Delta run records | App operational view |
 
-Every Excel workbook must be generated from the authoritative records and carry engagement, scope, version, run, approval status, and generation timestamp. It must never be independently edited and re-imported without a controlled decision-ingestion process.
+Every Excel workbook must be generated from the authoritative records and carry solution-run scope, version, approval status, and generation timestamp. It must never be independently edited and re-imported without a controlled decision-ingestion process.
 
 ### 5.1 Source Data Dictionary contract
 
@@ -104,7 +104,7 @@ At minimum it contains:
 
 | Field group | Required contents |
 |---|---|
-| Scope and identity | Engagement, source system, product/module/version when known, LOB, domain, schema, object, attribute, ordinal position |
+| Scope and identity | Solution run, source system, product/module/version when known, LOB, domain, schema, object, attribute, ordinal position |
 | Physical definition | Source type, length, precision, scale, nullability, default, constraint, index, observed key role |
 | Business definition | Proposed business name, plain-language definition, business purpose, synonyms, subject area, lifecycle/status meaning |
 | Values and profiling | Approved code/value meanings, null/distinct statistics, formats, ranges, patterns, and profile snapshot reference |
@@ -129,7 +129,7 @@ Physical schemas will be defined by versioned contracts, but the authoritative m
 
 | Family | Logical records |
 |---|---|
-| Run and scope | `engagement`, `work_package`, `solution_run`, `context_snapshot`, `artifact_version` |
+| Run and scope | `solution_run`, `context_snapshot`, `artifact_version` |
 | Evidence | `evidence_item`, `source_object_observation`, `source_attribute_observation`, `profile_evidence`, `relationship_candidate` |
 | Requirements | `analytical_requirement`, `reporting_requirement`, `business_term`, `business_rule` |
 | Silver | `silver_entity`, `silver_attribute`, `silver_relationship`, `silver_history_rule`, `silver_data_quality_rule` |
@@ -138,7 +138,7 @@ Physical schemas will be defined by versioned contracts, but the authoritative m
 | Coverage and lineage | `requirement_coverage`, `artifact_dependency`, `lineage_edge` |
 | Governance | `validation_finding`, `review_item`, `review_decision`, `open_question` |
 
-All records require stable identities, engagement and LOB/domain scope, version, lifecycle state, provenance, and timestamps. Semantic records additionally require evidence references, assumptions, and unresolved contradictions.
+All records require stable identities, solution-run and LOB/domain scope, version, lifecycle state, provenance, and timestamps. Semantic records additionally require context, evidence references, assumptions, and unresolved contradictions.
 
 ### 5.3 Excel workbook contract
 
@@ -163,7 +163,7 @@ The portable workbook must contain, where applicable:
 
 The review application must provide:
 
-- engagement/run dashboard and scope lock;
+- solution-run dashboard and scope lock;
 - dedicated Source Data Dictionary view with object/attribute search, filters, evidence drill-through, and review status;
 - source-evidence, relationship, code-value, and profile exploration;
 - Silver and Gold model views with version comparison;
@@ -185,7 +185,7 @@ The solution shall:
 - maintain evidence traceability for every material inferred definition, model element, and mapping;
 - separate source facts, governed inputs, requirements, inferences, and human decisions;
 - prevent automatic approval of material model artifacts;
-- isolate engagements and enforce least-privilege access;
+- isolate solution runs and source authorization boundaries and enforce least-privilege access;
 - reproduce outputs from versioned evidence, context, model, prompt, skill, and configuration snapshots, or explain controlled model variance;
 - remain extensible through adapters without depending on one source, ETL, BI, or target vendor; and
 - meet agreed quality, cost, latency, recovery, security, and reviewer-effort thresholds.
@@ -215,7 +215,7 @@ Passing unit tests or producing a large ontology does not prove this goal.
 
 ## 8. Anti-drift rules
 
-Before starting any work package, answer:
+Before starting any implementation increment, answer:
 
 1. Which charter deliverable does this create or improve?
 2. Which selected LOB/domain and requirement does it serve?
@@ -231,7 +231,7 @@ The precedence order is:
 2. approved deliverable contracts;
 3. the Agent Solution Architecture and architecture decisions;
 4. evaluation and acceptance criteria;
-5. work-package plans;
+5. implementation plans;
 6. implementation details.
 
 ## 9. Next proof slice
@@ -245,4 +245,3 @@ Choose one LOB/domain and a small connected subject area. Supply:
 - an independent architect/SME review baseline.
 
 The slice is complete only when it produces and reviews the reconstructed Source Data Dictionary, Silver ODS model, Gold dimensional model, STTM, coverage matrix, gaps, and run evidence through the defined formats.
-

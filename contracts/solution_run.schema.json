@@ -1,20 +1,29 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:agentic-data-modeler:contract:solution_run:0.1.0",
-  "$comment": "Records a single bounded execution of the agentic data modeler within a work package scope.",
+  "$id": "urn:agentic-data-modeler:contract:solution_run:0.2.0",
+  "$comment": "Top-level bounded execution and source-scope record. It replaces engagement/work-package identity with one run-rooted control boundary.",
   "type": "object",
   "allOf": [
-    {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/envelope"},
+    {"$ref": "urn:agentic-data-modeler:contract:common:0.4.0#/$defs/envelope"},
     {
       "properties": {
-        "schema_version": {"const": "0.1.0"},
-        "lifecycle_state": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/lifecycle_operational"},
-        "provenance": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/provenance"},
-        "work_package_ref": {
-          "type": "string",
-          "minLength": 1,
-          "description": "Reference to the work package record ID"
-        },
+        "schema_version": {"const": "0.2.0"},
+        "lifecycle_state": {"$ref": "urn:agentic-data-modeler:contract:common:0.4.0#/$defs/lifecycle_operational"},
+        "provenance": {"$ref": "urn:agentic-data-modeler:contract:common:0.4.0#/$defs/provenance"},
+        "workflow_state": {"enum": ["VALIDATED", "METADATA_READY", "PROFILE_READY", "EVIDENCE_READY", "CONTEXT_READY", "SDD_READY", "SILVER_READY", "GOLD_READY", "STTM_READY", "PUBLISHED"]},
+        "source_catalog": {"type": "string", "minLength": 1},
+        "source_schema": {"type": "string", "minLength": 1},
+        "source_tables": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^[a-zA-Z0-9_]+$"}},
+        "source_product": {"type": "string"},
+        "source_module": {"type": "string"},
+        "source_version": {"type": "string"},
+        "knowledge_pack_id": {"type": "string", "pattern": "^[a-z0-9_]+$"},
+        "knowledge_pack_version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+        "output_catalog": {"type": "string", "minLength": 1},
+        "output_schema": {"type": "string", "minLength": 1},
+        "authorization_ref": {"type": "string", "minLength": 1},
+        "source_access_granted": {"type": "boolean"},
+        "profiling_policy": {"enum": ["FULL", "METADATA_ONLY", "RESTRICTED"]},
         "run_type": {
           "type": "string",
           "enum": ["VALIDATE", "METADATA", "PROFILE", "EVIDENCE", "CONTEXT", "SDD", "REVIEW"],
@@ -45,9 +54,9 @@
           "description": "Approximate compute cost in USD for this run"
         }
       },
-      "required": ["work_package_ref", "run_type", "start_timestamp", "end_timestamp", "status"]
+      "required": ["workflow_state", "source_catalog", "source_schema", "source_tables", "output_catalog", "output_schema", "authorization_ref", "source_access_granted", "profiling_policy", "run_type", "start_timestamp", "end_timestamp", "status"]
     },
-    {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/no_op_guard"}
+    {"$ref": "urn:agentic-data-modeler:contract:common:0.4.0#/$defs/no_op_guard"}
   ],
   "unevaluatedProperties": false
 }

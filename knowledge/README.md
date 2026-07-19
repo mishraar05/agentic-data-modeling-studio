@@ -36,7 +36,7 @@ Use [`build-governed-knowledge-pack`](../skills/build-governed-knowledge-pack/SK
 
 - Candidate, rejected, expired, unauthorized, missing, ambiguous, or cross-version knowledge fails closed.
 - Registry and manifest must both authorize the exact version for runtime use.
-- Client evidence and approved engagement decisions take precedence over reusable background knowledge.
+- Run-authorized client evidence and approved scope decisions take precedence over reusable background knowledge.
 - No client data, PII, credentials, connection strings, or unlicensed proprietary content belongs in repository packs.
 - Generated dictionaries, models, mappings, or inferred concepts belong in solution artifact stores—not in this layer.
 - Completeness measures scoped coverage only; it does not prove correctness, licensing, or production readiness.

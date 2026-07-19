@@ -17,7 +17,7 @@ It does not: invent a business meaning without evidence, generate the Silver or 
 
 | Input | Source | Nature |
 |---|---|---|
-| Scope and identity | `context_snapshot` from the Scope and Context Manager | engagement_id, LOB, domain, source catalog/schema, allow-listed source_tables |
+| Scope and identity | `context_snapshot` from the Scope and Context Manager | run ID, LOB, domain, source catalog/schema, frozen source manifest |
 | Source catalog/schema/table/column/key/constraint/index/view metadata | Unity Catalog / information-schema, read via allow-listed tool | Deterministic, authoritative source fact |
 | Approved source profiles | Profile store or a policy-bounded profiling job | Deterministic: null/distinct stats, value distributions, formats, ranges, patterns |
 | Existing source dictionaries / design docs, if supplied | Evidence adapter (e.g. `ai_extract` with citations) | Structured claims with provenance, treated as untrusted document content until cited |

@@ -1,6 +1,6 @@
 """Episodic memory service (ADR-006) — the read/write loop over the decision ledger.
 
-This is the *memory projection* the architecture calls "engagement memory": it
+This is the durable decision-memory projection used by later context snapshots: it
 persists review decisions and open questions (the ledger) and answers the one
 question Phase 0 needs — "has a human already decided X about this attribute?".
 JSON-backed here; swap for the Delta ``review_decision`` / ``open_question``
@@ -14,8 +14,8 @@ from pathlib import Path
 from typing import Any
 
 
-def subject_key(engagement_id: str, object_name: str, attribute_name: str) -> str:
-    return f"{engagement_id}::{object_name}::{attribute_name}"
+def subject_key(memory_partition: str, object_name: str, attribute_name: str) -> str:
+    return f"{memory_partition}::{object_name}::{attribute_name}"
 
 
 class EpisodicMemory:

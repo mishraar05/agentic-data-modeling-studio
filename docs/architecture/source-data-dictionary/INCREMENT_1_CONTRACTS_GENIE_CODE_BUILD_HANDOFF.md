@@ -35,9 +35,9 @@ No `D23-*` human decision applies to this increment — Increment 1 defines stru
 ### Work package `I1-01` — Scaffolding script S1
 
 - Build `scaffold_contract.py` exactly to `scaffolding_scripts_spec.md` §S1: one record at a time from the inventory, template-copy without overwrite, token substitution (`RECORD_NAME`, `SCHEMA_VERSION`, `LIFECYCLE_FAMILY`, `PROVENANCE_DEF`, `LIFECYCLE_GUARD_DEF`), `x-authoring-status: TODO_RECORD_FIELDS` left in place, fixture stub emitted, unknown records/unresolved tokens/path escape refused.
-- **Exit:** running S1 against all 31 inventory records produces 31 scaffolds with no path escape and no silent overwrite.
+- **Exit:** running S1 against all 29 inventory records produces 29 scaffolds with no path escape and no silent overwrite.
 
-### Work package `I1-02` — Record schema authoring (all 31 records)
+### Build increment `I1-02` — Record schema authoring (all 29 records)
 
 Author each record schema from its S1 scaffold, grouped by family, removing `x-authoring-status: TODO_RECORD_FIELDS` only once fields, required fields, citations, and lifecycle guard are complete:
 

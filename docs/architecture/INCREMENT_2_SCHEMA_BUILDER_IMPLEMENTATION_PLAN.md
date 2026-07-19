@@ -16,7 +16,7 @@
 **Increment 2 converts the 31 approved JSON Schema contracts from Increment 1 into physical Delta tables in Unity Catalog**, creating the authoritative system of record for the Agentic Data Modeling Studio.
 
 **Key Outcomes**:
-* 31 Delta tables deployed to Unity Catalog bronze layer per Guidewire product
+* 29 run-rooted Delta tables deployed to the control schema
 * Medallion architecture (bronze/silver/gold) established
 * Environment-driven configuration (`config/env_config.yaml`)
 * Automated schema generation from JSON Schema contracts
@@ -64,7 +64,7 @@ Per AGENTS.md §"Anti-drift gate", this work must answer:
 ### 2. Which selected LOB/domain does it serve?
 
 **Answer**: Cross-cutting foundation, serves all Guidewire-aligned LOBs/domains
-* All 31 tables are domain-agnostic record types
+* All 29 tables are domain-agnostic record types
 * Supports first proof slice (US P&C Personal Auto — California) via `gw_pc_bronze` schema
 * Medallion architecture supports bronze/silver/gold data progression
 * Supports future LOB/domain expansions without schema changes
@@ -74,7 +74,7 @@ Per AGENTS.md §"Anti-drift gate", this work must answer:
 
 **Evidence Measures**:
 * ✅ **Schema Completeness**: 10 schemas created (3 bronze + 3 silver + 3 gold + control)
-* ✅ **Table Completeness**: 31/31 tables created in each bronze schema (93 total)
+* ✅ **Table Completeness**: 29/29 run-rooted tables generated
 * ✅ **Contract Conformance**: Generated DDL matches approved JSON Schema contracts
 * ✅ **Governance Coverage**: All tables have UC tags, comments, ownership per GOV-002
 * ✅ **Data Quality**: Tables enforce required fields, data types, constraints per contracts
@@ -152,7 +152,7 @@ Conformance Test (proves contract ↔ table match)
 ```
 Bronze Layer (Raw/Landing Zone)
   ↓ [Source discovery, evidence collection]
-  ↓ [31 contract tables deployed here in Increment 2]
+  ↓ [29 contract tables deployed here in Increment 2]
   
 Silver Layer (Cleaned/Conformed)
   ↓ [ODS model, future increments]
@@ -170,7 +170,7 @@ Gold Layer (Aggregated/Dimensional)
 **Input**: 31 JSON Schema contracts (`contracts/*.schema.json`)
 
 **Output**: 
-* 31 Delta DDL statements per bronze schema (`generated/ddl/gw_pc_bronze/*.sql`, etc.)
+* 29 Delta DDL statements per generated schema (`generated/ddl/control/*.sql`, etc.)
 * 31 Unity Catalog table creation scripts per Guidewire bronze schema
 * Validation suite (`tests/schema_builder/test_table_conformance.py`)
 
@@ -222,7 +222,7 @@ Gold Layer (Aggregated/Dimensional)
 
 ```
 insurance_source_discovery (catalog)
-├── gw_pc_bronze (PolicyCenter - Bronze Layer) ← 31 contract tables
+├── gw_pc_bronze (PolicyCenter - Bronze Layer) ← 29 legacy generated copies
 │   ├── Control & Run (4 tables)
 │   │   ├── engagement
 │   │   ├── work_package
@@ -256,7 +256,7 @@ insurance_source_discovery (catalog)
 ├── gw_pc_gold (PolicyCenter - Gold Layer) ← Future Increment 6+
 │   └── [Dimensional model tables, future]
 │
-├── gw_cc_bronze (ClaimCenter - Bronze Layer) ← 31 contract tables
+├── gw_cc_bronze (ClaimCenter - Bronze Layer) ← 29 legacy generated copies
 │   └── [Same 31-table structure as gw_pc_bronze]
 │
 ├── gw_cc_silver (ClaimCenter - Silver Layer) ← Future
@@ -265,7 +265,7 @@ insurance_source_discovery (catalog)
 ├── gw_cc_gold (ClaimCenter - Gold Layer) ← Future
 │   └── [Dimensional model tables, future]
 │
-├── gw_bc_bronze (BillingCenter - Bronze Layer) ← 31 contract tables
+├── gw_bc_bronze (BillingCenter - Bronze Layer) ← 29 legacy generated copies
 │   └── [Same 31-table structure as gw_pc_bronze]
 │
 ├── gw_bc_silver (BillingCenter - Silver Layer) ← Future
@@ -364,12 +364,12 @@ insurance_source_discovery (catalog)
 |--------|--------|-------------|
 | **Configuration Valid** | 100% | env_config.yaml validation passes |
 | **Schemas Created** | 10/10 (9 product/layer + control) | UC catalog query |
-| **Bronze Tables Created** | 93/93 (31 per product × 3) | UC catalog query |
+| **Contract Tables Generated** | 29/29 in the authoritative control schema | UC catalog query |
 | **Contract Conformance** | 100% | Automated test suite |
 | **Test Pass Rate** | 100% | pytest results |
 | **DDL Generation Time** | < 5 minutes per schema | Tool execution time |
 | **Schema Validation Time** | < 1 minute per schema | Test suite execution |
-| **Documentation Coverage** | 100% (all 31 tables × 3 bronze schemas) | Manual review |
+| **Documentation Coverage** | 100% (all 29 run-rooted tables) | Manual review |
 
 ### Qualitative Metrics
 
@@ -453,7 +453,7 @@ CREATE TABLE IF NOT EXISTS insurance_source_discovery.gw_pc_bronze.engagement (
   schema_version STRING NOT NULL COMMENT 'Contract schema version',
   
   -- Core Fields
-  engagement_id STRING NOT NULL COMMENT 'Business identifier for the engagement',
+  run_id STRING NOT NULL COMMENT 'Identifier for the bounded solution run',
   engagement_name STRING NOT NULL COMMENT 'Human-readable engagement name',
   client_organization STRING COMMENT 'Client organization name',
   lob STRING NOT NULL COMMENT 'Line of business (e.g., P&C, Life, Health)',
@@ -487,7 +487,7 @@ TBLPROPERTIES (
 
 -- Column-level tags (applied via ALTER TABLE after creation)
 ALTER TABLE insurance_source_discovery.gw_pc_bronze.engagement 
-  ALTER COLUMN engagement_id 
+  ALTER COLUMN run_id
   SET TAGS ('business_key' = 'true');
 ```
 

@@ -4,12 +4,12 @@
   "$comment": "Validation finding against artifact version for quality assurance.",
   "type": "object",
   "allOf": [
-    {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/envelope"},
+    {"$ref": "urn:agentic-data-modeler:contract:common:0.4.0#/$defs/envelope"},
     {
       "properties": {
         "schema_version": {"const": "0.1.0"},
-        "lifecycle_state": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/lifecycle_open_item"},
-        "provenance": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/provenance"},
+        "lifecycle_state": {"$ref": "urn:agentic-data-modeler:contract:common:0.4.0#/$defs/lifecycle_open_item"},
+        "provenance": {"$ref": "urn:agentic-data-modeler:contract:common:0.4.0#/$defs/provenance"},
         "artifact_version_ref": {
           "type": "string",
           "minLength": 1,
@@ -42,7 +42,7 @@
       },
       "required": ["artifact_version_ref", "finding_type", "severity", "finding_text"]
     },
-    {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/no_op_guard"}
+    {"$ref": "urn:agentic-data-modeler:contract:common:0.4.0#/$defs/no_op_guard"}
   ],
   "unevaluatedProperties": false
 }

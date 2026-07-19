@@ -5,7 +5,7 @@ from agentic_data_modeler.evidence import AttributeProfile, ProfileInventory
 
 def _inventory(profiles=None) -> ProfileInventory:
     return ProfileInventory.from_iterable(
-        work_package_id="WP-1234",
+        run_id="run-profile-test",
         source_snapshot_id="source_snapshot_1",
         policy_ref="GOV-001@1.0.0:D23-03,D23-04,D23-05",
         template_version="restricted-aggregate/0.1.0",

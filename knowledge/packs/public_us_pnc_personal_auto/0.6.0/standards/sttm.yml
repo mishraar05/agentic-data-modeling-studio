@@ -4,7 +4,7 @@ version: "0.6.0"
 approval_state: APPROVED
 purpose: Attribute-level Source-to-Silver and Silver-to-Gold mapping contract with evidence and reconciliation.
 required_mapping_fields:
-  identity: [engagement_id, work_package_id, mapping_package_id, mapping_id, mapping_version, lifecycle_state]
+  identity: [run_id, context_snapshot_id, mapping_package_id, mapping_id, mapping_version, lifecycle_state]
   scope: [lob, domain, source_system, source_object, target_layer, target_object]
   source: [source_attribute_or_expression, source_grain, source_datatype, source_nullability, source_evidence_ids]
   target: [target_attribute, target_grain, target_datatype, target_nullability, target_business_definition]

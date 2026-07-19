@@ -50,7 +50,7 @@ class AttributeProfile:
 
 @dataclass(frozen=True)
 class ProfileInventory:
-    work_package_id: str
+    run_id: str
     source_snapshot_id: str
     policy_ref: str
     template_version: str
@@ -60,14 +60,14 @@ class ProfileInventory:
     def from_iterable(
         cls,
         *,
-        work_package_id: str,
+        run_id: str,
         source_snapshot_id: str,
         policy_ref: str,
         template_version: str,
         profiles,
     ) -> "ProfileInventory":
         inventory = cls(
-            work_package_id=work_package_id,
+            run_id=run_id,
             source_snapshot_id=source_snapshot_id,
             policy_ref=policy_ref,
             template_version=template_version,
@@ -86,7 +86,7 @@ class ProfileInventory:
 
     def validate(self) -> None:
         if not all(
-            (self.work_package_id, self.source_snapshot_id, self.policy_ref, self.template_version)
+            (self.run_id, self.source_snapshot_id, self.policy_ref, self.template_version)
         ):
             raise ValueError("profile inventory identity is required")
         if not self.profiles:
@@ -116,7 +116,7 @@ class ProfileInventory:
             ],
             "source_snapshot_id": self.source_snapshot_id,
             "template_version": self.template_version,
-            "work_package_id": self.work_package_id,
+            "run_id": self.run_id,
         }
 
     def fingerprint(self) -> str:

@@ -13,7 +13,7 @@ SOURCE_SCHEMAS = ["gw_pc_bronze", "gw_cc_bronze", "gw_bc_bronze"]
 TARGET_SCHEMA = "control"
 
 CONTRACT_TABLES = [
-    "engagement", "work_package", "solution_run", "artifact_version",
+    "solution_run", "artifact_version",
     "source_snapshot", "context_snapshot", "profile_snapshot",
     "document_set", "requirement_set", "evidence_set", "evidence_item",
     "source_object_observation", "source_attribute_observation",

@@ -4,13 +4,13 @@
   "$comment": "Immutable snapshot of source metadata for the exact frozen manifest resolved from an authorized catalog/schema scope policy at run time.",
   "type": "object",
   "allOf": [
-    {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/envelope"},
+    {"$ref": "urn:agentic-data-modeler:contract:common:0.4.0#/$defs/envelope"},
     {
       "properties": {
         "schema_version": {"const": "0.1.0"},
-        "lifecycle_state": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/lifecycle_append_only"},
-        "provenance": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/provenance"},
-        "work_package_ref": {"type": "string", "minLength": 1},
+        "lifecycle_state": {"$ref": "urn:agentic-data-modeler:contract:common:0.4.0#/$defs/lifecycle_append_only"},
+        "provenance": {"$ref": "urn:agentic-data-modeler:contract:common:0.4.0#/$defs/provenance"},
+        "solution_run_ref": {"type": "string", "minLength": 1},
         "snapshot_timestamp": {"type": "string", "format": "date-time"},
         "source_catalog": {"type": "string", "minLength": 1},
         "source_schema": {"type": "string", "minLength": 1},
@@ -21,7 +21,7 @@
         "notes": {"type": "string"}
       },
       "required": [
-        "work_package_ref",
+        "solution_run_ref",
         "snapshot_timestamp",
         "source_catalog",
         "source_schema",
@@ -31,7 +31,7 @@
         "fingerprint"
       ]
     },
-    {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/no_op_guard"}
+    {"$ref": "urn:agentic-data-modeler:contract:common:0.4.0#/$defs/no_op_guard"}
   ],
   "unevaluatedProperties": false
 }

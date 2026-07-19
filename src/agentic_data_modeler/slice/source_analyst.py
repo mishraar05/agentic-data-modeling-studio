@@ -36,7 +36,7 @@ def analyze_attributes(root: Path, scope: Scope, ctx: ContextEnvelope,
     for obs in attribute_observations:
         obj, attr = obs["object_name"], obs["attribute_name"]
         obs_ref, ordinal = obs["record_id"], obs["ordinal_position"]
-        key = subject_key(scope.engagement_id, obj, attr)
+        key = subject_key(scope.memory_partition, obj, attr)
 
         # --- memory read-back: don't re-litigate what a human already decided ---
         prior = memory.prior_decision(key)

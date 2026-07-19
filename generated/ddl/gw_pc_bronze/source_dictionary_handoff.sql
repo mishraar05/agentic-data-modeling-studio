@@ -1,16 +1,15 @@
--- Auto-generated from source_dictionary_handoff.schema.json vunknown
+-- Auto-generated from source_dictionary_handoff.schema.json v0.1.0
 -- Configuration: config/env_config.yaml (schema=gw_pc_bronze)
 -- DO NOT EDIT MANUALLY — Regenerate from contract + config
 
 CREATE TABLE IF NOT EXISTS insurance_source_discovery.gw_pc_bronze.source_dictionary_handoff (
   record_id STRING NOT NULL,
   schema_version STRING NOT NULL,
-  engagement_id STRING NOT NULL,
   lob STRING NOT NULL,
   domain STRING NOT NULL,
   artifact_version STRING NOT NULL,
   lifecycle_state STRING NOT NULL,
-  provenance STRUCT<work_package_id: STRING, run_id: STRING, context_snapshot_id: STRING, source_snapshot_id: STRING, profile_snapshot_id: STRING, model_version: STRING, prompt_version: STRING, skill_version: STRING, tool_version: STRING> NOT NULL,
+  provenance STRUCT<run_id: STRING, context_snapshot_id: STRING, source_snapshot_id: STRING, profile_snapshot_id: STRING, model_version: STRING, prompt_version: STRING, skill_version: STRING, tool_version: STRING> NOT NULL,
   created_at TIMESTAMP NOT NULL,
   updated_at TIMESTAMP NOT NULL,
   artifact_version_ref STRING NOT NULL COMMENT 'Reference to the artifact version being handed off',
@@ -34,9 +33,7 @@ CREATE TABLE IF NOT EXISTS insurance_source_discovery.gw_pc_bronze.source_dictio
   intended_consumer STRING NOT NULL COMMENT 'Intended downstream consumer',
 
   -- Constraints
-  CONSTRAINT table_pk PRIMARY KEY (record_id),
-  CONSTRAINT lifecycle_state_check CHECK (lifecycle_state IN ('DRAFT', 'ISSUED', 'REVOKED', 'SUPERSEDED')),
-  CONSTRAINT intended_consumer_check CHECK (intended_consumer IN ('SILVER_MODELER', 'GOLD_MODELER'))
+  CONSTRAINT source_dictionary_handoff_pk PRIMARY KEY (record_id)
 )
 USING DELTA
 TBLPROPERTIES (
@@ -48,3 +45,7 @@ TBLPROPERTIES (
   'governance.purpose' = 'source_data_discovery'
 )
 ;
+
+-- CHECK constraints added via ALTER TABLE
+ALTER TABLE insurance_source_discovery.gw_pc_bronze.source_dictionary_handoff ADD CONSTRAINT source_dictionary_handoff_lifecycle_state_check CHECK (lifecycle_state IN ('DRAFT', 'ISSUED', 'REVOKED', 'SUPERSEDED'));
+ALTER TABLE insurance_source_discovery.gw_pc_bronze.source_dictionary_handoff ADD CONSTRAINT source_dictionary_handoff_intended_consumer_check CHECK (intended_consumer IN ('SILVER_MODELER', 'GOLD_MODELER'));

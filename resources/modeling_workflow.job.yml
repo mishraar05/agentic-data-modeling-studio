@@ -14,7 +14,6 @@ resources:
             source: WORKSPACE
             base_parameters:
               run_id: modeling_job_{{job.run_id}}
-              engagement_id: ${var.engagement_id}
               lob: ${var.lob}
               domain: ${var.domain}
               source_catalog: ${var.source_catalog}

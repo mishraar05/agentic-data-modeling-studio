@@ -4,16 +4,16 @@
   "$comment": "Captured reporting requirement from business documents, with optional metric and calculation details.",
   "type": "object",
   "allOf": [
-    {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/envelope"},
+    {"$ref": "urn:agentic-data-modeler:contract:common:0.4.0#/$defs/envelope"},
     {
       "properties": {
         "schema_version": {"const": "0.1.0"},
-        "lifecycle_state": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/lifecycle_material"},
-        "provenance": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/provenance"},
-        "work_package_ref": {
+        "lifecycle_state": {"$ref": "urn:agentic-data-modeler:contract:common:0.4.0#/$defs/lifecycle_material"},
+        "provenance": {"$ref": "urn:agentic-data-modeler:contract:common:0.4.0#/$defs/provenance"},
+        "solution_run_ref": {
           "type": "string",
           "minLength": 1,
-          "description": "Reference to the work package"
+          "description": "Reference to the solution run"
         },
         "evidence_item_ref": {
           "type": "string",
@@ -61,7 +61,7 @@
           "description": "Reference to review decision (required when APPROVED)"
         }
       },
-      "required": ["work_package_ref", "evidence_item_ref", "requirement_text", "acceptance_criteria", "priority"],
+      "required": ["solution_run_ref", "evidence_item_ref", "requirement_text", "acceptance_criteria", "priority"],
       "allOf": [
         {
           "if": {
@@ -73,7 +73,7 @@
         }
       ]
     },
-    {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/material_approval_guard"}
+    {"$ref": "urn:agentic-data-modeler:contract:common:0.4.0#/$defs/material_approval_guard"}
   ],
   "unevaluatedProperties": false
 }

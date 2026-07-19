@@ -4,12 +4,12 @@
   "$comment": "Source Data Dictionary code value record with semantic claims and optional governed mapping.",
   "type": "object",
   "allOf": [
-    {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/envelope"},
+    {"$ref": "urn:agentic-data-modeler:contract:common:0.4.0#/$defs/envelope"},
     {
       "properties": {
         "schema_version": {"const": "0.1.0"},
-        "lifecycle_state": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/lifecycle_material"},
-        "provenance": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/contextual_provenance"},
+        "lifecycle_state": {"$ref": "urn:agentic-data-modeler:contract:common:0.4.0#/$defs/lifecycle_material"},
+        "provenance": {"$ref": "urn:agentic-data-modeler:contract:common:0.4.0#/$defs/contextual_provenance"},
         "context_snapshot_ref": {
           "type": "string",
           "minLength": 1,
@@ -31,7 +31,7 @@
           "description": "The code value"
         },
         "meaning": {
-          "$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/semantic_claim",
+          "$ref": "urn:agentic-data-modeler:contract:common:0.4.0#/$defs/semantic_claim",
           "description": "Business meaning semantic claim"
         },
         "frequency": {
@@ -40,7 +40,7 @@
           "description": "Occurrence count from profile evidence"
         },
         "governed_code_ref": {
-          "$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/governed_code_ref",
+          "$ref": "urn:agentic-data-modeler:contract:common:0.4.0#/$defs/governed_code_ref",
           "description": "Optional mapping to governed code value"
         },
         "profile_evidence_ref": {
@@ -70,7 +70,7 @@
         }
       ]
     },
-    {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/material_approval_guard"}
+    {"$ref": "urn:agentic-data-modeler:contract:common:0.4.0#/$defs/material_approval_guard"}
   ],
   "unevaluatedProperties": false
 }

@@ -2,7 +2,7 @@
 
 **Date**: 2026-07-17 17:27  
 **Status**: ✅ COMPLETE  
-**Success Rate**: 100% (93/93 tables created)
+**Success Rate**: 100% (87/87 run-rooted tables created)
 
 ---
 
@@ -24,16 +24,16 @@
 
 **Test Results**:
 * `engagement.schema.json` — Successfully resolves envelope + lifecycle_state + provenance
-* All 31 contracts — Successfully generate valid DDL with correct types and constraints
+* All 29 record contracts — Successfully generate valid DDL with correct types and constraints
 
 ### 2. Unity Catalog Table Creation ✅
 
-**Tables Created**: 93 (31 contracts × 3 bronze schemas)
+**Tables Created**: 87 (29 record contracts × 3 bronze schemas)
 
 **Schemas**:
-* `insurance_source_discovery.gw_pc_bronze` — 31 tables (PolicyCenter Bronze)
-* `insurance_source_discovery.gw_cc_bronze` — 31 tables (ClaimCenter Bronze)
-* `insurance_source_discovery.gw_bc_bronze` — 31 tables (BillingCenter Bronze)
+* `insurance_source_discovery.gw_pc_bronze` — 29 tables (PolicyCenter Bronze)
+* `insurance_source_discovery.gw_cc_bronze` — 29 tables (ClaimCenter Bronze)
+* `insurance_source_discovery.gw_bc_bronze` — 29 tables (BillingCenter Bronze)
 
 **Table Features**:
 * ✅ PRIMARY KEY constraints with table-specific names (e.g., `engagement_pk`)
@@ -127,7 +127,7 @@ CREATE TABLE DDL + ALTER TABLE constraints
 ## Next Steps (Increment 3+)
 
 ### Immediate (Current Session)
-1. Verify table schemas match all 31 contracts
+1. Verify table schemas match all 29 record contracts
 2. Test sample data insert for engagement table
 3. Document DDL generation CLI usage
 

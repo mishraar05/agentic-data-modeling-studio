@@ -12,17 +12,16 @@ from .contracts import require_valid
 
 @dataclass(frozen=True, slots=True)
 class Scope:
-    """Identity carried by every record in a run."""
+    """Run-rooted LOB/domain boundary carried by every record."""
 
-    engagement_id: str
     lob: str
     domain: str
-    work_package_id: str
     run_id: str
+    memory_partition: str = "default"
     artifact_version: str = "0.1.0"
 
     def provenance(self, *, context_snapshot_id: str | None = None, **extra: str) -> dict[str, Any]:
-        prov: dict[str, Any] = {"work_package_id": self.work_package_id, "run_id": self.run_id}
+        prov: dict[str, Any] = {"run_id": self.run_id}
         if context_snapshot_id:
             prov["context_snapshot_id"] = context_snapshot_id
         prov.update(extra)
@@ -65,13 +64,13 @@ def context_snapshot(root: Path, scope: Scope, *, evidence_set_ref: str, pack_id
                      pack_version: str, module_ids: list[str], size_bytes: int,
                      fingerprint: str) -> dict[str, Any]:
     rec = C.envelope(
-        record_id=C.stable_id("context_snapshot", scope.work_package_id, scope.run_id, fingerprint),
-        engagement_id=scope.engagement_id, lob=scope.lob, domain=scope.domain,
+        record_id=C.stable_id("context_snapshot", scope.run_id, fingerprint),
+        lob=scope.lob, domain=scope.domain,
         artifact_version=scope.artifact_version, lifecycle_state="COMMITTED",
         provenance=scope.provenance(),
     )
     rec.update({
-        "work_package_ref": scope.work_package_id,
+        "solution_run_ref": scope.run_id,
         "evidence_set_ref": evidence_set_ref,
         "snapshot_timestamp": C.now_iso(),
         "knowledge_pack_id": pack_id,
@@ -89,8 +88,8 @@ def object_observation(root: Path, scope: Scope, *, snapshot_ref: str, evidence_
                        catalog: str, schema: str, object_name: str, object_type: str,
                        attribute_count: int) -> dict[str, Any]:
     rec = C.envelope(
-        record_id=C.stable_id("source_object_observation", scope.work_package_id, object_name),
-        engagement_id=scope.engagement_id, lob=scope.lob, domain=scope.domain,
+        record_id=C.stable_id("source_object_observation", scope.run_id, object_name),
+        lob=scope.lob, domain=scope.domain,
         artifact_version=scope.artifact_version, lifecycle_state="COMMITTED",
         provenance=scope.provenance(source_snapshot_id=snapshot_ref),
     )
@@ -106,8 +105,8 @@ def attribute_observation(root: Path, scope: Scope, *, snapshot_ref: str, eviden
                           object_name: str, attribute_name: str, ordinal: int, data_type: str,
                           nullable: bool, constraint_role: str) -> dict[str, Any]:
     rec = C.envelope(
-        record_id=C.stable_id("source_attribute_observation", scope.work_package_id, object_name, attribute_name),
-        engagement_id=scope.engagement_id, lob=scope.lob, domain=scope.domain,
+        record_id=C.stable_id("source_attribute_observation", scope.run_id, object_name, attribute_name),
+        lob=scope.lob, domain=scope.domain,
         artifact_version=scope.artifact_version, lifecycle_state="COMMITTED",
         provenance=scope.provenance(source_snapshot_id=snapshot_ref),
     )
@@ -122,13 +121,13 @@ def attribute_observation(root: Path, scope: Scope, *, snapshot_ref: str, eviden
 def open_question(root: Path, scope: Scope, *, question_text: str, question_type: str,
                   context_snapshot_ref: str | None = None) -> dict[str, Any]:
     rec = C.envelope(
-        record_id=C.stable_id("open_question", scope.work_package_id, question_text),
-        engagement_id=scope.engagement_id, lob=scope.lob, domain=scope.domain,
+        record_id=C.stable_id("open_question", scope.run_id, question_text),
+        lob=scope.lob, domain=scope.domain,
         artifact_version=scope.artifact_version, lifecycle_state="OPEN",
         provenance=scope.provenance(),
     )
     rec.update({
-        "work_package_ref": scope.work_package_id,
+        "solution_run_ref": scope.run_id,
         "question_text": question_text, "question_type": question_type,
     })
     if context_snapshot_ref:
@@ -138,8 +137,8 @@ def open_question(root: Path, scope: Scope, *, question_text: str, question_type
 
 def review_item(root: Path, scope: Scope, *, artifact_version_ref: str, review_question: str) -> dict[str, Any]:
     rec = C.envelope(
-        record_id=C.stable_id("review_item", scope.work_package_id, artifact_version_ref, review_question),
-        engagement_id=scope.engagement_id, lob=scope.lob, domain=scope.domain,
+        record_id=C.stable_id("review_item", scope.run_id, artifact_version_ref, review_question),
+        lob=scope.lob, domain=scope.domain,
         artifact_version=scope.artifact_version, lifecycle_state="OPEN",
         provenance=scope.provenance(),
     )
@@ -150,8 +149,8 @@ def review_item(root: Path, scope: Scope, *, artifact_version_ref: str, review_q
 def review_decision(root: Path, scope: Scope, *, review_item_ref: str, decision: str,
                     decision_maker: str, rationale: str, impact_scope: list[str] | None = None) -> dict[str, Any]:
     rec = C.envelope(
-        record_id=C.stable_id("review_decision", scope.work_package_id, review_item_ref),
-        engagement_id=scope.engagement_id, lob=scope.lob, domain=scope.domain,
+        record_id=C.stable_id("review_decision", scope.run_id, review_item_ref),
+        lob=scope.lob, domain=scope.domain,
         artifact_version=scope.artifact_version, lifecycle_state="RECORDED",
         provenance=scope.provenance(),
     )
@@ -175,8 +174,8 @@ def dictionary_attribute(root: Path, scope: Scope, *, context_snapshot_ref: str,
                          review_decision_ref: str | None = None,
                          notes: str | None = None) -> dict[str, Any]:
     rec = C.envelope(
-        record_id=C.stable_id("source_dictionary_attribute", scope.work_package_id, object_name, attribute_name),
-        engagement_id=scope.engagement_id, lob=scope.lob, domain=scope.domain,
+        record_id=C.stable_id("source_dictionary_attribute", scope.run_id, object_name, attribute_name),
+        lob=scope.lob, domain=scope.domain,
         artifact_version=scope.artifact_version, lifecycle_state=lifecycle_state,
         provenance=scope.provenance(context_snapshot_id=context_snapshot_ref),
     )

@@ -1,14 +1,13 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:agentic-data-modeler:contract:common:0.3.0",
-  "$comment": "Shared Increment-1 structural vocabulary and reusable record blocks. Trust, provenance and lifecycle vocabularies are contract-owned invariants. Domain vocabulary is referenced through governed_code_ref and is never copied into this file.",
+  "$id": "urn:agentic-data-modeler:contract:common:0.4.0",
+  "$comment": "Shared structural vocabulary and reusable record blocks. Execution identity is run- and context-rooted; engagement and work-package identifiers are deliberately absent.",
   "$defs": {
     "envelope": {
       "type": "object",
       "required": [
         "record_id",
         "schema_version",
-        "engagement_id",
         "lob",
         "domain",
         "artifact_version",
@@ -20,7 +19,6 @@
       "properties": {
         "record_id": {"type": "string", "minLength": 1},
         "schema_version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
-        "engagement_id": {"type": "string", "minLength": 1},
         "lob": {"type": "string", "minLength": 1},
         "domain": {"type": "string", "minLength": 1},
         "artifact_version": {"type": "string", "minLength": 1},
@@ -31,11 +29,10 @@
       }
     },
     "provenance": {
-      "$comment": "Evidence may exist before Increment-3 context assembly, so context_snapshot_id is optional here. Context-dependent artifact schemas must narrow provenance with contextual_provenance.",
+      "$comment": "Evidence may exist before context assembly, so context_snapshot_id is optional. The solution_run record and immutable snapshots provide execution identity.",
       "type": "object",
-      "required": ["work_package_id", "run_id"],
+      "required": ["run_id"],
       "properties": {
-        "work_package_id": {"type": "string", "minLength": 1},
         "run_id": {"type": "string", "minLength": 1},
         "context_snapshot_id": {"type": "string", "minLength": 1},
         "source_snapshot_id": {"type": "string", "minLength": 1},

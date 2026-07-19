@@ -4,14 +4,14 @@
   "$comment": "Individual evidence item with provenance class, content, and citations. Evidence items are created before context assembly and may originate from source facts, documents, requirements, or governed inputs.",
   "type": "object",
   "allOf": [
-    {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/envelope"},
+    {"$ref": "urn:agentic-data-modeler:contract:common:0.4.0#/$defs/envelope"},
     {
       "properties": {
         "schema_version": {"const": "0.1.0"},
-        "lifecycle_state": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/lifecycle_append_only"},
-        "provenance": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/provenance"},
-        "work_package_ref": {"type": "string", "minLength": 1},
-        "provenance_class": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/provenance_class"},
+        "lifecycle_state": {"$ref": "urn:agentic-data-modeler:contract:common:0.4.0#/$defs/lifecycle_append_only"},
+        "provenance": {"$ref": "urn:agentic-data-modeler:contract:common:0.4.0#/$defs/provenance"},
+        "solution_run_ref": {"type": "string", "minLength": 1},
+        "provenance_class": {"$ref": "urn:agentic-data-modeler:contract:common:0.4.0#/$defs/provenance_class"},
         "evidence_type": {"enum": ["METADATA", "PROFILE", "DOCUMENT_EXCERPT", "REQUIREMENT", "GLOSSARY_TERM", "STANDARD", "PRIOR_DECISION"]},
         "content": {"type": "string", "minLength": 1},
         "source_snapshot_ref": {"type": "string", "minLength": 1},
@@ -26,14 +26,14 @@
         "notes": {"type": "string"}
       },
       "required": [
-        "work_package_ref",
+        "solution_run_ref",
         "provenance_class",
         "evidence_type",
         "content",
         "fingerprint"
       ]
     },
-    {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/no_op_guard"}
+    {"$ref": "urn:agentic-data-modeler:contract:common:0.4.0#/$defs/no_op_guard"}
   ],
   "unevaluatedProperties": false
 }

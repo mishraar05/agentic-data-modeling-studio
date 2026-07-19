@@ -4,16 +4,16 @@
   "$comment": "Immutable record of extracted analytical and reporting requirements from documents.",
   "type": "object",
   "allOf": [
-    {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/envelope"},
+    {"$ref": "urn:agentic-data-modeler:contract:common:0.4.0#/$defs/envelope"},
     {
       "properties": {
         "schema_version": {"const": "0.1.0"},
-        "lifecycle_state": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/lifecycle_append_only"},
-        "provenance": {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/provenance"},
-        "work_package_ref": {
+        "lifecycle_state": {"$ref": "urn:agentic-data-modeler:contract:common:0.4.0#/$defs/lifecycle_append_only"},
+        "provenance": {"$ref": "urn:agentic-data-modeler:contract:common:0.4.0#/$defs/provenance"},
+        "solution_run_ref": {
           "type": "string",
           "minLength": 1,
-          "description": "Reference to the work package"
+          "description": "Reference to the solution run"
         },
         "document_set_ref": {
           "type": "string",
@@ -41,9 +41,9 @@
           "description": "SHA-256 hash of requirement set for verification"
         }
       },
-      "required": ["work_package_ref", "analytical_requirement_count", "reporting_requirement_count", "extraction_timestamp", "fingerprint"]
+      "required": ["solution_run_ref", "analytical_requirement_count", "reporting_requirement_count", "extraction_timestamp", "fingerprint"]
     },
-    {"$ref": "urn:agentic-data-modeler:contract:common:0.3.0#/$defs/no_op_guard"}
+    {"$ref": "urn:agentic-data-modeler:contract:common:0.4.0#/$defs/no_op_guard"}
   ],
   "unevaluatedProperties": false
 }

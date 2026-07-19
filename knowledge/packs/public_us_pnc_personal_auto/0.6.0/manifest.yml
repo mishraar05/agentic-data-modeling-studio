@@ -45,7 +45,7 @@ assets:
   - {path: knowledge/packs/public_us_pnc_personal_auto/0.6.0/code_sets/personal_auto_semantic_codes.yml, sha256: 8e8bf825f4be7cd70f2ecb23c03a0be55541d7be0806ff1097f0fd0f4d841669}
   - {path: knowledge/packs/public_us_pnc_personal_auto/0.6.0/standards/silver_modeling.yml, sha256: 7724df010373b12cb39e0002dd38974f21f1ae731541254d0b966a1629594b55}
   - {path: knowledge/packs/public_us_pnc_personal_auto/0.6.0/standards/gold_modeling.yml, sha256: c1ddc2c75e4b1e6ff23560216f0e145c779179977fed211ab4eb178a848d1597}
-  - {path: knowledge/packs/public_us_pnc_personal_auto/0.6.0/standards/sttm.yml, sha256: 324a244310c2ab42bb692a4973cf6b8e890d1c602be0e092e2f0e488db1bbe56}
+  - {path: knowledge/packs/public_us_pnc_personal_auto/0.6.0/standards/sttm.yml, sha256: 91b4f7d2da09e5928bf13b825b1b1278b9a0da11b6ae771cb81c0998f39bc59c}
   - {path: knowledge/packs/public_us_pnc_personal_auto/0.6.0/standards/naming_datatypes_quality.yml, sha256: 7229140d9bcc5f38512d7dc3e7bc9bccd4e0a76c0d1665f9d6025f6f33f96bab}
   - {path: knowledge/packs/public_us_pnc_personal_auto/0.6.0/references/ontology/fibo.yml, sha256: 5c739e060c2476e8843fda616f789ca7e457efa139b1388e1c1b889c08ab639b}
   - {path: knowledge/packs/public_us_pnc_personal_auto/0.6.0/references/target_reference_models/README.md, sha256: b1699b023830a1ea010ef9f50c79c71edae6f97f2ef1dbd7760a9eab67fc0d97}
