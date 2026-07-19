@@ -3,9 +3,9 @@
   
   "_comment_models": "AI model endpoints for the semantic analysis agents. These should be Foundation Model API serving endpoints in Databricks. Producer generates SDD content; Critic reviews and refines it per Charter §2 'LLM/agent responsibilities'.",
   "models": {
-    "producer_endpoint": "databricks-meta-llama-3-1-70b-instruct",
-    "critic_endpoint": "databricks-meta-llama-3-1-70b-instruct",
-    "_comment": "Use Foundation Model API endpoint names (e.g., 'databricks-meta-llama-3-1-70b-instruct') or custom Model Serving endpoint names. Both endpoints can be the same or different models depending on workload optimization."
+    "producer_endpoint": "databricks-meta-llama-3-3-70b-instruct",
+    "critic_endpoint": "databricks-claude-opus-4-8",
+    "_comment": "Independent critic is MANDATORY: critic_endpoint must be a real Foundation Model API endpoint on a DIFFERENT model family from the producer (ADR-005 F1). Producer = Meta Llama 3.3 70B (in-perimeter, cost-sensible drafter); Critic = Anthropic Claude Opus 4.8 (in-perimeter frontier reviewer). The dictionary phase fails closed if these are empty, placeholder, or equal."
   },
   
   "_comment_identity": "Authorization boundary enforcement per Charter §6. Validates the execution context matches the authorized principal and workspace. source_access_granted must be explicitly 'true' to proceed with source metadata discovery.",
