@@ -139,17 +139,35 @@ Files: all ten workflow notebooks under `src/workflows/`. Replace every
 with a deploy-agnostic root and delete the matching
 `sys.path.append("/Workspace/Users/cleancoding109@gmail.com")` (derive from
 `REPO_ROOT / "src"`). Use one shared helper; the requirement is simply: **no literal
-user path anywhere.** Suggested:
+user path anywhere.**
+
+CRITICAL — the `/Workspace` FUSE prefix: `notebookPath().get()` returns the workspace
+*logical* path WITHOUT `/Workspace` (e.g. `/Users/<me>/.bundle/.../dev/files/src/...`),
+but deployed workspace files are only readable by Python `open()` through the
+`/Workspace` FUSE mount. A root missing that prefix makes the loader raise
+`FileNotFoundError: Missing metadata file: /Users/.../files/metadata/common.json` even
+though `metadata/` deployed correctly. The helper MUST guarantee the prefix:
 ```python
 import os
 from pathlib import Path
-REPO_ROOT = Path(
-    os.environ.get("BUNDLE_ROOT")
-    or dbutils.notebook.entry_point.getDbutils().notebook().getContext()
-        .notebookPath().get().rsplit("/src/", 1)[0]
-)
+
+def _bundle_root() -> Path:
+    root = os.environ.get("BUNDLE_ROOT")
+    if not root:
+        nb = dbutils.notebook.entry_point.getDbutils().notebook().getContext().notebookPath().get()
+        root = nb.rsplit("/src/", 1)[0]
+    if not root.startswith("/Workspace"):     # workspace files read only via the /Workspace FUSE mount
+        root = "/Workspace" + root
+    return Path(root)
+
+REPO_ROOT = _bundle_root()
 ```
-Prove it: `grep -rn "cleancoding109@gmail.com" src` empty.
+(Alternative, equally acceptable: pass `BUNDLE_ROOT = ${workspace.file_path}` as a task
+env/param in the bundle — it already includes `/Workspace/...` — so the `os.environ`
+branch wins and no string-munging is needed.)
+
+Prove it: `grep -rn "cleancoding109@gmail.com" src` empty; on Databricks the loader
+reads `metadata/common.json` without `FileNotFoundError` (the run gets past param load).
 
 ## Fix 4 (STALE TESTS) — rewrite only these three
 

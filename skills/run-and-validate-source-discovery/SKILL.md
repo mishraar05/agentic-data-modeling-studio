@@ -138,8 +138,10 @@ In `resources/source_discovery.job.yml`, using the shared-run-id rule
 ## 3. Build the export notebook
 
 `src/workflows/export_source_dictionary.py` — mirror the other workflows exactly:
-`resolve_job_params(...)`, the identity authorization check, `REPO_ROOT` derived (no
-user literal). Then, for `RID = params["run_id"]`, read from the output catalog/schema:
+`resolve_job_params(...)`, the identity authorization check, and the same
+`/Workspace`-safe `REPO_ROOT` helper as the other notebooks (must yield a path starting
+with `/Workspace` so the loader can read `metadata/` — see follow-up-fixes Fix 3; a root
+without that prefix raises `FileNotFoundError: Missing metadata file`). Then, for `RID = params["run_id"]`, read from the output catalog/schema:
 `source_object_observation`, `source_attribute_observation`, `source_dictionary_object`,
 `source_dictionary_attribute`, `source_dictionary_code_value`, `open_question`, and
 (optional) `source_dictionary_relationship` — all filtered to RID. Call
@@ -159,27 +161,42 @@ approvals, no re-derivation of meaning.
 
 All tasks must reach **Succeeded**, ending with `export_source_dictionary`.
 
-## 5. Fix run-time failures — surgical loop
+## 5. Fix run-time failures — run/fix/re-run until the job finishes
 
-For each failed task:
-```
-LOOP:
-  1. Read that task's driver log: the real exception + traceback.
-  2. Localize the cause to ONE file (a workflow notebook, the new exporter, or the YAML).
-  3. Classify:
-       - config/wiring (missing task-value, wrong grouped key, path) -> fix that file
-       - permission/identity (grant, principal, host)               -> report to owner, never bypass the check
-       - contract/schema mismatch                                   -> STOP and ask (protected)
-  4. Minimal fix for that cause only.
-  5. `pytest -q` -> full baseline still green (no passing test regresses).
-  6. Redeploy + re-run.
-  7. New task fails -> repeat. A previously-passing task fails -> REVERT, STOP, report.
-  8. Green -> commit "run-fix: <task> <cause>" (one commit per cause).
-```
-Never advance by disabling a task, dropping a dependency, hardcoding a run_id/path,
-or try/excepting past an error. If the only way through touches a PROTECTED item, STOP.
+This is an **outer loop**: keep triggering the job and fixing what fails until every
+task reaches Succeeded (ending with `export_source_dictionary`), or a stop condition
+below is hit. Do not stop at the first failure and hand back a half-run; do not proceed
+to validation until the whole job is green.
 
-Do not validate until the whole job (including export) succeeds.
+```
+OUTER LOOP (repeat until the whole job Succeeds or a STOP fires):
+  run:  databricks bundle deploy -t dev  &&  databricks bundle run source_discovery -t dev ; wait
+  if all tasks Succeeded -> exit loop, go to §6.
+  else, for the first failed task:
+     1. Read that task's driver log: the real exception + traceback.
+     2. Localize the cause to ONE file (a workflow notebook, the new exporter, or the YAML).
+     3. Classify:
+          - config/wiring (missing task-value, wrong grouped key, path) -> fix that file
+          - permission/identity (grant, principal, host)               -> report to owner, never bypass the check
+          - contract/schema mismatch                                   -> STOP and ask (protected)
+     4. Make the minimal fix for that cause only.
+     5. pytest -q -> full baseline still green (no passing test regresses); else REVERT this fix.
+     6. Commit "run-fix: <task> <cause>" (one commit per cause).
+  -> loop back and re-run the job.
+```
+
+TERMINATION / anti-thrash guards (so it never loops forever):
+- **No-progress guard:** if the *same task* fails with the *same error* after your fix,
+  do not re-apply variations blindly — STOP and report that error with the log.
+- **Attempt cap:** after 5 full run→fix cycles without reaching green, STOP and hand
+  back a summary of what's still failing and why.
+- **Regression guard:** a previously-passing task or a passing test breaks after a fix
+  -> REVERT that fix, STOP, report.
+- **Protected guard:** if the only way past a failure touches a PROTECTED item, a
+  contract, or a guard -> STOP and ask.
+
+Never advance by disabling a task, dropping a dependency, hardcoding a run_id/path/secret,
+or try/excepting past an error. Progress must come from fixing the real cause.
 
 ## 6. Validate intermediate results (for THIS run)
 
