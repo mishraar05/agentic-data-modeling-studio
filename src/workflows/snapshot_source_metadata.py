@@ -32,6 +32,7 @@ from agentic_data_modeler.control import RuntimeRequest
 from agentic_data_modeler.evidence.metadata import (
     ColumnMetadata,
     ConstraintMetadata,
+    MetadataInventory,
     ObjectMetadata,
     one_based_ordinal_offset,
 )
