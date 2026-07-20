@@ -113,3 +113,13 @@ DuckDB and the offline proof-slice harness are gone; the canonical agent, the sh
 slice helpers, the evidence-metadata path, and the Databricks workflows are untouched and
 importable; no DuckDB reference remains anywhere; and the test suite is green with zero
 collection errors.
+
+**Unity Catalog `information_schema` is the sole source-metadata reader after removal.**
+The Databricks workflows already read source metadata only from
+`` `<source_catalog>`.information_schema.{tables, columns, table_constraints, key_column_usage} ``
+via `spark.sql` (`discover_source_scope.py`, `snapshot_source_metadata.py`); DuckDB was
+never in that path. Deleting `DuckDBCatalogReader` / `slice.source_binding` removes the only
+alternative reader in the repo, so after this skill runs Unity Catalog is the one and only
+way source metadata is ever read, in any environment (dev or prod). Verify: `grep -rn
+"information_schema" src/workflows` is non-empty and `grep -rln "CatalogReader\|DuckDB" src`
+returns nothing.

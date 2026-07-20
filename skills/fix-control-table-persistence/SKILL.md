@@ -120,8 +120,15 @@ rather than inventing):
 - `knowledge_pack_id`/`knowledge_pack_version` = `params["knowledge_pack"]` (nullable)
 - `output_catalog`/`output_schema` = `params["output"]`
 - `source_access_granted` = `params["identity"]["source_access_granted"].lower() == "true"` (BOOLEAN)
-- `profiling_policy` = `params["profiling"]["policy_id"]`
-- `run_type` = `"SOURCE_DISCOVERY"`; `status` = `"RUNNING"`
+- `profiling_policy` = `params["profiling"]["run_mode"]` — MUST be one of the DDL CHECK values
+  `FULL` / `METADATA_ONLY` / `RESTRICTED` (it is the profiling *mode*, NOT `policy_id` like
+  `GOV-001`; writing the policy id violates the CHECK constraint and the insert fails)
+- `run_type` = `"SDD"` — MUST be one of `VALIDATE` / `METADATA` / `PROFILE` / `EVIDENCE` /
+  `CONTEXT` / `SDD` / `REVIEW` (NOT `"SOURCE_DISCOVERY"` — that value is not in the CHECK)
+- `status` = `"RUNNING"` (one of `RUNNING` / `COMPLETED` / `FAILED` / `CANCELLED`)
+- `lifecycle_state` = `"ACTIVE"` and `workflow_state` = `"VALIDATED"` are the only valid first
+  values per their CHECK constraints — verify every enum-typed field against the regenerated
+  DDL's `CHECK (... IN (...))` before writing; a value outside the set fails the insert.
 - `error_message` = None; `cost_usd` = None
 
 Keep the identity check above unchanged. Remove any earlier ad-hoc write to `main.modeler`
