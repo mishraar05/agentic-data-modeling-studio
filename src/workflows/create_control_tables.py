@@ -85,7 +85,7 @@ for ddl_file in ddl_files:
         )
         
         # Split by semicolon to handle CREATE TABLE + ALTER TABLE statements
-        statements = [stmt.strip() for stmt in ddl_content.split(';') if stmt.strip() and not stmt.strip().startswith('--')]
+        statements = [stmt.strip() for stmt in ddl_content.split(';') if stmt.strip()]
         
         for stmt in statements:
             if stmt:
