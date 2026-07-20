@@ -87,7 +87,7 @@ from datetime import datetime
 from pyspark.sql import functions as F
 
 def _qualified(catalog: str, schema: str, table: str) -> str:
-    return "."join(f"`{identifier}`" for identifier in (catalog, schema, table))
+    return ".".join(f"`{identifier}`" for identifier in (catalog, schema, table))
 
 def _insert_records_idempotently(table_name: str, records: list[dict]) -> None:
     """Insert records using MERGE pattern, conforming to target schema."""
