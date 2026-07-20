@@ -88,20 +88,31 @@ for ddl_file in ddl_files:
         statements = [stmt.strip() for stmt in ddl_content.split(';') if stmt.strip()]
         
         for stmt in statements:
-            if stmt:
-                # Skip comments
-                if stmt.startswith('--'):
-                    continue
-                    
-                try:
-                    spark.sql(stmt)
-                except Exception as alter_error:
-                    # ALTER TABLE constraint failures are expected if constraint already exists
-                    error_msg = str(alter_error).lower()
-                    if "already exists" in error_msg or "constraint" in error_msg:
-                        pass  # Ignore constraint already exists errors
-                    else:
-                        raise
+            if not stmt:
+                continue
+            
+            # Strip leading comment lines from statement
+            stmt_lines = stmt.split('\n')
+            non_comment_lines = []
+            for line in stmt_lines:
+                line_stripped = line.strip()
+                if line_stripped and not line_stripped.startswith('--'):
+                    non_comment_lines.append(line)
+            
+            if not non_comment_lines:
+                continue  # Statement was all comments
+            
+            clean_stmt = '\n'.join(non_comment_lines)
+            
+            try:
+                spark.sql(clean_stmt)
+            except Exception as alter_error:
+                # ALTER TABLE constraint failures are expected if constraint already exists
+                error_msg = str(alter_error).lower()
+                if "already exists" in error_msg or "constraint" in error_msg:
+                    pass  # Ignore constraint already exists errors
+                else:
+                    raise
         
         print(f"✅ {table_name}")
         created += 1
