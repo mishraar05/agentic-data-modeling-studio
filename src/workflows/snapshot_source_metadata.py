@@ -29,7 +29,12 @@ _add_bundle_source_to_python_path()
 
 from agentic_data_modeler.config.job_params import resolve_job_params
 from agentic_data_modeler.control import RuntimeRequest
-from agentic_data_modeler.evidence.metadata import one_based_ordinal_offset
+from agentic_data_modeler.evidence.metadata import (
+    ColumnMetadata,
+    ConstraintMetadata,
+    ObjectMetadata,
+    one_based_ordinal_offset,
+)
 from pyspark.sql import functions as F
 
 # Load grouped parameters from metadata files
