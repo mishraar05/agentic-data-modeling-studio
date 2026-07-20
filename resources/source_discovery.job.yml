@@ -24,9 +24,18 @@ resources:
             source: WORKSPACE
             base_parameters:
               run_id: source_discovery_{{job.run_id}}
+        - task_key: create_control_tables
+          depends_on:
+            - task_key: validate_scope
+          notebook_task:
+            notebook_path: ../src/workflows/create_control_tables.py
+            source: WORKSPACE
+            base_parameters:
+              run_id: source_discovery_{{job.run_id}}
         - task_key: register_solution_run
           depends_on:
             - task_key: discover_source_scope
+            - task_key: create_control_tables
           notebook_task:
             notebook_path: ../src/workflows/register_solution_run.py
             source: WORKSPACE
