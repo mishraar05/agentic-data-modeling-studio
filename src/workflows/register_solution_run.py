@@ -155,7 +155,7 @@ solution_run_record = {
     "knowledge_pack_version": None,
     "output_catalog": request.output_catalog,
     "output_schema": request.output_schema,
-    "profiling_policy": params["profiling"]["policy_id"],
+    "profiling_policy": params["profiling"]["run_mode"],
     "run_type": "METADATA",
     "start_timestamp": now,
     "end_timestamp": now,
