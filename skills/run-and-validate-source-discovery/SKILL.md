@@ -15,11 +15,19 @@ description: >-
 
 ## Status and authority
 
-Version: `0.2.0-DRAFT` · Owner: solution/platform owner (`TBD`)
-Prerequisite: the metadata refactor and the follow-up fixes are applied and `pytest`
-is green (bar the 2 sandbox-only DuckDB `.wal` errors). In particular Fix 1 of
-`refactor-metadata-followup-fixes` (dictionary notebook on `resolve_job_params` +
-`params["models"]`) must be done first, because this spec puts that notebook in the job.
+Version: `0.3.0-DRAFT` · Owner: solution/platform owner (`TBD`)
+
+ALREADY APPLIED (verified in the pulled codebase — Phases 1–3 below are now a
+**verification checklist**, not fresh build work): shared `run_id` on all tasks;
+`/Workspace`-safe `REPO_ROOT`; dictionary notebook on `resolve_job_params` +
+`params["models"]` with the mandatory-critic guard (§1a); `build_full_source_dictionary_workbook`
+in the exporter; and the `analyze_source_dictionary`, `analyze_source_relationships`,
+`export_source_dictionary` tasks wired into the job.
+
+STILL REQUIRED before a clean run: **the control-table persistence fix** —
+`skills/fix-control-table-persistence` (regenerate DDL, add the `create_control_tables`
+bootstrap task, replace the inferred-schema write in `register_solution_run`). The job
+cannot get past `snapshot_source_metadata` until that is done, so run it FIRST.
 
 Goal (owner-confirmed): the `source_discovery` job runs **end to end and ends by
 writing the full semantic Source Data Dictionary as an .xlsx** — business names,
@@ -62,95 +70,39 @@ exporter function, a new export workflow notebook, new job tasks in
 
 ---
 
-## 1a. Make the independent critic mandatory (fail closed)
+## 1. VERIFY the build (already applied by prior work — do not rebuild)
 
-The orchestrator (`analyst/*`, PROTECTED) already runs the critic when a critic model
-is passed and folds critic agreement into confidence. The gap is only at the notebook
-boundary: today `analyze_source_dictionary.py` does
-`critic = DatabricksFoundationModel(critic_endpoint) if critic_endpoint else None`,
-which **silently skips the critic** if the endpoint is blank. Close that:
+These were implemented and committed already. Confirm each; only touch a file if the
+check fails, and then per the PROTECTED rules above.
 
-- Preflight `metadata/sdd_param.json`: `models.critic_endpoint` must be present,
-  non-empty, not a `REPLACE_*` placeholder, and **different** from
-  `models.producer_endpoint`. If it is missing/placeholder, **STOP and ask the owner**
-  for a real, distinct critic serving endpoint — do not run without it. The
-  owner-configured pairing is producer `databricks-meta-llama-3-3-70b-instruct` and
-  critic `databricks-claude-opus-4-8` (different families, both in-perimeter); confirm
-  the critic is on a different model family from the producer, not just a different name.
-- In the dictionary notebook (this edit is to a workflow notebook, allowed — not
-  `analyst/*`), require the critic instead of defaulting to `None`:
-  ```python
-  critic_endpoint = params["models"]["critic_endpoint"]
-  if not critic_endpoint or critic_endpoint == params["models"]["producer_endpoint"]:
-      raise ValueError("Independent critic is mandatory: set a distinct models.critic_endpoint.")
-  critic = DatabricksFoundationModel(critic_endpoint)   # never None in this pipeline
-  ```
-  Keep the existing independence guard (`producer == critic -> raise`). Do NOT change
-  the orchestrator to force this — enforce it at the notebook, so `analyst/*` stays
-  untouched and `critic_model` is simply never `None` here.
+- **Mandatory independent critic (§1a).** `analyze_source_dictionary.py` reads
+  `producer_endpoint`/`critic_endpoint` from `params["models"]` and raises
+  `"Independent critic is mandatory..."` when the critic is empty or equals the producer;
+  `critic` is never `None`. Check: `grep -n "Independent critic is mandatory\|params\[.models.\]" src/workflows/analyze_source_dictionary.py`. Also preflight
+  `metadata/sdd_param.json`: `models.critic_endpoint` present, non-placeholder, and a
+  different family from the producer (configured: producer `databricks-meta-llama-3-3-70b-instruct`,
+  critic `databricks-claude-opus-4-8`). If placeholder/equal → STOP, ask the owner.
+- **Full semantic exporter.** `build_full_source_dictionary_workbook(...)` exists in
+  `export/data_dictionary_excel.py` (structural `build_source_dictionary_workbook`
+  untouched). Sheets: `Cover, Objects, Attributes, Dictionary, Code Values, Open Questions`
+  (+`Relationships`). Check: `grep -n "def build_full_source_dictionary_workbook" ...`.
+- **Pipeline wired.** `resources/source_discovery.job.yml` has `analyze_source_dictionary`
+  (after `assemble_context`), `analyze_source_relationships`, and a final
+  `export_source_dictionary` depending on both. Check: `grep -n "task_key:" resources/source_discovery.job.yml`.
+- **Export notebook.** `src/workflows/export_source_dictionary.py` uses `resolve_job_params`,
+  the identity check, the `/Workspace`-safe `REPO_ROOT`, reads this run's records, and calls
+  `build_full_source_dictionary_workbook`.
 
-Prove it: the notebook has no `... if critic_endpoint else None` for the critic;
-`grep` confirms it raises when the critic is absent or equal to the producer.
+If any check fails, build that one piece per the original spec (structural builder + its
+test stay untouched; new tests for new code); otherwise proceed.
 
-## 1. Build the semantic SDD exporter (additive — do not touch the structural one)
+## 2. PREREQUISITE — control-table persistence must be fixed first
 
-In `src/agentic_data_modeler/export/data_dictionary_excel.py`, add a NEW function
-(keep `build_source_dictionary_workbook` unchanged so its test stays green):
-
-```python
-def build_full_source_dictionary_workbook(
-    objects, attributes, dictionary_attributes, code_values,
-    open_questions, relationships=None, *, meta, out_path,
-) -> Path: ...
-```
-Sheets, in order:
-- `Cover` — run id, catalog, schema, scope mode, snapshot ids, counts (objects,
-  attributes, dictionary attributes, UNRESOLVED, privacy-flagged, code values).
-- `Objects` — reuse the structural object rows.
-- `Attributes` — reuse the structural attribute rows.
-- `Dictionary` — one row per `source_dictionary_attribute`: Object, Attribute,
-  Business Name, Business Definition, Name Trust (evidence_state), Definition Trust,
-  Confidence, Evidence Count, Privacy, Lifecycle State, Review Decision.
-- `Code Values` — one row per `source_dictionary_code_value`: Object, Attribute, Code,
-  Meaning, Trust, Confidence.
-- `Open Questions` — one row per `open_question`: Type, Object, Attribute, Question.
-- `Relationships` (only if `relationships` provided) — From, To, Type, Trust, Confidence.
-
-Deterministic and LLM-free: it only renders records already produced by the agents.
-Add a NEW test `tests/unit/test_full_dictionary_excel.py` asserting: sheet names in the
-order above; Dictionary row count == number of dictionary_attributes; Code Values count
-== code_value records; UNRESOLVED attributes show no invented value; no fabricated
-evidence ids leak into any cell.
-
-## 2. Wire the pipeline (job YAML)
-
-In `resources/source_discovery.job.yml`, using the shared-run-id rule
-(`run_id: source_discovery_{{job.run_id}}` on every task):
-
-- Add task `analyze_source_dictionary` -> `depends_on: assemble_context`, passing the
-  dynamic task-values it needs (`context_snapshot_id`, `source_snapshot_id`), reusing
-  the notebook already migrated in Fix 1.
-- Keep `analyze_source_relationships` (depends on `assemble_context`) — runs alongside.
-- Add a final task `export_source_dictionary` ->
-  `depends_on: [analyze_source_dictionary, analyze_source_relationships]`, pointing at a
-  new notebook `src/workflows/export_source_dictionary.py`.
-
-## 3. Build the export notebook
-
-`src/workflows/export_source_dictionary.py` — mirror the other workflows exactly:
-`resolve_job_params(...)`, the identity authorization check, and the same
-`/Workspace`-safe `REPO_ROOT` helper as the other notebooks (must yield a path starting
-with `/Workspace` so the loader can read `metadata/` — see follow-up-fixes Fix 3; a root
-without that prefix raises `FileNotFoundError: Missing metadata file`). Then, for `RID = params["run_id"]`, read from the output catalog/schema:
-`source_object_observation`, `source_attribute_observation`, `source_dictionary_object`,
-`source_dictionary_attribute`, `source_dictionary_code_value`, `open_question`, and
-(optional) `source_dictionary_relationship` — all filtered to RID. Call
-`build_full_source_dictionary_workbook(...)` and write the `.xlsx` to a stable path
-(a UC Volume under the output catalog, or the bundle workspace files path). Print/emit
-the written path as a task value.
-
-Do not embed business logic here — it only reads records and renders. No new
-approvals, no re-derivation of meaning.
+The job cannot pass `snapshot_source_metadata` until `skills/fix-control-table-persistence`
+is applied: regenerate the control DDL, add the `create_control_tables` bootstrap task
+(after `validate_scope`, before `register_solution_run`), and replace the inferred-schema
+write in `register_solution_run` with a contract-shaped idempotent merge. Do that FIRST,
+then run below. If `create_control_tables` is not yet in the job, STOP and apply that skill.
 
 ## 4. Run the job (deploy + execute)
 
