@@ -7,9 +7,13 @@
 
 # COMMAND ----------
 
+import hashlib
 import json
 import os
 import sys
+import time
+from collections import defaultdict
+from datetime import datetime, timedelta, timezone
 from pathlib import Path, PurePosixPath
 from urllib.parse import urlparse
 
@@ -28,6 +32,12 @@ _add_bundle_source_to_python_path()
 
 from agentic_data_modeler.config.job_params import resolve_job_params
 from agentic_data_modeler.control import RuntimeRequest
+from agentic_data_modeler.profiling import AttributeProfile, ProfileInventory, ProfilingPolicy
+from agentic_data_modeler.util import stable_record_id
+from databricks.labs.dqx.profiler import DQProfiler
+from databricks.sdk import WorkspaceClient
+from pyspark.sql import functions as F
+from agentic_data_modeler.source_adapters.dqx_profiling import dqx_profile_ref, project_dqx_summary
 
 # Load grouped parameters from metadata files
 # Derive REPO_ROOT as bundle root (parent of src/) with /Workspace prefix

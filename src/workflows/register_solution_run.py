@@ -83,26 +83,90 @@ request = RuntimeRequest.from_parameters(request_params)
 # COMMAND ----------
 
 # §6: Persist solution run to table (required for downstream tasks)
+from datetime import datetime
+from pyspark.sql import functions as F
+
 def _qualified(catalog: str, schema: str, table: str) -> str:
     return ".".join(f"`{identifier}`" for identifier in (catalog, schema, table))
 
-solution_run_table = _qualified(request.output_catalog, request.output_schema, "solution_run")
+def _insert_records_idempotently(table_name: str, records: list[dict]) -> None:
+    """Insert records using MERGE pattern, conforming to target schema."""
+    if not records:
+        return
+    target_name = _qualified(request.output_catalog, request.output_schema, table_name)
+    target_schema = spark.table(target_name).schema
+    source = spark.createDataFrame(records, schema=target_schema)
+    view_name = f"_register_{table_name}"
+    source.createOrReplaceTempView(view_name)
+    spark.sql(
+        f"""
+        MERGE INTO {target_name} AS target
+        USING {view_name} AS source
+        ON target.record_id = source.record_id
+        WHEN NOT MATCHED THEN INSERT *
+        """
+    )
+    record_ids = [record["record_id"] for record in records]
+    persisted_count = (
+        spark.table(target_name)
+        .where(F.col("record_id").isin(record_ids))
+        .select("record_id")
+        .distinct()
+        .count()
+    )
+    if persisted_count != len(set(record_ids)):
+        raise ValueError(
+            f"Persistence count mismatch for {table_name}: expected {len(set(record_ids))}, "
+            f"received {persisted_count}"
+        )
 
-# Convert RuntimeRequest to dict for insertion (omitting source_tables to avoid type issues)
-solution_run_data = {
+# Parse source_tables as JSON array
+source_tables_list = json.loads(params.get("source_tables", "[]")) if params.get("source_tables") else []
+
+# Build contract-shaped solution_run record
+now = datetime.utcnow()
+solution_run_record = {
     "record_id": request.run_id,
+    "schema_version": "0.3.0",
     "lob": request.lob,
     "domain": request.domain,
+    "artifact_version": params["contracts"]["set_version"],
+    "lifecycle_state": "ACTIVE",
+    "provenance": {
+        "run_id": request.run_id,
+        "context_snapshot_id": "",
+        "source_snapshot_id": "",
+        "profile_snapshot_id": "",
+        "model_version": params.get("model", {}).get("version", ""),
+        "prompt_version": params.get("model", {}).get("prompt_version", ""),
+        "skill_version": "",
+        "tool_version": ""
+    },
+    "created_at": now,
+    "updated_at": now,
+    "workflow_state": "VALIDATED",
     "source_catalog": request.source_catalog,
     "source_schema": request.source_schema,
-    "source_scope_mode": request.source_scope_mode.value,
+    "source_tables": source_tables_list,
+    "source_product": request.source_product,
+    "source_module": request.source_module,
+    "source_version": request.source_version,
+    "knowledge_pack_id": None,
+    "knowledge_pack_version": None,
     "output_catalog": request.output_catalog,
     "output_schema": request.output_schema,
+    "profiling_policy": params["profiling"]["run_mode"],
+    "run_type": "METADATA",
+    "start_timestamp": now,
+    "end_timestamp": now,
+    "status": "RUNNING",
+    "error_message": None,
+    "cost_usd": None
 }
 
-# Create DataFrame and write (let Spark infer schema or merge with existing)
-df = spark.createDataFrame([solution_run_data])
-df.write.mode("append").option("mergeSchema", "true").saveAsTable(solution_run_table)
+_insert_records_idempotently("solution_run", [solution_run_record])
 
 print(f"✅ Registered solution run: {request.run_id}")
-print(f"   Table: {solution_run_table}")
+print(f"   Source tables: {len(source_tables_list)}")
+print(f"   Workflow state: {solution_run_record['workflow_state']}")
+

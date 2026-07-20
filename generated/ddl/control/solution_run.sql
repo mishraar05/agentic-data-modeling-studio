@@ -1,4 +1,4 @@
--- Auto-generated from solution_run.schema.json v0.2.0
+-- Auto-generated from solution_run.schema.json v0.3.0
 -- Configuration: config/env_config.yaml (schema=control)
 -- DO NOT EDIT MANUALLY — Regenerate from contract + config
 
@@ -23,8 +23,6 @@ CREATE TABLE IF NOT EXISTS insurance_source_discovery.control.solution_run (
   knowledge_pack_version STRING,
   output_catalog STRING NOT NULL,
   output_schema STRING NOT NULL,
-  authorization_ref STRING NOT NULL,
-  source_access_granted BOOLEAN NOT NULL,
   profiling_policy STRING NOT NULL,
   run_type STRING NOT NULL COMMENT 'Type of solution execution',
   start_timestamp TIMESTAMP NOT NULL COMMENT 'ISO 8601 timestamp when the run started',
