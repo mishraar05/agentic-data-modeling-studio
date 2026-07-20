@@ -35,11 +35,12 @@ from agentic_data_modeler.control import (
 )
 
 # Load grouped parameters from metadata files
-REPO_ROOT = Path(
-    os.environ.get("BUNDLE_ROOT")
-    or dbutils.notebook.entry_point.getDbutils().notebook().getContext()
-        .notebookPath().get().rsplit("/src/", 1)[0]
-)
+# Derive REPO_ROOT as bundle root (parent of src/) with /Workspace prefix
+REPO_ROOT_RAW = str(Path(sys.path[0]).parent)
+if not REPO_ROOT_RAW.startswith("/Workspace/"):
+    REPO_ROOT = "/Workspace" + REPO_ROOT_RAW
+else:
+    REPO_ROOT = REPO_ROOT_RAW
 for w in ('run_id',):
     dbutils.widgets.text(w, "")
 
@@ -67,7 +68,7 @@ request_params = {
     "source_table_include_patterns": json.dumps(params["scope"]["source_table_include_patterns"]),
     "source_table_exclude_patterns": json.dumps(params["scope"]["source_table_exclude_patterns"]),
     "source_object_types": json.dumps(params["scope"]["source_object_types"]),
-    "source_tables": "",  # Explicit tables handled via manifest resolution
+    "source_tables": "[]",  # Explicit tables handled via manifest resolution
     "source_system_id": params["source"]["system_id"],
     "source_product": params["source"]["product"],
     "source_module": params["source"]["module"],

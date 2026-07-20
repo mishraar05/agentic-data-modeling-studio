@@ -30,11 +30,12 @@ from agentic_data_modeler.config.job_params import resolve_job_params
 from agentic_data_modeler.control import RuntimeRequest
 
 # Load grouped parameters from metadata files
-REPO_ROOT = Path(
-    os.environ.get("BUNDLE_ROOT")
-    or dbutils.notebook.entry_point.getDbutils().notebook().getContext()
-        .notebookPath().get().rsplit("/src/", 1)[0]
-)
+# Derive REPO_ROOT as bundle root (parent of src/) with /Workspace prefix
+REPO_ROOT_RAW = str(Path(sys.path[0]).parent)
+if not REPO_ROOT_RAW.startswith("/Workspace/"):
+    REPO_ROOT = "/Workspace" + REPO_ROOT_RAW
+else:
+    REPO_ROOT = REPO_ROOT_RAW
 for w in ('run_id', 'source_tables', 'work_package_id'):
     dbutils.widgets.text(w, "")
 
@@ -78,3 +79,30 @@ request_params = {
 }
 request = RuntimeRequest.from_parameters(request_params)
 
+
+# COMMAND ----------
+
+# §6: Persist solution run to table (required for downstream tasks)
+def _qualified(catalog: str, schema: str, table: str) -> str:
+    return ".".join(f"`{identifier}`" for identifier in (catalog, schema, table))
+
+solution_run_table = _qualified(request.output_catalog, request.output_schema, "solution_run")
+
+# Convert RuntimeRequest to dict for insertion (omitting source_tables to avoid type issues)
+solution_run_data = {
+    "record_id": request.run_id,
+    "lob": request.lob,
+    "domain": request.domain,
+    "source_catalog": request.source_catalog,
+    "source_schema": request.source_schema,
+    "source_scope_mode": request.source_scope_mode.value,
+    "output_catalog": request.output_catalog,
+    "output_schema": request.output_schema,
+}
+
+# Create DataFrame and write (let Spark infer schema or merge with existing)
+df = spark.createDataFrame([solution_run_data])
+df.write.mode("append").option("mergeSchema", "true").saveAsTable(solution_run_table)
+
+print(f"✅ Registered solution run: {request.run_id}")
+print(f"   Table: {solution_run_table}")

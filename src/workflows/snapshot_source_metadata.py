@@ -28,13 +28,15 @@ _add_bundle_source_to_python_path()
 
 from agentic_data_modeler.config.job_params import resolve_job_params
 from agentic_data_modeler.control import RuntimeRequest
+from pyspark.sql import functions as F
 
 # Load grouped parameters from metadata files
-REPO_ROOT = Path(
-    os.environ.get("BUNDLE_ROOT")
-    or dbutils.notebook.entry_point.getDbutils().notebook().getContext()
-        .notebookPath().get().rsplit("/src/", 1)[0]
-)
+# Derive REPO_ROOT as bundle root (parent of src/) with /Workspace prefix
+REPO_ROOT_RAW = str(Path(sys.path[0]).parent)
+if not REPO_ROOT_RAW.startswith("/Workspace/"):
+    REPO_ROOT = "/Workspace" + REPO_ROOT_RAW
+else:
+    REPO_ROOT = REPO_ROOT_RAW
 for w in ('run_id', 'source_tables'):
     dbutils.widgets.text(w, "")
 

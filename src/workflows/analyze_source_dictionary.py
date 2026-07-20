@@ -43,7 +43,12 @@ DYNAMIC = ("context_snapshot_id", "source_snapshot_id")
 for w in ("run_id", *DYNAMIC):
     dbutils.widgets.text(w, "")
 
-REPO_ROOT = PurePosixPath(sys.path[0]).as_posix()
+# Derive REPO_ROOT as bundle root (parent of src/) with /Workspace prefix
+REPO_ROOT_RAW = str(Path(sys.path[0]).parent)
+if not REPO_ROOT_RAW.startswith("/Workspace/"):
+    REPO_ROOT = "/Workspace" + REPO_ROOT_RAW
+else:
+    REPO_ROOT = REPO_ROOT_RAW
 params = resolve_job_params(dbutils, REPO_ROOT, dynamic_keys=("run_id", *DYNAMIC))
 
 # Extract endpoints from metadata
