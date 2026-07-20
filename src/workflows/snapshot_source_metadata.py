@@ -36,7 +36,10 @@ from agentic_data_modeler.evidence.metadata import (
     ObjectMetadata,
     one_based_ordinal_offset,
 )
+from agentic_data_modeler.util import stable_record_id
+from datetime import datetime, timezone
 from pyspark.sql import functions as F
+import hashlib
 
 # Load grouped parameters from metadata files
 # Derive REPO_ROOT as bundle root (parent of src/) with /Workspace prefix
